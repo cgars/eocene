@@ -1,0 +1,20 @@
+@(char:Char, spell:Spell, weaving:Talent, spellcasting:Talent)
+<div id="wuerfel_heading" class="BlockHeading">Spell Caster</div>
+@defining((1).to(spell.threads)){thread_range =>
+
+	@thread_range.map{counter=>
+			<div class="inliners">Thread@counter:</div>			
+			<input type="text" id="thread@{counter}_textfield" value = "@weaving.getDice(char)" >
+			<div class="waeve_thread" id="thread@counter">Throw</div>
+			<div class="vspacer"></div>
+			<div class="inliners">Result:</div><div class="inliners" id="thread@{counter}Result"></div>
+			<div class="vspacer"></div>
+	}
+}
+			<div class="inliners">Spellcasting:</div>			
+			<input type="text" id="spellcasting_textfield" value = "@spellcasting.getDice(char)" >
+			<div class="waeve_thread" id="spellcasting">Throw</div>
+			<div class="vspacer"></div>
+			<div class="inliners">Result:</div><div class="inliners" id="spellcastingResult"></div>
+			<div class="vspacer"></div>
+<div id="reload_char">close</div>

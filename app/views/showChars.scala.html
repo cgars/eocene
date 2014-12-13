@@ -1,0 +1,10 @@
+@(chars: List[(String,Int)], user:securesocial.core.BasicProfile)
+
+@views.html.header(user)
+<div id="root">
+<div id="float_elem"></div>
+<div id="chars_root">@views.html.chars(chars)
+</div>
+</div>
+@views.html.footer()
+

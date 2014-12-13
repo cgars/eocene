@@ -1,0 +1,32 @@
+@(char: Char)
+<table id="TalentTable" border="0">
+<tr>
+<td>Talent</td>
+<td>Circle</td>
+<td>Action</td>
+<td>Karma</td>
+<td>Disciplined</td>
+<td>Strain</td>
+<td>Attribute</td>
+<td>Rank</td>
+<td>Dice</td>
+<td>Improve</td>
+<td></td>
+</tr>
+@char.talents.map{ability=> 
+	<tr id=@{"ab_id"+ability.id}>
+	<td class="table_field" id="@{"ab_id"+ability.id+"name"}">@ability.name</td>
+	<td class="table_field" id="@{"ab_id"+ability.id+"circle"}">@ability.circle</td>	
+	<td class="table_field" id="@{"ab_id"+ability.id+"action"}">@ability.action</td>
+	<td class="table_field" id="@{"ab_id"+ability.id+"karma"}">@ability.karma</td>
+	<td class="table_field" id="@{"ab_id"+ability.id+"disciplined"}">@ability.disciplined</td>
+	<td class="table_field" id="@{"ab_id"+ability.id+"strain"}">@ability.strain</td>
+	<td class="table_field" id="@{"ab_id"+ability.id+"formula"}">@ability.formula</td>
+	<td class="table_field" id="@{"ab_id"+ability.id+"rank"}">@{ability.step}@{if(ability.getRank(char)>0)"/"+ability.getRank(char) else ""}</td>
+	<td class="talent_field" id="@{if(ability.getRank(char)>0)"ab_id"+ability.id+"_dice" else "ab_id"+ability.id}">@{if(ability.getRank(char)>0)ability.getDice(char) else ""}</td>
+	<td class="talent_down" id="@{""+ability.id}">down</td>
+	<td class="talent_up" id="@{""+ability.id}">up</td>
+	</tr>	    
+}
+</table>
+

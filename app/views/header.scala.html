@@ -1,0 +1,21 @@
+@(user:securesocial.core.BasicProfile)
+@import securesocial.core
+<!DOCTYPE html>
+<html>
+  <head>
+	<!-- jquery .min.js for optimized version-->
+	<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.11.0/jquery.js"></script>
+	<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
+	<script type="text/javascript" src="@routes.Assets.at("javascripts/ECHO.js")"></script>
+	<link rel="stylesheet" href="@routes.Assets.at("stylesheets/main.css")">
+    <title>eocene</title>
+  </head>
+  <body>
+ <div id="page-header">
+<img src="@user.avatarUrl.getOrElse("")" alt="@user.firstName.getOrElse("")" width="40px" height="40px"/> Welcome @user.firstName.getOrElse(""),
+ you are logged in from: @user.providerId
+</div>
+<a class="btn" href="@securesocial.controllers.routes.LoginPage.logout()">Logout</a>
+<div id="header-end"></div>
+
+

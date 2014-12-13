@@ -1,0 +1,31 @@
+@(armors: List[Armor])
+<table id="ArmnorTable" border="0">
+<tr>
+<td>Name</td>
+<td>Cost</td>
+<td>Init</td>
+<td>Phys</td>
+<td>Mystic</td>
+<td>choose</td>
+
+</tr>
+@armors.map{armor=> 
+	<tr>
+	<td class="table_field">@armor.name</td>
+	<td class="table_field">@armor.cost</td>
+	<td class="table_field">@armor.init</td>
+	<td class="table_field">@armor.phys</td>
+	<td class="table_field">@armor.mystic</td>
+	<td class="armor_chosen" id="@{""+armor.id}">Get</td>
+	</tr>
+	@armor.powers.map{power =>
+		<tr>
+		<td colspan="5">At Thread @power.threads @power.effect + @power.value</td>
+		</tr>	
+	}
+}
+	<tr >
+	<td class="table_field"></td>
+	<td  id="reload_char">None</td>
+	</tr>
+</table>

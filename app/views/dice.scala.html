@@ -1,0 +1,28 @@
+@(char:Char, target_class:String, target_id:String, dice:String)
+
+@target_class match{
+	case "derived_atrr_dice" => {
+		<div id="wuerfel_heading" class="BlockHeading">Dice Roller</div>
+		<input type="text" id="wuerfel_textfield" value = "@dice" >
+		<div id="throw_wuerfel">Throw</div>
+		<div class="vspacer"></div>
+		<div class="inliners">Result:</div><div class="inliners" id="dice_result"></div>
+	
+	}
+	case "talent_field" 	 => {
+		<div id="wuerfel_heading" class="BlockHeading">Dice Roller</div>
+		<input type="text" id="wuerfel_textfield" value = "@dice" >
+		<div id="throw_wuerfel">Throw</div>
+		<div class="vspacer"></div>
+		<div class="inliners">Result:</div><div class="inliners" id="dice_result"></div>
+	}
+	case "table_field" => {
+		<div id="wuerfel_heading" class="BlockHeading">Dice Roller</div>
+		<input type="text" id="wuerfel_textfield" value = "@dice" >
+		<div id="throw_wuerfel">Throw</div>
+		<div class="vspacer"></div>
+		<div class="inliners">Result:</div><div class="inliners" id="dice_result"></div>
+	}
+}
+<div class="vspacer"></div>
+<div id="reload_char">close</div>

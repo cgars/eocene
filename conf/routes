@@ -1,0 +1,54 @@
+# Routes
+# This file defines all application routes (Higher priority routes first)
+# ~~~~
+
+# Home page
+GET		/											@controllers.Subviews.showChars()
+GET		/char/:id/								    @controllers.Subviews.showChar(id:Int)
+
+# Map static resources from the /public folder to the /assets URL path
+GET     /assets/*file               controllers.Assets.at(path="/public", file)
+#GET     /assets/*file                controllers.Charackters.at(path="/public", file)
+
+#Character API
+GET  	/API/characters/create/:name/							@controllers.Charackters.create(name)
+POST  	/API/characters/create/									@controllers.Charackters.createWithoutName()
+POST	/API/characters/:id/name/								@controllers.Charackters.changeCharName(id:Int)
+GET		/API/characters/:id/									@controllers.Charackters.getCharacterById(id:Int)
+POST	/API/characters/:id/attributes/:attribute/improve/		@controllers.Charackters.improveAttributeLP(id:Int, attribute:String)
+POST	/API/characters/:id/attributes/:attribute/corrupt/		@controllers.Charackters.corruptAttributeLP(id:Int, attribute:String)
+POST	/API/characters/:id/attributes/:attribute/improve/pp/	@controllers.Charackters.improveAttributePP(id:Int, attribute:String)
+POST	/API/characters/:id/attributes/:attribute/corrupt/pp/	@controllers.Charackters.corruptAttributePP(id:Int, attribute:String)
+POST	/API/characters/:id/race/:id_race/						@controllers.Charackters.changeCharRace(id:Int, id_race:Int)
+POST	/API/characters/:id/disciplines/:id_discipline/improve/	@controllers.Charackters.improveCharDiscipline(id:Int, id_discipline:Int)
+POST	/API/characters/:id/disciplines/:id_discipline/corrupt/	@controllers.Charackters.corruptCharDiscipline(id:Int, id_discipline:Int)
+POST	/API/characters/:id/talents/:id_talent/improve/			@controllers.Charackters.improveCharTalent(id:Int, id_talent:Int)
+POST	/API/characters/:id/talents/:id_talent/corrupt/			@controllers.Charackters.corruptCharTalent(id:Int, id_talent:Int)
+POST	/API/characters/:id/skills/:id_skill/improve/			@controllers.Charackters.improveCharSkill(id:Int, id_skill:Int)
+POST	/API/characters/:id/skills/:id_skill/corrupt/			@controllers.Charackters.corruptCharSkill(id:Int, id_skill:Int)
+POST	/API/characters/:id/spells/:id_spell/learn/				@controllers.Charackters.learnCharSpell(id:Int, id_spell:Int)
+POST	/API/characters/:id/spells/:id_spell/unlearn/			@controllers.Charackters.unlearnCharSpell(id:Int, id_spell:Int)
+GET		/API/characters/:id/armors/:id_armor/get/				@controllers.Charackters.getArmor(id:Int, id_armor:Int)
+GET		/API/characters/:id/armors/:id_armor/remove/			@controllers.Charackters.removeArmor(id:Int, id_armor:Int)
+GET		/API/characters/:id/armors/:id_armor/thread/attach/		@controllers.Charackters.attachThreadArmor(id:Int, id_armor:Int)
+GET		/API/characters/:id/armors/:id_armor/thread/remove/		@controllers.Charackters.removeThreadArmor(id:Int, id_armor:Int)
+GET		/API/step/:step/Dice/									@controllers.Charackters.getDice(step:Int)
+GET		/API/dice/:sides/										@controllers.Charackters.rollDice(sides:Int)
+GET		/API/dices/:dice_string/								@controllers.Charackters.rollDiceString(dice_string:String)
+POST 	/API/characters/:id_char/addmatrix/:id_spell/			@controllers.Charackters.Spell2Matrix(id_spell:Int, id_char:Int)
+POST	/API/characters/:id_char/frommatrix/:id_spell/			@controllers.Charackters.SpellFromMatrix(id_spell:Int, id_char:Int)
+
+#HTML API
+GET		/HTML/chars/										    @controllers.Subviews.getChars()
+GET		/HTML/char/:id/talents/						    		@controllers.Subviews.getTalentsByCharId(id:Int)
+GET		/HTML/char/:id/										    @controllers.Subviews.getChar(id:Int)
+GET		/HTML/races/											@controllers.Subviews.Races()
+GET		/HTML/disciplines/								    	@controllers.Subviews.Disciplines()
+GET		/HTML/skills/								    		@controllers.Subviews.Skills()
+GET		/HTML/spells/								    		@controllers.Subviews.Spells()
+GET		/HTML/spells/char/:id/								    @controllers.Subviews.SpellsForChar(id:Int)
+GET		/HTML/armors/								    		@controllers.Subviews.Armors()
+GET		/HTML/dice/:target_class/:target_id/:dice/:char_id/		@controllers.Subviews.Dice(target_class:String,target_id:String, dice:String, char_id:Int)
+GET		/HTML/spell/:id_spell/:id_char/							@controllers.Subviews.Spell(id_spell:Int, id_char:Int)
+				
+-> /auth securesocial.Routes

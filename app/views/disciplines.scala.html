@@ -1,0 +1,18 @@
+@(disciplines: List[Discipline])
+<table id="DisciplinesTable" border="0">
+<tr>
+<td>Name</td>
+<td>Choose</td>
+
+</tr>
+@disciplines.map{discipline=> 
+	<tr id=@{"ab_id"+discipline.id}>
+	<td class="table_field" id="@{"ab_id"+discipline.id+"name"}">@discipline.name</td>
+	<td class="discipline_chosen" id="@{""+discipline.id}">Initiate</td>
+	</tr>	    
+}
+	<tr >
+	<td class="table_field"></td>
+	<td  id="reload_char">Back</td>
+	</tr>
+</table>

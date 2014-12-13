@@ -1,0 +1,22 @@
+@(spells: List[Map[String,Any]])
+<table id="SpellsTable" border="0">
+<tr>
+<td>Name</td>
+<td>Discipline</td>
+<td>Circle</td>
+<td>Learn</td>
+
+</tr>
+@spells.map{spell=> 
+	<tr>
+	<td class="table_field">@spell("spell_name")</td>
+	<td class="table_field">@spell("discipline_name")</td>
+	<td class="table_field">@spell("circle")</td>
+	<td class="spell_chosen" id="@{""+spell("id")}">Learn</td>
+	</tr>	    
+}
+	<tr >
+	<td class="table_field"></td>
+	<td  id="reload_char">Back</td>
+	</tr>
+</table>

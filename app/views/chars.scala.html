@@ -1,0 +1,14 @@
+@(chars: List[(String,Int)])
+
+<table id="CharsTable"border="0">
+<tr id="chars_row">
+<td>Name</td>
+</tr>
+@chars.map{char=>
+<tr id="chars_row">
+<td class="chars_row" id="@{char._2}">@char._1</td>
+</tr>
+}
+</table>
+<div id="createChar">Create Char</div>
+

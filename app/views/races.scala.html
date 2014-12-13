@@ -1,0 +1,14 @@
+@(races: List[Race])
+<table id="RaceTable" border="0">
+<tr>
+<td>Name</td>
+<td>Choose</td>
+
+</tr>
+@races.map{race=> 
+	<tr id=@{"ab_id"+race.id}>
+	<td class="table_field" id="@{"ab_id"+race.id+"name"}">@race.name</td>
+	<td class="race_chosen" id="@{""+race.id}">Choose</td>
+	</tr>	    
+}
+</table>

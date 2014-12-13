@@ -1,0 +1,343 @@
+@(char: Char)
+<div id="roller"></div>
+<div id="char_id">@char.id</div>
+<div>
+<input type="text" id="name" value = "@char.name" >
+</div>
+<div id="race">
+@char.race.name
+</div>
+<div id="validation">
+@defining(char.getValidator){ validator =>
+<div>Valid Character: @validator.validate</div>
+@validator.message.split("\n").map{mess=>
+<div>@mess</div>
+}
+}
+
+</div>
+<div class="Block" id="DisciplineBlock">
+<div class="BlockHeading" id="discipline_heading">Disciplines</div>
+<div id="test"></div>
+<table id="DisciplineTable" border="0">
+<tr class = "discipline_row">
+<td class="discipline_name">Discipline</td>
+<td class="discipline_circle">Circle</td>
+<td class="discipline_down">Improve</td>
+<td class="discipline_up">Corrupt</td>
+</tr>
+@char.disciplines.map{discipline=> 
+<tr class = "discipline_row">
+<td class="discipline_name">@discipline.name</td>
+<td class="discipline_circle">@discipline.circle</td>
+<td class="discipline_down" id="@discipline.id">down</td>
+<td class="discipline_up" id="@discipline.id">up</td>
+<tr>
+<td colspan="4">
+@discipline.abilities.split("\n").map{ability=>
+<div class="discipline_ability">@ability</div>
+}
+</td>
+</tr>
+
+</tr>
+}
+</table>
+
+
+</div>
+
+<div class="Block" id="AtrributeBlock">
+<div class="BlockHeading" id="atrr_heading">Attributes</div>
+
+<table border="0">
+<tr class = "attribute_row">
+<td class="attribute_name_head">Attribute</td>
+<td class="attribute_value_head">Base</td>
+<td class="attribute_down_head">up</td>
+<td class="attribute_up_head">down</td>
+<td class="attribute_level_head">Improved</td>
+<td class="attribute_race_mod_head">Racial Modifier</td>
+<td class="derived_atrr_head">Value</td>
+<td class="derived_atrr_step_head">Step</td>
+<td class="derived_atrr_dice_head">Dice</td>
+<td class="attribute_down" id="dex_level">down</td>
+<td class="attribute_up" id="dex_level">up</td>
+</tr>
+
+<tr class = "attribute_row">
+<td class="attribute_name">dex</td>
+<td class="attribute_value">@char.dex_mod</td>
+<td class="attribute_pp_down" id="dex_mod">down</td>
+<td class="attribute_pp_up" id="dex_mod">up</td>
+<td class="attribute_level">@char.dex_level</td>
+<td class="attribute_race_mod">@char.race.dex_mod</td>
+<td class="derived_atrr">@char.derived("dex")</td>
+<td class="derived_atrr_step">@char.derived("dex_step")</td>
+<td id="dex_step" class="derived_atrr_dice">@{char.getDice(char.derived("dex_step").asInstanceOf[Int])}</td>
+<td class="attribute_down" id="dex_level">down</td>
+<td class="attribute_up" id="dex_level">up</td>
+</tr>
+
+<tr class = "attribute_row">
+<td class="attribute_name">str</td>
+<td class="attribute_value">@char.str_mod</td>
+<td class="attribute_pp_down" id="str_mod">down</td>
+<td class="attribute_pp_up" id="str_mod">up</td>
+<td class="attribute_level">@char.str_level</td>
+<td class="attribute_race_mod">@char.race.str_mod</td>
+<td class="derived_atrr">@char.derived("str")</td>
+<td class="derived_atrr_step">@char.derived("str_step")</td>
+<td id="str_step" class="derived_atrr_dice">@{char.getDice(char.derived("str_step").asInstanceOf[Int])}</td>
+<td class="attribute_down" id="str_level">down</td>
+<td class="attribute_up" id="str_level">up</td>
+</tr>
+
+<tr class = "attribute_row">
+<td class="attribute_name">cha</td>
+<td class="attribute_value">@char.cha_mod</td>
+<td class="attribute_pp_down" id="cha_mod">down</td>
+<td class="attribute_pp_up" id="cha_mod">up</td>
+<td class="attribute_level">@char.cha_level</td>
+<td class="attribute_race_mod">@char.race.cha_mod</td>
+<td class="derived_atrr">@char.derived("cha")</td>
+<td class="derived_atrr_step">@char.derived("cha_step")</td>
+<td id="cha_step" class="derived_atrr_dice">@{char.getDice(char.derived("cha_step").asInstanceOf[Int])}</td>
+<td class="attribute_down" id="cha_level">down</td>
+<td class="attribute_up" id="cha_level">up</td>
+</tr>
+
+<tr>
+<td class="attribute_name">tou</td>
+<td class="attribute_value">@char.tou_mod</td>
+<td class="attribute_pp_down" id="tou_mod">down</td>
+<td class="attribute_pp_up" id="tou_mod">up</td>
+<td class="attribute_level">@char.tou_level</td>
+<td class="attribute_race_mod">@char.race.tou_mod</td>
+<td class="derived_atrr">@char.derived("tou")</td>
+<td class="derived_atrr_step">@char.derived("tou_step")</td>
+<td id="tou_step" class="derived_atrr_dice">@{char.getDice(char.derived("tou_step").asInstanceOf[Int])}</td>
+<td class="attribute_down" id="tou_level">down</td>
+<td class="attribute_up" id="tou_level">up</td>
+</tr>
+
+<tr class = "attribute_row">
+<td class="attribute_name">wil</td>
+<td class="attribute_value">@char.wil_mod</td>
+<td class="attribute_pp_down" id="wil_mod">down</td>
+<td class="attribute_pp_up" id="wil_mod">up</td>
+<td class="attribute_level">@char.will_level</td>
+<td class="attribute_race_mod">@char.race.wil_mod</td>
+<td class="derived_atrr">@char.derived("wil")</td>
+<td class="derived_atrr_step">@char.derived("wil_step")</td>
+<td id="wil_step" class="derived_atrr_dice">@{char.getDice(char.derived("wil_step").asInstanceOf[Int])}</td>
+<td class="attribute_down" id="wil_level">down</td>
+<td class="attribute_up" id="wil_level">up</td>
+</tr>
+
+<tr class = "attribute_row">
+<td class="attribute_name">per</td>
+<td class="attribute_value">@char.per_mod</td>
+<td class="attribute_pp_down" id="per_mod">down</td>
+<td class="attribute_pp_up" id="per_mod">up</td>
+<td class="attribute_level">@char.per_level</td>
+<td class="attribute_race_mod">@char.race.per_mod</td>
+<td class="derived_atrr">@char.derived("per")</td>
+<td class="derived_atrr_step">@char.derived("per_step")</td>
+<td id="per_step" class="derived_atrr_dice">@{char.getDice(char.derived("per_step").asInstanceOf[Int])}</td>
+<td class="attribute_down" id="per_level">down</td>
+<td class="attribute_up" id="per_level">up</td>
+</tr>
+
+<tr class = "attribute_row">
+<td class="attribute_name"></td>
+<td class="attribute_value">@char.pp of 66</td>
+<td class="" id="per_mod"></td>
+<td class="" id="per_mod"></td>
+<td class="attribute_level"></td>
+<td class="attribute_race_mod"></td>
+<td class="attribute_race_mod"></td>
+<td class="derived_atrr"></td>
+<td class="derived_atrr_step"></td>
+<td class="" id="per_level"></td>
+<td class="" id="per_level"></td>
+</tr>
+</table>
+</div>
+
+<div class="Block" id="DefenseBlock">
+<div class="BlockHeading" id="defense_heading">Derived</div>
+<table border="0" id="DefenseTable">
+<tr class="defenseRow">
+<td class="defenseName">Name</td>
+<td class="defenseValue">Value</td>
+</tr>
+<tr class="defenseRow">
+<td class="defenseName">Physical Defense</td>
+<td class="defenseValue">@char.derived("physDef")</td>
+</tr>
+<td class="defenseName">Spell Defense</td>
+<td class="defenseValue">@char.derived("spellDef")</td>
+</tr>
+<tr class="defenseRow">
+<td class="defenseName">Social Defense</td>
+<td class="defenseValue">@char.derived("socDef")</td>
+</tr>
+<tr class="defenseRow">
+<td class="defenseName">Movement</td>
+<td class="defenseValue">@char.derived("movement")/@{char.derived("movement").asInstanceOf[Int]*2}</td>
+</tr>
+<tr class="defenseRow">
+<td class="defenseName">Carrying</td>
+<td class="defenseValue">@char.derived("carrying")/@{char.derived("carrying").asInstanceOf[Int]*2}</td>
+</tr>
+<tr class="defenseRow">
+<td class="defenseName">Death Rating</td>
+<td class="defenseValue">@char.derived("death")</td>
+</tr>
+<tr class="defenseRow">
+<td class="defenseName">Uncon. Rating</td>
+<td class="defenseValue">@char.derived("unconc")</td>
+</tr>
+<tr class="defenseRow">
+<td class="defenseName">Wound Threshold</td>
+<td class="defenseValue">@char.derived("wound")</td>
+</tr>
+<tr class="defenseRow">
+<td class="defenseName">Rec Test</td>
+<td class="defenseValue">@char.derived("rec")</td>
+</tr>
+<tr class="defenseRow">
+<td class="defenseName">Mystical Armor</td>
+<td class="defenseValue">@char.derived("mystic")</td>
+</tr>
+<tr class="defenseRow">
+<td class="defenseName">Physical Armor</td>
+<td class="defenseValue">@char.derived("physical")</td>
+</tr>
+<tr class="defenseRow">
+<td class="defenseName">Legend Point spent</td>
+<td class="defenseValue">@char.lp_sp</td>
+</tr>
+<tr class="Karma">
+<td class="KarmaName">Karma</td>
+<td class="defenseValue">@{char.kar_curr}/@{char.race.kar_max+char.getModifierValueByName("karmaMax").getOrElse(0)}</td>
+</tr>
+<tr class="Initiative">
+<td class="InitiativeName">Initiative</td>
+<td id="ini_dice" class="derived_atrr_dice">@{char.getDice(char.derived("initiative").asInstanceOf[Int])}</td>
+</tr>
+</table>
+</div>
+
+
+<div class="Block" id="talents">
+<div class="BlockHeading" id="talents_heading">Talents</div>
+@views.html.talents(char)
+</div>
+
+
+<div class="Block" id="SkillsBlock">
+<div class="BlockHeading" id="skills_heading">Skills</div>
+<table id="TalentTable" border="0">
+<tr>
+<td>Skill</td>
+<td>Level</td>
+<td>type</td>
+<td>Formula</td>
+<td>Comm</td>
+<td>Rank</td>
+<td>Dice</td>
+<td>Improve</td>
+<td>Corrupt</td>
+</tr>
+@char.skills.map{skill=> 
+	<tr id=@{"ab_id"+skill.id}>
+	<td class="table_field" id="@{"ab_id"+skill.id+"name"}">@skill.name</td>
+	<td class="table_field" id="@{"ab_id"+skill.id+"circle"}">@skill.step</td>	
+	<td class="table_field" id="@{"ab_id"+skill.id+"action"}">@skill.skill_type</td>
+	<td class="table_field" id="@{"ab_id"+skill.id+"karma"}">@skill.formula</td>
+	<td class="table_field" id="@{"ab_id"+skill.id+"strain"}">@skill.comm</td>
+	<td class="table_field" id="@{"ab_id"+skill.id+"rank"}">@{skill.step}@{if(skill.getRank(char)>0)"/"+skill.getRank(char) else ""}</td>
+	<td class="table_field" id="@{"ab_id"+skill.id+"dice"}">@{if(skill.getRank(char)>0)skill.getDice(char) else ""}</td>
+	<td class="skill_down" id="@{""+skill.id}">down</td>
+	<td class="skill_up" id="@{""+skill.id}">up</td>
+	</tr>  
+}
+</table>
+</div>
+
+
+<div class="Block" id="SpellsBlock">
+<div class="BlockHeading" id="spells_heading">Spells</div>
+<table id="SpellTable" border="0">
+<tr>
+<td>Spell</td>
+<td>Cast</td>
+<td>Matrix</td>
+<td>Circle</td>
+<td>threads</td>
+<td>Range</td>
+<td>Duration</td>
+<td>Effect</td>
+<td>Discription</td>
+<td>Weaving Difficulty</td>
+<td>Reatuning</td>
+<td>Difficulty</td>
+<td>Unlearn</td>
+</tr>
+@char.spells.map{spell=> 
+	<tr id=@{"ab_id"+spell.id}>
+	<td class="table_field" id="@{"ab_id"+spell.id+"name"}">@spell.name</td>
+	<td class="cast_spell" id="@{""+spell.id}">Cast</td>
+	@if(spell.spell_matrix==None){
+		<td class="nomatrix" id="@{""+spell.id}"></td>
+	}else{
+		<td class="inmatrix" id="@{""+spell.id}"></td>
+		}	
+	<td class="table_field" id="@{"ab_id"+spell.id+"circle"}">@spell.circle</td>	
+	<td class="table_field" id="@{"ab_id"+spell.id+"action"}">@spell.threads</td>
+	<td class="table_field" id="@{"ab_id"+spell.id+"strain"}">@spell.range</td>
+	<td class="table_field" id="@{"ab_id"+spell.id+"strain"}">@spell.duration</td>
+	<td class="table_field" id="@{"ab_id"+spell.id+"strain"}">@spell.effect</td>
+	<td class="table_field" id="@{"ab_id"+spell.id+"strain"}">@spell.discription</td>
+	<td class="table_field" id="@{"ab_id"+spell.id+"karma"}">@spell.weaving_diff</td>
+	<td class="table_field" id="@{"ab_id"+spell.id+"strain"}">@spell.reatunging</td>
+	<td class="table_field" id="@{"ab_id"+spell.id+"strain"}">@spell.difficulty</td>
+	<td class="unlearn_spell" id="@{""+spell.id}">Unlearn</td>
+	</tr>  
+}
+</table>
+</div>
+
+<div class="Block" id="ArmorsBlock">
+<div class="BlockHeading" id="armors_heading">Armor</div>
+<table id="ArmorTable" border="0">
+<tr>
+<td>Armor</td>
+<td>Cost</td>
+<td>Init</td>
+<td>phys</td>
+<td>mystic</td>
+<td>#threads</td>
+<td>+Thread</td>
+<td>-Thread</td>
+<td>Remove</td>
+</tr>
+@char.armors.map{armor=> 
+	<tr id=@{"ab_id"+armor.id}>
+	<td class="table_field" id="@{"ab_id"+armor.id+"name"}">@armor.name</td>
+	<td class="table_field" id="@{"ab_id"+armor.id+"cost"}">@armor.cost</td>
+	<td class="table_field" id="@{"ab_id"+armor.id+"init"}">@armor.init</td>
+	<td class="table_field" id="@{"ab_id"+armor.id+"phys"}">@armor.phys</td>
+	<td class="table_field" id="@{"ab_id"+armor.id+"mystic"}">@armor.mystic</td>
+	<td class="table_field" id="@{"ab_id"+armor.id+"threads"}">@armor.threads</td>
+	<td class="thread_down" id="@{""+armor.id}">Thread-</td>
+	<td class="thread_up" id="@{""+armor.id}">Thread+</td>
+	<td class="remove_armor" id="@{""+armor.id}">Remove</td>
+	</tr>  
+}
+</table>
+</div>
+<div id="bla">TEST</div>
+

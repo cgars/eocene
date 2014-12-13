@@ -1,0 +1,19 @@
+@(skills: List[Skill])
+<table id="SkillsTable" border="0">
+<tr>
+<td>Name</td>
+<td>Type</td>
+<td>Learn</td>
+</tr>
+@skills.map{skill=> 
+	<tr>
+	<td class="table_field">@skill.name</td>
+	<td class="table_field">@skill.skill_type</td>
+	<td class="skill_chosen" id="@{""+skill.id}">Learn</td>
+	</tr>	    
+}
+	<tr>
+	<td class="table_field"></td>
+	<td  id="reload_char">Back</td>
+	</tr>
+</table>
