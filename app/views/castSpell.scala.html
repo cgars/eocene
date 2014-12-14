@@ -1,4 +1,4 @@
-@(char:Char, spell:Spell, weaving:Talent, spellcasting:Talent)
+@(char:Char, spell:Spell, weaving:Talent, spellcasting:Talent, effect_dice:Option[String])
 <div id="wuerfel_heading" class="BlockHeading">Spell Caster</div>
 @defining((1).to(spell.threads)){thread_range =>
 
@@ -17,4 +17,13 @@
 			<div class="vspacer"></div>
 			<div class="inliners">Result:</div><div class="inliners" id="spellcastingResult"></div>
 			<div class="vspacer"></div>
+			
+			<div class="inliners">Effect:</div>			
+			<input type="text" id="spell_effect_textfield" value = "@effect_dice" >
+			<div class="waeve_thread" id="spell_effect">Throw</div>
+			<div class="vspacer"></div>
+			<div class="inliners">Result:</div><div class="inliners" id="spell_effectResult"></div>
+			<div class="vspacer"></div>
+			
+
 <div id="reload_char">close</div>

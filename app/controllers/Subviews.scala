@@ -222,7 +222,25 @@ extends securesocial.core.SecureSocial[EoceneUser] {
 			    	head
 			    val spellcasting = char.get.talents.
 			    	filter(talent => talent.name contains "Spellcasting").head
-			    Ok(views.html.castSpell(char.get, spell, thread_weaving, spellcasting))
+			    	val effect_step:Option[Int] = 
+			    	  if(spell.effect.contains("Willforce")){  
+			    	    try {			    	    	
+			    	        val bonus:Int = spell.effect.split("\\+")(1).trim.toInt 
+			    	    	val willforce:Int = char.get.talents.
+			    	    	filter(talent=>talent.name.contains("Wilforce"))
+			    	    	.map(talent=>talent.step.getOrElse(0)).headOption.
+			    	    	getOrElse(0)
+			    	    	val willpower :Int = char.get.derived("wil_step").asInstanceOf[Int]
+			    	    	Some(bonus + willforce + willpower)
+			    	    	
+			    	    } catch {
+			    	    	case e:Exception => None
+			    	    }
+			    	} else None 
+			    	val effect_dice = utilities.getDiceForStep(effect_step.getOrElse(0))
+			    	
+			    Ok(views.html.castSpell(char.get, spell, thread_weaving, 
+			        spellcasting, effect_dice))
 		      }
 		      catch{
 		        case _ => BadRequest ("")

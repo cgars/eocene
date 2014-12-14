@@ -303,7 +303,7 @@ object utilities {
   def getDiceForStep(step:Int):Option[String] = {
     if (step<0) return None
     if(step<14) Some(DiceStep(step))
-    else if (step<25) Some("d20+" + DiceStep(step-11))
+    else if (step<25) Some("1d20+" + DiceStep(step-11))
     else Some("%sd20+".format((step-14)/11) + "1d10+1d8+" + DiceStep((step-14)%11+3))
   }
   

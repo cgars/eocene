@@ -31,7 +31,7 @@ $(document).ready(function(){
 	$("#root").on('click',"#createChar", createChar);
 	$("#root").on('click',"[class*='dice']", getDicePage);
 	$("#root").on("click",".cast_spell", getSpellPage);
-	$("#root").on("click",".waeve_thread", weaveThread);
+	$("#root").on("click",".waeve_thread", weaveThread);	
 	$("#root").on('click',"[id*='dice']", getDicePage);
 	$("#root").on("click",".matrix", getMatrixPage);	
 	$("#root").on("click","#throw_wuerfel", throwDice);

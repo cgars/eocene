@@ -235,7 +235,7 @@ extends securesocial.core.SecureSocial[EoceneUser] {
 	  }
   
   /**
-  * Deminish a skill (or remnove it)
+  * Reduce a skill (or remnove it)
   *
   * @param id character id
   * @param id_skill
