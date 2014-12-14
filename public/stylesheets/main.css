@@ -20,7 +20,7 @@ input {
     cursor:pointer;
 	}
 
-#discipline_heading:hover, #skills_heading:hover , #spells_heading:hover, #armors_heading:hover, #race:hover{
+#discipline_heading:hover, #skills_heading:hover , #spells_heading:hover, #armors_heading:hover, #race_name:hover{
 	 display: inline-block;
 	 background-image: url(/assets/images/button_plus_red.png);
 	 background-size:10px; 
@@ -66,12 +66,32 @@ input {
 	
 .inmatrix{
 		background-color:#006944;
+		
 	}
 
 .inmatrix:hover{
 		cursor:	pointer;
 	}
 
+.discipline_abilities_inv{
+	position: absolute;
+	display: none;
+	z-index: 100;
+	
+	}
+
+.discipline_abilities_vis{
+	position: absolute;
+	display: inline;
+	z-index: 100;
+	background-color: #003366;
+	opacity:0.9;
+	color: #C89900;
+	padding:5px;
+	border:solid #ffffff;
+	cursor:default;
+	}
+	
 Table {
 	margin:0px;padding:0px;
 	border:1px solid #ffffff;

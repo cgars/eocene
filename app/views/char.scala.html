@@ -1,12 +1,6 @@
 @(char: Char)
 <div id="roller"></div>
 <div id="char_id">@char.id</div>
-<div>
-<input type="text" id="name" value = "@char.name" >
-</div>
-<div id="race">
-@char.race.name
-</div>
 <div id="validation">
 @defining(char.getValidator){ validator =>
 <div>Valid Character: @validator.validate</div>
@@ -14,6 +8,25 @@
 <div>@mess</div>
 }
 }
+<div>
+<input type="text" id="name" value = "@char.name" >
+</div>
+
+<div class="Block" id="RaceBlock">
+<div class="BlockHeading" id="race_name">Race: @char.race.name</div>
+<div id="race"></div>
+<table id="RaceAbTable" border="0">
+<tr><td>Ability</td></tr>
+@char.race.abilities.split("\n").map{ability=>
+<tr class = "raceAbRow">
+<td>@ability</td>
+<tr>
+}
+</table>
+</div>
+</div>
+
+
 
 </div>
 <div class="Block" id="DisciplineBlock">
@@ -21,24 +34,24 @@
 <div id="test"></div>
 <table id="DisciplineTable" border="0">
 <tr class = "discipline_row">
-<td class="discipline_name">Discipline</td>
+<td class="discipline_name_head">Discipline</td>
 <td class="discipline_circle">Circle</td>
 <td class="discipline_down">Improve</td>
 <td class="discipline_up">Corrupt</td>
 </tr>
 @char.disciplines.map{discipline=> 
 <tr class = "discipline_row">
-<td class="discipline_name">@discipline.name</td>
+<td class="discipline_name" id="@{discipline.id+"_id4abi"}">@discipline.name</td>
 <td class="discipline_circle">@discipline.circle</td>
 <td class="discipline_down" id="@discipline.id">down</td>
 <td class="discipline_up" id="@discipline.id">up</td>
-<tr>
-<td colspan="4">
+
+<div class ="discipline_abilities_inv" id="@{discipline.id+"_abilities"}">
+<div class="BlockHeading">@discipline.name</div>
 @discipline.abilities.split("\n").map{ability=>
-<div class="discipline_ability">@ability</div>
+<div>@ability</div>
 }
-</td>
-</tr>
+</div>
 
 </tr>
 }

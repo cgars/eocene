@@ -6,7 +6,7 @@ $(document).ready(function(){
 	$("#root").on('click',".attribute_pp_up",attributePPUp);
 	$("#root").on('click',".attribute_pp_down",attributePPDown);
 	$("#root").on('click',".attribute_up",attributeUp);
-	$("#root").on('click',"#race",fetchRaceBlock);
+	$("#root").on('click',"#race_name",fetchRaceBlock);
 	$("#root").on('click',".race_chosen",changeRace);
 	$("#root").on('click',".discipline_up",disciplineUp);
 	$("#root").on('click',".discipline_down",disciplineDown);
@@ -37,7 +37,20 @@ $(document).ready(function(){
 	$("#root").on("click","#throw_wuerfel", throwDice);
 	$("#root").on("click",".nomatrix", add2Matrix);
 	$("#root").on("click",".inmatrix", removeFromMatrix);
+	$("#root").on("mouseenter",".discipline_name", showAbilities);
+	$("#root").on("mouseleave",".discipline_abilities_vis", hideAbilities);
 });
+
+function showAbilities(event){
+	id = event.target.id.split("_")[0]
+	$("#"+id+"_abilities").css({ top: $(event.target).position().top, left: $(event.target).position().left})	
+	$("#"+id+"_abilities").switchClass("discipline_abilities_inv","discipline_abilities_vis",0)
+	};
+
+function hideAbilities(event){
+	$(".discipline_abilities_vis").switchClass("discipline_abilities_vis","discipline_abilities_inv",0)
+	};
+
 
 function add2Matrix(event){
 		$.ajax({
