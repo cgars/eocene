@@ -219,10 +219,12 @@ object utilities {
 
   def getRaces()(implicit c: Connection) =
     eoceneSqlStrings.GET_RACES().map(row => Race.getRaceByRow(row)).toList
+    .sortWith((a1,a2) =>a1.name<a2.name)
 
   def getDisciplines()(implicit c: Connection) =
     eoceneSqlStrings.GET_DISCIPLINES().groupBy(row=>row[Int]("Disciplines.id")).
-    map(row => models.Discipline.getDisciplineByRow(row._2)).toList
+    map(row => models.Discipline.getDisciplineByRow(row._2)).toList.
+    sortWith((a1,a2) =>a1.name<a2.name)
 
   def getSkills()(implicit c: Connection) =
     eoceneSqlStrings.GET_SKILLS().map(row => models.Skill.getSkillByRow(row)).toList
@@ -317,7 +319,6 @@ object utilities {
   def rollDice(dice:Int) :Int = {
     if (!(dice>1)) return 0
     val result = rand_gen .nextInt(dice)+1
-    Logger.info("dice:%s".format(dice))
     if(result==dice) return result + rollDice(dice)
     else return result
   }

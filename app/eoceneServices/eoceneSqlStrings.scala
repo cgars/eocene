@@ -181,7 +181,7 @@ object eoceneSqlStrings {
 	disciplines_spells 
 	ON disciplines_spells.id_discipline=chars_disciplines.id_discipline AND
 	disciplines_spells.id_spell=Spells.id
-	ORDER BY Spells.circle
+	ORDER BY Spells.circle, Spells.name
       """)
 
   val SKILL_JOIN = SQL("""
@@ -236,12 +236,13 @@ object eoceneSqlStrings {
       """
 
   val GET_RACES = SQL("""
-      SELECT * FROM Races
+      SELECT * FROM Races ORder BY Races.name
       """)
 
   val GET_DISCIPLINES = SQL("""
       SELECT * FROM Disciplines LEFT JOIN chars_disciplines ON 1=2 LEFT JOIN
-      disciplines_modifiers ON 1=2
+      disciplines_modifiers ON 1=2 
+      ORDER BY Disciplines.name 
       """)
 
   val GET_Skills = SQL("""
