@@ -29,7 +29,8 @@ object utilities {
    /**
    * a tabel modelling legend point costs when learning talents
    */  
-  val TalenRankCost: List[List[Int]] = List(List(100, 200, 300, 500),
+  val TalenRankCost: List[List[Int]] = List(
+    List(100, 200, 300, 500),
     List(200, 300, 500, 800),
     List(300, 500, 800, 1300),
     List(500, 800, 1300, 2100),
@@ -213,7 +214,7 @@ object utilities {
    */  
   def getTalentCost(rank: Int, circle: Int) = {
     val circle_bin = (circle - 1) / 4
-    TalenRankCost(rank)(circle_bin)
+    TalenRankCost(rank-1)(circle_bin)
   }
 
   def getRaces()(implicit c: Connection) =
