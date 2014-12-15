@@ -24,7 +24,6 @@ import eoceneServices.EoceneUser
 import play.api.mvc.{ Action, RequestHeader }
 import securesocial.core._
 import views.html.defaultpages.badRequest
-import scala.math.max
 
     /**
    * The Subviews controller return is responsible for handlign out propper 
@@ -232,7 +231,7 @@ extends securesocial.core.SecureSocial[EoceneUser] {
 			    	    	.map(talent=>talent.step.getOrElse(0)).headOption.
 			    	    	getOrElse(0)
 			    	    	val willpower :Int = char.get.derived("wil_step").asInstanceOf[Int]
-			    	    	Some(bonus + max(willforce, willpower))
+			    	    	Some(bonus + willforce + willpower)
 			    	    	
 			    	    } catch {
 			    	    	case e:Exception => None

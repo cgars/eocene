@@ -25,6 +25,7 @@ import securesocial.core._
 import eoceneServices.EoceneUser
 import play.api.mvc.{ Action, RequestHeader }
 import play.api.libs.json.JsNumber
+import eoceneServices.eoceneUserService
 
 /**
    * Main controller for modifications on characters
@@ -408,7 +409,7 @@ extends securesocial.core.SecureSocial[EoceneUser] {
     } 
   
   /**
-  * Return the result of rolling dicesaccording to the dice string
+  * Return the result of rolling dice according to the dice string
   * 
   * 
   * Each die starts with a number indicating how often that dice should be 
@@ -428,13 +429,24 @@ extends securesocial.core.SecureSocial[EoceneUser] {
     	}      
     }
   
+    
+  /**
+  * Redirects the user from / to /auth/login when not logged in and
+  * to /chars when logged in. Thsi prevents the old firefox credentiels Bug
+  *   
+  * @return Redirect
+  */   	 
+  def redirect_user = UserAwareAction{implicit request =>
+    request.user match {
+      case Some(user) => Redirect("/chars/")
+      case _ => Redirect("/auth/login")
+    } 
+  }
+
 }
 
 case class UserAllowedWithCharacterId(char_id:Int) extends Authorization[EoceneUser] {
   def isAuthorized(user: EoceneUser, request: RequestHeader) = {
-    DB.withConnection("chars") { implicit c =>
-      SQL("""SELECT * FROM chars_users WHERE chars_users.id_char={id_char} 
-    		  AND chars_users.id_user={id_user}""").onParams(char_id, user.main.userId)().size>0
-    }
+	  eoceneUserService.userAllowdOnChar(user.main.userId, char_id)
   }
 }
