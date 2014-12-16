@@ -329,12 +329,20 @@ object utilities {
   * @param dice_string the dice string
   * @return number rolled
   */   	  
-  def rollDiceString(dice_string:String) ={
-    dice_string.split("\\+").map(instruct=>instruct.split("d")).
-    map(instruct=>List(instruct(0).toInt,instruct(1).toInt)).
-    map(instruct=>1.to(instruct(0)).map(f=>rollDice(instruct(1))).
-        reduce((a1,a2)=>a1+a2)).
-        reduce((a1,a2)=>a1+a2)            
+  def rollDiceString(dice_string:String):Int ={
+    val pattern_1 = """(\d+)d(\d+)""".r
+    val pattern_2 = """^d(\d+)""".r
+    val pattern_3 = """s(\d+)""".r
+    dice_string.split("\\+").map(instruct=> instruct match{
+		      case pattern_1(times, sides) => 1.to(times.toInt).
+		    		  						  map(x=>rollDice(sides.toInt))
+		    		  						  .reduce((a1,a2)=>a1+a2)
+		      case pattern_2(sides) => rollDice(sides.toInt)
+		      case pattern_3(step) => rollDiceString(getDiceForStep(step.toInt)
+		           .get)    		  						  
+    		}
+    	)
+        .reduce((a1,a2)=>a1+a2)            
   }
   
   def getRandomName() = {
