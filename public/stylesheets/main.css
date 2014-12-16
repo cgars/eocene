@@ -22,11 +22,13 @@ input {
 
 #discipline_heading:hover, #skills_heading:hover , #spells_heading:hover, #armors_heading:hover, #race_name:hover{
 	 display: inline-block;
+	 cursor:pointer;
 	 background-image: url(/assets/images/button_plus_red.png);
-	 background-size:10px; 
+	 background-size:10px;
+ 	-moz-background-size:10px; /* Firefox */
+	-webkit-background-size:10px;
 	 background-repeat: no-repeat;
     background-position: right top;
-    cursor:pointer;
 	}
 
 .put, #createChar, #throw_wuerfel, [id*="reload"],[class*="chosen"],.chars_row,.waeve_thread{
