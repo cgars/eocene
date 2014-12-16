@@ -32,7 +32,7 @@ object Global extends GlobalSettings {
 	* An implementation that checks if the controller expects a RuntimeEnvironment and
 	* passes the instance to it if required.
 	*
-	* This can be replaced by any DI framework to inject it differently.
+	* This is copied from the examples
 	*
 	* @param controllerClass
 	* @tparam A

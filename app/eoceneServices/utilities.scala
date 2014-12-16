@@ -333,13 +333,16 @@ object utilities {
     val pattern_1 = """(\d+)d(\d+)""".r
     val pattern_2 = """^d(\d+)""".r
     val pattern_3 = """s(\d+)""".r
+    val pattern_4 = """^(\d+)$""".r
     dice_string.split("\\+").map(instruct=> instruct match{
 		      case pattern_1(times, sides) => 1.to(times.toInt).
 		    		  						  map(x=>rollDice(sides.toInt))
 		    		  						  .reduce((a1,a2)=>a1+a2)
 		      case pattern_2(sides) => rollDice(sides.toInt)
 		      case pattern_3(step) => rollDiceString(getDiceForStep(step.toInt)
-		           .get)    		  						  
+		          .get)
+		      case pattern_4(value) => value.toInt
+		      
     		}
     	)
         .reduce((a1,a2)=>a1+a2)            
