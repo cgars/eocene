@@ -37,6 +37,7 @@ GET		/API/dice/:sides/										@controllers.Charackters.rollDice(sides:Int)
 GET		/API/dices/:dice_string/								@controllers.Charackters.rollDiceString(dice_string:String)
 POST 	/API/characters/:id_char/addmatrix/:id_spell/			@controllers.Charackters.Spell2Matrix(id_spell:Int, id_char:Int)
 POST	/API/characters/:id_char/frommatrix/:id_spell/			@controllers.Charackters.SpellFromMatrix(id_spell:Int, id_char:Int)
+POST	/API/characters/delete/:id_char/						@controllers.Charackters.removeUserFromChar(id_char:Int)
 
 #HTML API
 GET		/HTML/chars/										    @controllers.Subviews.getChars()

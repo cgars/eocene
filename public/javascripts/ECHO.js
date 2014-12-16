@@ -40,7 +40,12 @@ $(document).ready(function(){
 	$("#root").on("click",".inmatrix", removeFromMatrix);
 	$("#root").on("mouseenter",".discipline_name", showAbilities);
 	$("#root").on("mouseleave",".discipline_abilities_vis", hideAbilities);
+	$("#root").on("click",".delete_char", deleteChar);
 });
+
+function deleteChar(event){
+	$.post("/API/characters/delete/"+event.target.id+"/",reload_chars);
+	}
 
 function showAbilities(event){
 	id = event.target.id.split("_")[0];

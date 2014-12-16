@@ -447,6 +447,19 @@ extends securesocial.core.SecureSocial[EoceneUser] {
     } 
   }
 
+  /**
+  * Remove the current user from the users allowed to edit a character
+  * 
+  * @param id_char    
+  * @return Redirect
+  */   	 
+  def removeUserFromChar(id_char:Int) = 
+    SecuredAction(UserAllowedWithCharacterId(id_char)){implicit request =>
+    	Char.removeUserFromChar(id_char, request.user.main.userId) match{
+    	  case false => BadRequest("")
+    	  case true => Ok("")
+    	}     
+    }
 }
 
 case class UserAllowedWithCharacterId(char_id:Int) extends Authorization[EoceneUser] {

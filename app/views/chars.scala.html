@@ -3,10 +3,12 @@
 <table id="CharsTable"border="0">
 <tr id="chars_row">
 <td>Name</td>
+<td></td>
 </tr>
 @chars.map{char=>
 <tr id="chars_row">
 <td class="chars_row" id="@{char._2}">@char._1</td>
+<td class="delete_char" id="@{char._2}">delete</td>
 </tr>
 }
 </table>

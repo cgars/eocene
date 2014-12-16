@@ -329,5 +329,9 @@ object eoceneSqlStrings {
       	SET spell_matrix=Null
       	WHERE id_spell={id_spell} AND id_char={id_char};
 	    """)  
+  val REMOVE_USER_FROM_CHAR = SQL("""
+	    DELETE FROM chars_users
+    	WHERE id_char={id_char} AND id_user={id_user}
+	    """)
 }
 

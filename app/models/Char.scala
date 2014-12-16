@@ -771,11 +771,19 @@ object Char {
    * @param id_char id of the character
    * @return success
    */
-  def SpellFromMatrix(id_spell:Int,id_char:Int) ={
+  def SpellFromMatrix(id_spell:Int,id_char:Int) = {
      DB.withConnection("chars") { implicit c =>
        eoceneSqlStrings.REMOVE_SPELL_FROM_MATRIX.onParams(id_spell, id_char)
        .executeUpdate()>0
      }    
+  }
+  
+  def removeUserFromChar(id_char:Int, id_user:String) = {
+    DB.withConnection("chars") { implicit c =>
+      eoceneSqlStrings.REMOVE_USER_FROM_CHAR .onParams(id_char, id_user)
+      .executeUpdate>0
+    }
+    
   }
 
   implicit object CharonParams extends Format[Char] {

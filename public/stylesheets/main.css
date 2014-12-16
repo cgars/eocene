@@ -35,7 +35,7 @@ input {
 		padding:5px;
 	}
 	
-.put:hover,.nomatrix:hover,[class*="down"]:hover,[class*="up"]:hover,#createChar:hover, [id*="reload"]:hover,[class*="chosen"]:hover,.chars_row:hover,.unlearn_spell:hover, .remove_armor:hover{
+.delete_char:hover,.put:hover,.nomatrix:hover,[class*="down"]:hover,[class*="up"]:hover,#createChar:hover, [id*="reload"]:hover,[class*="chosen"]:hover,.chars_row:hover,.unlearn_spell:hover, .remove_armor:hover{
 		background-color:#C89900;
 		cursor:	pointer;
 	}
