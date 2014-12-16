@@ -102,7 +102,9 @@ function createChar(event){
 		$.ajax({
 		url:"/API/characters/create/",
 		type:"POST",
-		complete:reload_chars
+		success:function(msg){
+				window.location.replace("/char/"+msg+"/");			
+			}
 		});
 	}
 
