@@ -106,7 +106,8 @@ extends securesocial.core.SecureSocial[EoceneUser] {
         case None => BadRequest("")
         case _ =>
 	      val char_view = views.html.char(char.get)
-	      Ok(char_view)
+	
+	      Ok(char_view).withHeaders(CACHE_CONTROL -> "no-cache")
       }
     }
   }
@@ -155,7 +156,7 @@ extends securesocial.core.SecureSocial[EoceneUser] {
   def SpellsForChar(id:Int) = SecuredAction(UserAllowedWithCharacterId(id)) {
     DB.withConnection("chars") { implicit c =>
       val spells = utilities.getSpellsForChar(id)
-      Ok(views.html.spells(spells))
+      Ok(views.html.spells(spells)).withHeaders(CACHE_CONTROL -> "no-cache")
     }
   }
 
@@ -195,6 +196,7 @@ extends securesocial.core.SecureSocial[EoceneUser] {
 		    char match {
 		      case None => BadRequest("")
 		      case _ => Ok(views.html.dice(char.get, target_class, target_id, dice))
+		      .withHeaders(CACHE_CONTROL -> "no-cache")
 		    }
 	    }
   }
@@ -241,6 +243,7 @@ extends securesocial.core.SecureSocial[EoceneUser] {
 			    	
 			    Ok(views.html.castSpell(char.get, spell, thread_weaving, 
 			        spellcasting, effect_dice))
+			        .withHeaders(CACHE_CONTROL -> "no-cache")
 		      }
 		      catch{
 		        case _ => BadRequest ("")

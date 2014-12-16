@@ -1,4 +1,5 @@
 $(document).ready(function(){
+	$.ajaxSetup({ cache: false });
 	$("#root").on('focusout',"#name", changeCharName);
 	$("#root").on('click',".talent_up",talentUp);
 	$("#root").on('click',".talent_down",talentDown);

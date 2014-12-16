@@ -44,7 +44,8 @@ extends securesocial.core.SecureSocial[EoceneUser] {
       val char = Char.getCharById(id)
       char match{
         case None => NotFound("")
-        case _ => Ok(Json.prettyPrint(Json.toJson(char))) 
+        case _ => Ok(Json.prettyPrint(Json.toJson(char)))
+        .withHeaders(CACHE_CONTROL -> "no-cache")
       }      
     }
   }
@@ -62,6 +63,7 @@ extends securesocial.core.SecureSocial[EoceneUser] {
       char match{
         case None => BadRequest ("")
         case _ => Created (Json.toJson(JsNumber(char.get)))
+        .withHeaders(CACHE_CONTROL -> "no-cache")
       }
     }
   }
@@ -80,6 +82,7 @@ extends securesocial.core.SecureSocial[EoceneUser] {
       result match{
         case None => BadRequest ("")
         case _ =>  Created (Json.toJson(JsNumber(result.get)))
+        .withHeaders(CACHE_CONTROL -> "no-cache")
       }
     }
   }
@@ -393,7 +396,8 @@ extends securesocial.core.SecureSocial[EoceneUser] {
       val dice = utilities.getDiceForStep(step)
       dice match{
         case None => BadRequest ("")
-        case _ => Ok(Json.toJson(JsString(dice.get)))
+        case _ => Ok(Json.toJson(JsString(dice.get))) 
+        		  .withHeaders(CACHE_CONTROL -> "no-cache")
       }      
     }
   
@@ -405,7 +409,7 @@ extends securesocial.core.SecureSocial[EoceneUser] {
   */   	
   def rollDice(dice:Int) = SecuredAction{
       val result:Int = utilities.rollDice(dice)
-      Ok(Json.toJson(JsNumber(result)))
+      Ok(Json.toJson(JsNumber(result))).withHeaders(CACHE_CONTROL -> "no-cache")
     } 
   
   /**
@@ -422,7 +426,7 @@ extends securesocial.core.SecureSocial[EoceneUser] {
   def rollDiceString(dices:String) = SecuredAction{
     try{
       val result:Int = utilities.rollDiceString(dices)
-      Ok(Json.toJson(JsNumber(result)))
+      Ok(Json.toJson(JsNumber(result))).withHeaders(CACHE_CONTROL -> "no-cache")
     }
     catch{
       case e: Exception => BadRequest ("")

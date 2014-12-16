@@ -101,7 +101,7 @@ object Char {
   def getCharById(id: Int)(implicit c: Connection) = {
     val char_querry = eoceneSqlStrings.GET_CHAR_BY_ID.onParams(id)()
     char_querry.size match{
-      case 0=> None
+      case 0 => None
       case _ => 
 	    val race_querry = eoceneSqlStrings.RACE_JOIN.onParams(id)()
 	    //race is guarantied to exist!
