@@ -1,6 +1,7 @@
 .field{padding-right:10px;}
 .field_break{}
-.BlockHeading{font-size:20pt}
+.BlockHeading{font-size:20pt;
+				  display: inline-block;}
 .Block{}
 #char_id{visibility: hidden;}
 
@@ -20,8 +21,7 @@ input {
     cursor:pointer;
 	}
 
-#discipline_heading:hover, #skills_heading:hover , #spells_heading:hover, #armors_heading:hover, #race_name:hover{
-	 display: inline-block;
+#discipline_heading:hover, #skills_heading:hover , #spells_heading:hover, #armors_heading:hover, #race_name:hover{	 
 	 cursor:pointer;
 	}
 
