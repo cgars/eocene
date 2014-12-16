@@ -94,6 +94,7 @@ function getMatrixPage(event){
 	}
 	
 function weaveThread(event){
+	$("#"+event.target.id+"Result").empty();
 		$("#"+event.target.id+"Result").load("/API/dices/"+$("#"+event.target.id+"_textfield").val()+"/");
 	}
 	
@@ -105,6 +106,7 @@ function getSpellPage(event){
 	}
 
 function throwDice(event){
+		$("#dice_result").empty();
 		$("#dice_result").load("/API/dices/"+$("#wuerfel_textfield").val()+"/");
 	}
 	
