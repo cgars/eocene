@@ -23,6 +23,9 @@ import org.joda.time.DateTime
 import play.api.Logger
 import play.api.mvc.{ Action, RequestHeader }
 import scala.math.max
+import eoceneServices.EoceneUser
+import eoceneServices.eoceneUserService
+import com.mysql.jdbc.exceptions.MySQLIntegrityConstraintViolationException
 
 
 
@@ -134,7 +137,7 @@ object Char {
   }
   
   /**
-   * Calculate the Values that depend on the characteristic of a charractor.
+   * Calculate the Values that depend on the characteristic of a charactor.
    *
    * @param row A row representing the character
    * @param race the characters Race
@@ -251,7 +254,8 @@ object Char {
       changeCharRace(char_id.get, 1)
       eoceneSqlStrings.INSERT_CHARS_USERS .onParams(char_id, 
           user.main.userId ).execute()
-       char_id
+      eoceneUserService.updateUsersChars()
+      char_id
     }    
   }
 
@@ -800,11 +804,19 @@ object Char {
   */   	 
   def shareChar(id_char:Int, user_mail:String) = {
     DB.withConnection("chars") { implicit c =>
+      try{
       val result = eoceneSqlStrings.INSERT_CHARS_USERS_BY_MAIL.
       onParams(id_char, user_mail)
       .executeUpdate>0
       eoceneUserService.updateUsersChars
       result
+      }
+      catch{
+        case e:MySQLIntegrityConstraintViolationException => false
+        case e:Throwable => {Logger.error("""Error when adding user to character.
+        					 Error was: "+e""")
+        			false}
+      }
     }    
   }
   

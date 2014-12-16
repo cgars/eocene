@@ -326,6 +326,7 @@ object utilities {
   /**
   * Return the result of rolling dices according to the dice string
   * 
+  * 
   * @param dice_string the dice string
   * @return number rolled
   */   	  
@@ -342,7 +343,9 @@ object utilities {
 		      case pattern_3(step) => rollDiceString(getDiceForStep(step.toInt)
 		          .get)
 		      case pattern_4(value) => value.toInt
-		      
+		      case default => {Logger.error("I couldnt make sense of a dice instruction: %s".format(default))
+		                0
+		                }		      
     		}
     	)
         .reduce((a1,a2)=>a1+a2)            
