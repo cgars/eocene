@@ -78,6 +78,8 @@ class eoceneUserService extends UserService[EoceneUser]{
 	  }
 	  
 
+	  
+
 		/**
 		* Saves a profile. This method gets called when a user logs in, registers or changes his password.
 		* This is your chance to save the user information in your backing store.
@@ -237,6 +239,16 @@ class eoceneUserService extends UserService[EoceneUser]{
       PasswordInfo.id = users_passwords.id_password 
       WHERE providerId={pid} AND Users.userId={uid}
       """)
+  val FIND_USER_BY_EMAIL = SQL("""
+      SELECT * FROM Users LEFT JOIN users_oauth1 ON
+      users_oauth1.id_user = Users.userId LEFT JOIN OAuth1Info ON
+      OAuth1Info.id = users_oauth1.id_oauth1 LEFT JOIN users_oauth2 ON
+      users_oauth2.id_user = Users.userId LEFT JOIN OAuth2Info ON
+      OAuth2Info.id = users_oauth2.id_oauth2 LEFT JOIN users_passwords ON
+      users_passwords.id_user = Users.userId LEFT JOIN PasswordInfo ON
+      PasswordInfo.id = users_passwords.id_password 
+      WHERE Users.email={email}
+      """)
   val PERSIST_NEW_USER = SQL("""
       INSERT INTO Users VALUES
       ({pid},{uid},{firstName},{lastName},{fullName},{email},{avatarUrl},
@@ -265,5 +277,47 @@ class eoceneUserService extends UserService[EoceneUser]{
       SELECT * FROM OAuth2Info WHERE accessToken={accessToken} 
 	  """)
 
+
 }
+object eoceneUserService{
+  	/**
+	* Checks whether a userid is allowed to modify a character
+	*
+*
+	* @param userId
+	* @param charId
+	* @return allowed
+	*/
+	def userAllowdOnChar(userId:String, charId:Int) = {
+		UsersChars.filter(entry=> entry._1 .equals(userId) && 
+									  entry._2 ==charId).size>0
+	}
+  
+  	/**
+	* Adds acces rights to a char
+	*
+*
+	* @param userId
+	* @param charId
+	* @return allowed
+	*/
+	def addUserToChar(userId:String, charId:Int) = {
+		UsersChars = (userId, charId)::UsersChars 
+	}
+	
+	def getAllUsersChars() ={
+	  DB.withConnection("chars") { implicit c =>
+	    SQL("""SELECT * FROM chars_users""")().
+	    map(row=>(row[String]("id_user"),row[Int]("id_char"))).toList
+	  }
+	}
+	
+	def updateUsersChars() ={
+		UsersChars  = getAllUsersChars()
+	}
+  
+  	var UsersChars:List[(String,Int)] = getAllUsersChars()
+  	
+}
+
 case class EoceneUser(main: BasicProfile, identities: List[BasicProfile])

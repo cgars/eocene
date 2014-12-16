@@ -460,6 +460,21 @@ extends securesocial.core.SecureSocial[EoceneUser] {
     	  case true => Ok("")
     	}     
     }
+  
+  /**
+  * Share a character with a user
+  * 
+  * @param id_char    
+  * @return Redirect
+  */   
+  def shareChar(id_char:Int, user_mail:String) = 
+    SecuredAction(UserAllowedWithCharacterId(id_char)){implicit request =>
+      Char.shareChar(id_char, user_mail) match{
+        case true => Ok("")
+        case false => BadRequest ("")
+      }
+    	
+  	}
 }
 
 case class UserAllowedWithCharacterId(char_id:Int) extends Authorization[EoceneUser] {

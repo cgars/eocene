@@ -38,11 +38,23 @@ $(document).ready(function(){
 	$("#root").on("click","#throw_wuerfel", throwDice);
 	$("#root").on("click",".nomatrix", add2Matrix);
 	$("#root").on("click",".inmatrix", removeFromMatrix);
+	$("#root").on("click",".share_char", getSharePage);
 	$("#root").on("mouseenter",".discipline_name", showAbilities);
 	$("#root").on("mouseleave",".discipline_abilities_vis", hideAbilities);
 	$("#root").on("click",".delete_char", deleteChar);
+	$("#root").on("click",".share_now", shareChar);	
 });
 
+function shareChar(event){
+	$.post("/API/characters/share/"+event.target.id+"/"+$("#share_textfield").val()+"/",reload_chars);
+	}
+
+function getSharePage(event){
+	$("#roller").load("/HTML/char	/share/"+event.target.id+"/",	
+	function(){	
+	$("#roller").css({ top: $(event.target).position().top, left: $(event.target).position().left});
+	$("#roller").fadeIn("normal");});
+	}
 function deleteChar(event){
 	$.post("/API/characters/delete/"+event.target.id+"/",reload_chars);
 	}

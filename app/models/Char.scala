@@ -778,13 +778,36 @@ object Char {
      }    
   }
   
+  /**
+  * Remove the current user from the users allowed to edit a character
+  * 
+  * @param id_char    
+  * @return Redirect
+  */   	 
   def removeUserFromChar(id_char:Int, id_user:String) = {
     DB.withConnection("chars") { implicit c =>
       eoceneSqlStrings.REMOVE_USER_FROM_CHAR .onParams(id_char, id_user)
       .executeUpdate>0
-    }
-    
+    }    
   }
+
+  
+  /**
+  * Share a character with a user
+  * 
+  * @param id_char    
+  * @return Redirect
+  */   	 
+  def shareChar(id_char:Int, user_mail:String) = {
+    DB.withConnection("chars") { implicit c =>
+      val result = eoceneSqlStrings.INSERT_CHARS_USERS_BY_MAIL.
+      onParams(id_char, user_mail)
+      .executeUpdate>0
+      eoceneUserService.updateUsersChars
+      result
+    }    
+  }
+  
 
   implicit object CharonParams extends Format[Char] {
 

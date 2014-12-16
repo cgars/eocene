@@ -31,13 +31,13 @@ input {
     background-position: right top;
 	}
 
-.put, #createChar, #throw_wuerfel, [id*="reload"],[class*="chosen"],.chars_row,.waeve_thread{
+.share_now,.put, #createChar, #throw_wuerfel, [id*="reload"],[class*="chosen"],.chars_row,.waeve_thread{
 		background-color:#cccccc;		
 		cursor:	pointer;
 		padding:5px;
 	}
 	
-.delete_char:hover,.put:hover,.nomatrix:hover,[class*="down"]:hover,[class*="up"]:hover,#createChar:hover, [id*="reload"]:hover,[class*="chosen"]:hover,.chars_row:hover,.unlearn_spell:hover, .remove_armor:hover{
+.share_char:hover,.share_now:hover,.delete_char:hover,.put:hover,.nomatrix:hover,[class*="down"]:hover,[class*="up"]:hover,#createChar:hover, [id*="reload"]:hover,[class*="chosen"]:hover,.chars_row:hover,.unlearn_spell:hover, .remove_armor:hover{
 		background-color:#C89900;
 		cursor:	pointer;
 	}
@@ -46,7 +46,7 @@ input {
 	 display: inline-block;	
 	}
 	
- .put, [id*="textfiel"], #throw_wuerfel, .inliners,.waeve_thread{
+ .share_now,.put, [id*="textfiel"], #throw_wuerfel, .inliners,.waeve_thread{
 	display: inline-block;
 	}
 	

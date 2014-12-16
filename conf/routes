@@ -38,6 +38,7 @@ GET		/API/dices/:dice_string/								@controllers.Charackters.rollDiceString(dic
 POST 	/API/characters/:id_char/addmatrix/:id_spell/			@controllers.Charackters.Spell2Matrix(id_spell:Int, id_char:Int)
 POST	/API/characters/:id_char/frommatrix/:id_spell/			@controllers.Charackters.SpellFromMatrix(id_spell:Int, id_char:Int)
 POST	/API/characters/delete/:id_char/						@controllers.Charackters.removeUserFromChar(id_char:Int)
+POST	/API/characters/share/:id_char/:user_mail/				@controllers.Charackters.shareChar(id_char:Int, user_mail:String)
 
 #HTML API
 GET		/HTML/chars/										    @controllers.Subviews.getChars()
@@ -51,5 +52,6 @@ GET		/HTML/spells/char/:id/								    @controllers.Subviews.SpellsForChar(id:In
 GET		/HTML/armors/								    		@controllers.Subviews.Armors()
 GET		/HTML/dice/:target_class/:target_id/:dice/:char_id/		@controllers.Subviews.Dice(target_class:String,target_id:String, dice:String, char_id:Int)
 GET		/HTML/spell/:id_spell/:id_char/							@controllers.Subviews.Spell(id_spell:Int, id_char:Int)
+GET		/HTML/char/share/:id_char/								@controllers.Subviews.Share(id_char:Int)
 				
 -> /auth securesocial.Routes

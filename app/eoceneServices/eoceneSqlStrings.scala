@@ -333,5 +333,10 @@ object eoceneSqlStrings {
 	    DELETE FROM chars_users
     	WHERE id_char={id_char} AND id_user={id_user}
 	    """)
+	    
+  val INSERT_CHARS_USERS_BY_MAIL = SQL("""
+		  INSERT INTO chars_users VALUES ({char_id},
+		  (SELECT userId FROM Users WHERE email ={mail}))
+	    """)
 }
 

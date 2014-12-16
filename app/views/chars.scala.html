@@ -1,14 +1,17 @@
 @(chars: List[(String,Int)])
 
+<div id="roller"></div>
 <table id="CharsTable"border="0">
 <tr id="chars_row">
 <td>Name</td>
+<td></td>
 <td></td>
 </tr>
 @chars.map{char=>
 <tr id="chars_row">
 <td class="chars_row" id="@{char._2}">@char._1</td>
 <td class="delete_char" id="@{char._2}">delete</td>
+<td class="share_char" id="@{char._2}">share</td>
 </tr>
 }
 </table>

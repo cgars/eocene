@@ -251,5 +251,17 @@ extends securesocial.core.SecureSocial[EoceneUser] {
 		    }
 	    }	
   }
+ 
+  /**
+ * Fetch the Spell Caster view
+ * 
+ * @param id_char
+ * @return the spell caster view 
+ */   
+  def Share(char_id:Int) = 
+      SecuredAction(UserAllowedWithCharacterId(char_id)) {
+    	Ok(views.html.share(char_id)).
+    	withHeaders(CACHE_CONTROL -> "no-cache")
+	    }
   
 }
