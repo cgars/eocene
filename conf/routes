@@ -43,7 +43,7 @@ POST	/API/characters/share/:id_char/:user_mail/				@controllers.Charackters.shar
 #HTML API
 GET		/HTML/chars/										    @controllers.Subviews.getChars()
 GET		/HTML/char/:id/talents/						    		@controllers.Subviews.getTalentsByCharId(id:Int)
-GET		/HTML/char/:id/										    @controllers.Subviews.getChar(id:Int)
+GET		/HTML/char/:id/:date/									@controllers.Subviews.getChar(id:Int, date:String)
 GET		/HTML/races/											@controllers.Subviews.Races()
 GET		/HTML/disciplines/								    	@controllers.Subviews.Disciplines()
 GET		/HTML/skills/								    		@controllers.Subviews.Skills()

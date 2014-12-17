@@ -99,7 +99,7 @@ extends securesocial.core.SecureSocial[EoceneUser] {
  *
  * @return the characters view 
  */   
-  def getChar(id: Int) = SecuredAction(UserAllowedWithCharacterId(id)) {
+  def getChar(id: Int, date:String) = SecuredAction(UserAllowedWithCharacterId(id)) {
     DB.withConnection("chars") { implicit c =>
       val char = Char.getCharById(id)
       char match {
@@ -107,7 +107,8 @@ extends securesocial.core.SecureSocial[EoceneUser] {
         case _ =>
 	      val char_view = views.html.char(char.get)
 	
-	      Ok(char_view).withHeaders(CACHE_CONTROL -> "no-cache")
+	      Ok(char_view).withHeaders(CACHE_CONTROL -> "no-cache",
+	                                ETAG -> char.get.hashCode.toString)
       }
     }
   }
@@ -196,7 +197,8 @@ extends securesocial.core.SecureSocial[EoceneUser] {
 		    char match {
 		      case None => BadRequest("")
 		      case _ => Ok(views.html.dice(char.get, target_class, target_id, dice))
-		      .withHeaders(CACHE_CONTROL -> "no-cache")
+		      .withHeaders(CACHE_CONTROL -> "no-cache",
+	                                ETAG -> char.get.hashCode.toString)
 		    }
 	    }
   }
@@ -243,7 +245,8 @@ extends securesocial.core.SecureSocial[EoceneUser] {
 			    	
 			    Ok(views.html.castSpell(char.get, spell, thread_weaving, 
 			        spellcasting, effect_dice))
-			        .withHeaders(CACHE_CONTROL -> "no-cache")
+			        .withHeaders(CACHE_CONTROL -> "no-cache",
+	                                ETAG -> char.get.hashCode.toString)
 		      }
 		      catch{
 		        case _ => BadRequest ("")

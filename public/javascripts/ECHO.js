@@ -1,4 +1,5 @@
 $(document).ready(function(){
+	$ = jQuery.noConflict();
 	$.ajaxSetup({ cache: false });
 	$("#root").on('focusout',"#name", changeCharName);
 	$("#root").on('click',".talent_up",talentUp);
@@ -231,8 +232,7 @@ function talentUp(event){
 	$.post("/API/characters/"+$("#char_id").text()+"/talents/"+event.target.id+"/improve/",reload_char);
 	}
 	
-function talentDown(event){
-	
+function talentDown(event){	
 	$.post("/API/characters/"+$("#char_id").text()+"/talents/"+event.target.id+"/corrupt/",reload_char);
 	}
 	
@@ -261,7 +261,7 @@ function reload_char(event){
 	$("#char_root").fadeIn("normal");
 	$("#float_elem").fadeOut("normal");
 	$("#roller").fadeOut("normal");
-	$("#char_root").load("/HTML/char/"+$("#char_id").text()+"/");
+	$("#char_root").load("/HTML/char/"+$("#char_id").text()+"/"+$.now()+"/");
 	$("#float_elem").empty();
 	}
 	
