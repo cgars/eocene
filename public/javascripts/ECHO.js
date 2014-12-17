@@ -227,8 +227,7 @@ function changeCharName(){
 		});
 	}
 	
-function talentUp(event){
-	
+function talentUp(event
 	$.post("/API/characters/"+$("#char_id").text()+"/talents/"+event.target.id+"/improve/",reload_char);
 	}
 	
@@ -236,8 +235,7 @@ function talentDown(event){
 	$.post("/API/characters/"+$("#char_id").text()+"/talents/"+event.target.id+"/corrupt/",reload_char);
 	}
 	
-function attributeUp(event){
-	
+function attributeUp(event){	
 	$.post("/API/characters/"+$("#char_id").text()+"/attributes/"+event.target.id+"/improve/",reload_char);
 	}
 	

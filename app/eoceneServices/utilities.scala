@@ -335,6 +335,7 @@ object utilities {
     val pattern_2 = """^d(\d+)""".r
     val pattern_3 = """s(\d+)""".r
     val pattern_4 = """^(\d+)$""".r
+    val pattern_5 = """^-(\d+)$""".r
     dice_string.split("\\+").map(instruct=> instruct match{
 		      case pattern_1(times, sides) => 1.to(times.toInt).
 		    		  						  map(x=>rollDice(sides.toInt))
@@ -343,6 +344,7 @@ object utilities {
 		      case pattern_3(step) => rollDiceString(getDiceForStep(step.toInt)
 		          .get)
 		      case pattern_4(value) => value.toInt
+		      case pattern_5(value) => -1*value.toInt
 		      case default => {Logger.error("I couldnt make sense of a dice instruction: %s".format(default))
 		                0
 		                }		      
