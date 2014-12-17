@@ -355,5 +355,8 @@ object utilities {
     "NoName%sPleaseChangeME".format(rand_gen.nextInt(100000))
   }
   
+  def storeAction(call:String, id_char:Int,id_user:String)(implicit c:Connection) = {
+    eoceneSqlStrings.INSERT_HISTORY .onParams(call,id_char, id_user).executeUpdate()>0
+  }
 
 }

@@ -83,8 +83,8 @@ extends securesocial.core.SecureSocial[EoceneUser] {
           eoceneServices.utilities.getRandomName())
       result match{
         case None => BadRequest ("")
-        case _ =>  Created (Json.toJson(JsNumber(result.get)))
-        .withHeaders(CACHE_CONTROL -> "no-cache")
+        case _ =>  	Created (Json.toJson(JsNumber(result.get)))
+            		.withHeaders(CACHE_CONTROL -> "no-cache")
       }
     }
   }
@@ -97,13 +97,18 @@ extends securesocial.core.SecureSocial[EoceneUser] {
   * @return success
   */ 
   def improveAttributeLP(id: Int, attribute: String) = 
-    SecuredAction(UserAllowedWithCharacterId(id)) {
+    SecuredAction(UserAllowedWithCharacterId(id)) {implicit request =>
+    DB.withTransaction("chars") { implicit c =>
     val x = Char.updateCharAttributeWithLP(id, attribute, "up")
-    Logger.info("%s".format(x))
-	   x match{
-	      case false => BadRequest ("")
-	      case _ => Ok("")
-	    }
+	    Logger.info("%s".format(x))
+		   x match{
+		      case false => BadRequest ("")
+		      case _ => utilities.storeAction(routes.Charackters.
+		    		  		improveAttributeLP(id, attribute).toString,
+		    		  		id,request.user .main .userId )
+		    		  	Ok("")	
+		    }
+    	}
   }
   
   /**
@@ -114,11 +119,15 @@ extends securesocial.core.SecureSocial[EoceneUser] {
   * @return success
   */ 
   def corruptAttributeLP(id: Int, attribute: String) = 
-    SecuredAction(UserAllowedWithCharacterId(id)) {
+    SecuredAction(UserAllowedWithCharacterId(id)) {implicit request =>
+    DB.withTransaction("chars") { implicit c =>
 	    Char.updateCharAttributeWithLP(id, attribute, "down")match{
 	      case false => BadRequest ("")
-	      case _ => Ok("")
-	    }
+	      case _ => utilities.storeAction(routes.Charackters.corruptAttributeLP(id, attribute).toString,
+	    		    id,request.user .main .userId )
+	    		    Ok("")	
+	    	}
+    	}
   	}
   
   /**
@@ -129,10 +138,15 @@ extends securesocial.core.SecureSocial[EoceneUser] {
   * @return success
   */ 
   def improveAttributePP(id: Int, attribute: String) = 
-    SecuredAction(UserAllowedWithCharacterId(id)) {
+    SecuredAction(UserAllowedWithCharacterId(id)) {implicit request =>
+      DB.withTransaction("chars") { implicit c =>
 	    Char.updateCharAttributeWithPP(id, attribute, "up") match{
 	      case false => BadRequest ("")
-	      case _ => Ok("")
+	      case _ => utilities.storeAction(routes.Charackters.
+	    		  		improveAttributePP(id, attribute).toString,
+	    		  		id,request.user .main .userId )
+	    		    Ok("")
+	    	}
 	    }
   	}
   
@@ -144,10 +158,15 @@ extends securesocial.core.SecureSocial[EoceneUser] {
   * @return success
   */ 
   def corruptAttributePP(id: Int, attribute: String) =
-    SecuredAction(UserAllowedWithCharacterId(id)) {
-	  Char.updateCharAttributeWithPP(id, attribute, "down") match{
+    SecuredAction(UserAllowedWithCharacterId(id)) {implicit request =>
+	  DB.withTransaction("chars") { implicit c =>
+      	Char.updateCharAttributeWithPP(id, attribute, "down") match{	    
 	      case false => BadRequest ("")
-	      case _ => Ok("")
+	      case _ => utilities.storeAction(routes.Charackters.
+	    		  		corruptAttributePP(id, attribute).toString,
+	    		  		id,request.user .main.userId )
+	    		  		Ok("")
+	    	}
 	    }
   	}
 
@@ -159,11 +178,16 @@ extends securesocial.core.SecureSocial[EoceneUser] {
   * @return success
   */ 
   def changeCharRace(id: Int, id_race: Int) = 
-    SecuredAction(UserAllowedWithCharacterId(id)) {
+    SecuredAction(UserAllowedWithCharacterId(id)) {implicit request =>
+    DB.withTransaction("chars") { implicit c =>
 	    Char.changeCharRace(id: Int, id_race: Int) match{
 	      case false => BadRequest ("")
-	      case _ => Ok("")
-	    }
+	      case _ =>  utilities.storeAction(routes.Charackters.
+	    		  		changeCharRace(id, id_race).toString,
+	    		  		id,request.user .main.userId )
+	    		  		Ok("")
+	    	}
+    	}
   	}
  
   /**
@@ -174,11 +198,16 @@ extends securesocial.core.SecureSocial[EoceneUser] {
   * @return success
   */ 
   def improveCharDiscipline(id: Int, id_discipline: Int) = 
-    SecuredAction(UserAllowedWithCharacterId(id)) {
+    SecuredAction(UserAllowedWithCharacterId(id)) {implicit request =>
+    DB.withTransaction("chars") { implicit c =>
 	    Char.improveCharDiscipline(id: Int, id_discipline: Int) match{
 	      case false => BadRequest ("")
-	      case _ => Ok("")
-	    }
+	      case _ => utilities.storeAction(routes.Charackters.
+	    		  		improveCharDiscipline(id: Int, id_discipline: Int) .toString,
+	    		  		id,request.user .main.userId )
+	    		  		Ok("")
+	    	}
+    	}
   	}
   /**
   * DisAdvance the character in a given discipline
@@ -188,10 +217,15 @@ extends securesocial.core.SecureSocial[EoceneUser] {
   * @return success
   */ 
   def corruptCharDiscipline(id: Int, id_discipline: Int) = 
-    SecuredAction(UserAllowedWithCharacterId(id)) {
-	    Char.corruptCharDiscipline(id: Int, id_discipline: Int) match{
-	      case false => BadRequest ("")
-	      case _ => Ok("")
+    SecuredAction(UserAllowedWithCharacterId(id)) {implicit request =>
+    	DB.withTransaction("chars") { implicit c =>
+		    Char.corruptCharDiscipline(id: Int, id_discipline: Int) match{
+		      case false => BadRequest ("")
+		      case _ => utilities.storeAction(routes.Charackters.
+	    		  		corruptCharDiscipline(id: Int, id_discipline: Int) .toString,
+	    		  		id,request.user .main.userId )
+	    		  		Ok("")
+	    	}
 	    }
   	}
   
@@ -203,10 +237,15 @@ extends securesocial.core.SecureSocial[EoceneUser] {
   * @return success
   */ 
   def improveCharTalent(id: Int, id_talent: Int) = 
-    SecuredAction(UserAllowedWithCharacterId(id)) {
-	    Char.improveCharTalent(id: Int, id_talent: Int) match{
-	      case false => BadRequest ("")
-	      case _ => Ok("")
+    SecuredAction(UserAllowedWithCharacterId(id)) {implicit request =>
+    	DB.withTransaction("chars") { implicit c =>
+		    Char.improveCharTalent(id: Int, id_talent: Int) match{
+		      case false => BadRequest ("")
+		      case _ => utilities.storeAction(routes.Charackters.
+	    		  		improveCharTalent(id: Int, id_talent: Int) .toString,
+	    		  		id,request.user .main.userId )
+	    		  		Ok("")
+	    	}
 	    }
   	}
   
@@ -218,11 +257,16 @@ extends securesocial.core.SecureSocial[EoceneUser] {
   * @return success
   */ 
   def corruptCharTalent(id: Int, id_talent: Int) = 
-    SecuredAction(UserAllowedWithCharacterId(id)) {
-	    Char.corruptCharTalent(id: Int, id_talent: Int) match{
-	      case false => BadRequest ("")
-	      case _ => Ok("")
-	    }
+    SecuredAction(UserAllowedWithCharacterId(id)) {implicit request =>
+    	DB.withTransaction("chars") { implicit c =>
+		    Char.corruptCharTalent(id: Int, id_talent: Int) match{
+		      case false => BadRequest ("")
+		      case _ => utilities.storeAction(routes.Charackters.
+	    		  		corruptCharTalent(id: Int, id_talent: Int) .toString,
+	    		  		id,request.user .main.userId )
+	    		  		Ok("")
+	    	}
+    	}
 	  }
   
   /**
@@ -233,12 +277,17 @@ extends securesocial.core.SecureSocial[EoceneUser] {
   * @return success
   */ 
   def improveCharSkill(id: Int, id_skill: Int) = 
-    SecuredAction(UserAllowedWithCharacterId(id)) {
-	    Char.improveCharSkill(id: Int, id_skill: Int) match{
-	      case false => BadRequest ("")
-	      case _ => Ok("")
-	    }
-	  }
+    SecuredAction(UserAllowedWithCharacterId(id)) { implicit request =>
+    	DB.withTransaction("chars") { implicit c =>
+		    Char.improveCharSkill(id: Int, id_skill: Int) match{
+		      case false => BadRequest ("")
+		      case _ => utilities.storeAction(routes.Charackters.
+		    		  		improveCharSkill(id: Int, id_skill: Int).toString,
+		    		  		id,request.user .main.userId )
+	    		  		Ok("")
+		    	}
+    		}
+    	}
   
   /**
   * Reduce a skill (or remnove it)
@@ -248,10 +297,15 @@ extends securesocial.core.SecureSocial[EoceneUser] {
   * @return success
   */ 
   def corruptCharSkill(id: Int, id_skill: Int) = 
-    SecuredAction(UserAllowedWithCharacterId(id)) {
+    SecuredAction(UserAllowedWithCharacterId(id)) {implicit request =>
+    	DB.withTransaction("chars") { implicit c =>
 	    Char.corruptCharSkill(id: Int, id_skill: Int) match{
 	      case false => BadRequest ("")
-	      case _ => Ok("")
+	      case _ => utilities.storeAction(routes.Charackters.
+	    		  		corruptCharSkill(id: Int, id_skill: Int).toString,
+	    		  		id,request.user .main.userId )
+	    		  	Ok("")
+	    	}
 	    }
 	  }
   
@@ -263,11 +317,16 @@ extends securesocial.core.SecureSocial[EoceneUser] {
   * @return success
   */ 
   def learnCharSpell(id: Int, id_spell: Int) = 
-    SecuredAction(UserAllowedWithCharacterId(id)) {
-	    Char.learnCharSpell(id: Int, id_spell: Int) match{
-	      case false => BadRequest ("")
-	      case _ => Ok("")
-	    }
+    SecuredAction(UserAllowedWithCharacterId(id)) {implicit request =>
+    	DB.withTransaction("chars") { implicit c =>
+		    Char.learnCharSpell(id: Int, id_spell: Int) match{
+		      case false => BadRequest ("")
+		      case _ => utilities.storeAction(routes.Charackters.
+		    		  		learnCharSpell(id: Int, id_spell: Int).toString,
+		    		  		id,request.user .main.userId )
+	    		  		Ok("")
+		    }
+    	}
 	  }
   
   /**
@@ -278,10 +337,15 @@ extends securesocial.core.SecureSocial[EoceneUser] {
   * @return success
   */ 
   def unlearnCharSpell(id: Int, id_spell: Int) = 
-    SecuredAction(UserAllowedWithCharacterId(id)) {
-	    Char.unlearnCharSpell(id: Int, id_spell: Int) match{
-	      case false => BadRequest ("")
-	      case _ => Ok("")
+    SecuredAction(UserAllowedWithCharacterId(id)) {implicit request =>
+    	DB.withTransaction("chars") { implicit c =>
+		    Char.unlearnCharSpell(id: Int, id_spell: Int) match{
+		      case false => BadRequest ("")
+		      case _ => utilities.storeAction(routes.Charackters.
+		    		  		unlearnCharSpell(id: Int, id_spell: Int).toString,
+		    		  		id,request.user .main.userId )
+	    		  		Ok("")
+		    }
 	    }
 	  }
   
@@ -293,11 +357,13 @@ extends securesocial.core.SecureSocial[EoceneUser] {
   */  
   def changeCharName(id: Int) = SecuredAction(UserAllowedWithCharacterId(id)) 
   {implicit request =>
-    val data = request.body.asJson
-    val name = (data.get\"name").asOpt[String]
-    Char.changeCharName(id, name.get) match{
-	      case false => BadRequest ("")
-	      case _ => Ok("")
+    DB.withTransaction("chars") { implicit c =>
+	    val data = request.body.asJson
+	    val name = (data.get\"name").asOpt[String]
+	    Char.changeCharName(id, name.get) match{
+		      case false => BadRequest ("")
+		      case _ =>	Ok("")
+	    	}
 	    }
   }
 
@@ -309,10 +375,15 @@ extends securesocial.core.SecureSocial[EoceneUser] {
   * @return success
   */  
   def getArmor(id: Int, id_armor:Int) = 
-    SecuredAction(UserAllowedWithCharacterId(id)) {
-	    Char.getArmor(id, id_armor) match{
-	      case false => BadRequest ("")
-	      case _ => Ok("")
+    SecuredAction(UserAllowedWithCharacterId(id)) {implicit request =>
+    	DB.withTransaction("chars") { implicit c =>
+		    Char.getArmor(id, id_armor) match{
+		      case false => BadRequest ("")
+		      case _ => utilities.storeAction(routes.Charackters.
+		    		  		getArmor(id: Int, id_armor:Int).toString,
+		    		  		id,request.user .main.userId )
+	    		  		Ok("")
+		    }
 	    }
 	  }
   /**
@@ -323,10 +394,15 @@ extends securesocial.core.SecureSocial[EoceneUser] {
   * @return success
   */    
   def removeArmor(id: Int, id_armor:Int) = 
-    SecuredAction(UserAllowedWithCharacterId(id)){
+    SecuredAction(UserAllowedWithCharacterId(id)){implicit request =>
+    	DB.withTransaction("chars") { implicit c =>
 	    Char.removeArmor(id, id_armor) match{
 	      case false => BadRequest ("")
-	      case _ => Ok("")
+	      case _ => utilities.storeAction(routes.Charackters.
+		    		  		removeArmor(id: Int, id_armor:Int).toString,
+		    		  		id,request.user .main.userId )
+	    		  		Ok("")
+	    	}
 	    }
 	  }
   
@@ -338,10 +414,15 @@ extends securesocial.core.SecureSocial[EoceneUser] {
   * @return success
   */   
   def attachThreadArmor(id: Int, id_armor:Int) = 
-	SecuredAction(UserAllowedWithCharacterId(id)) {
-	    Char.attachThreadArmor(id, id_armor) match{
-	      case false => BadRequest ("")
-	      case _ => Ok("")
+	SecuredAction(UserAllowedWithCharacterId(id)) {implicit request =>
+    	DB.withTransaction("chars") { implicit c =>
+		    Char.attachThreadArmor(id, id_armor) match{
+		      case false => BadRequest ("")
+		      case _ => utilities.storeAction(routes.Charackters.
+		    		  		attachThreadArmor(id: Int, id_armor:Int).toString,
+		    		  		id,request.user .main.userId )
+	    		  		Ok("")
+		    }
 	    }
 	  }
   
@@ -353,10 +434,15 @@ extends securesocial.core.SecureSocial[EoceneUser] {
   * @return success
   */     
   def removeThreadArmor(id: Int, id_armor:Int) = 
-	  SecuredAction(UserAllowedWithCharacterId(id)){
-	    Char.removeThreadArmor(id, id_armor) match{
-	      case false => BadRequest ("")
-	      case _ => Ok("")
+	  SecuredAction(UserAllowedWithCharacterId(id)){implicit request =>
+    	DB.withTransaction("chars") { implicit c =>
+		    Char.removeThreadArmor(id, id_armor) match{
+		      case false => BadRequest ("")
+		      case _ => utilities.storeAction(routes.Charackters.
+			    		  		removeThreadArmor(id: Int, id_armor:Int).toString,
+			    		  		id,request.user .main.userId )
+		    		  		Ok("")
+		    }
 	    }
 	  }
  

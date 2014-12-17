@@ -338,5 +338,10 @@ object eoceneSqlStrings {
 		  INSERT INTO chars_users VALUES ({char_id},
 		  (SELECT userId FROM Users WHERE email ={mail}))
 	    """)
+
+  val INSERT_HISTORY = SQL("""
+		  INSERT INTO History VALUES ({call},{char_id},{user_id})
+	    """)
+	    
 }
 

@@ -337,8 +337,8 @@ object Char {
    * @param c a sql connection. comes from the controller
    * @return Succes indicator
    */
-  def updateCharAttributeWithLP(id: Int, attribute: String, direction: String): Boolean = {
-    DB.withTransaction("chars") { implicit c =>
+  def updateCharAttributeWithLP(id: Int, attribute: String, direction: String)
+      (implicit c:Connection): Boolean = {
       val current_value = getCharAttribute(id, attribute)
       val lp = getCharAttribute(id, "lp_sp")
       if (direction.equals("up")) {
@@ -361,7 +361,6 @@ object Char {
 		        updateCharAttribute(id, attribute, current_value.get - 1)
 		        updateCharAttribute(id, "lp_sp", lp.get -
 		          eoceneServices.utilities.getAttributeIncreaseLPCost(current_value.get))
-          	}
           }
       }
     }
@@ -392,15 +391,13 @@ object Char {
    * @param c a sql connection. comes from the controller
    * @return Succes indicator
    */
-  def changeCharRace(id: Int, id_race: Int): Boolean = {
-    DB.withConnection("chars") { implicit c =>
+  def changeCharRace(id: Int, id_race: Int)(implicit c:Connection): Boolean = {    
       getRaceIdByCharId(id) match {
         case None => SQL(eoceneSqlStrings.SET_CHAR_RACE).
           onParams(id, id_race).executeUpdate()>0
         case _ =>           SQL(eoceneSqlStrings.UPATE_CHAR_RACE).
           onParams(id_race, id).executeUpdate()>0
       	}
-      }
     }
   
   /**
@@ -429,8 +426,7 @@ object Char {
    * @param id_discipline
    * @return success
    */
-  def improveCharDiscipline(id: Int, id_discipline: Int) = {
-    DB.withConnection("chars") { implicit c =>
+  def improveCharDiscipline(id: Int, id_discipline: Int) (implicit c:Connection)= {
       {
         val disciplines = getCharDisciplineRowsByCharId(id)
         val target_discipline = disciplines.filter(a => a(1) == id_discipline)
@@ -441,7 +437,6 @@ object Char {
 	        } else {
 	          SQL(eoceneSqlStrings.INSERT_CHAR_DISCIPLINE).onParams(id, id_discipline, 1)
             .executeUpdate()>0
-        	}        
       }
     }
   }
@@ -454,8 +449,7 @@ object Char {
    * @param id_discipline
    * @return success
    */
-  def corruptCharDiscipline(id: Int, id_discipline: Int) = {
-    DB.withConnection("chars") { implicit c =>
+  def corruptCharDiscipline(id: Int, id_discipline: Int)(implicit c:Connection) = {
       {
         val disciplines = getCharDisciplineRowsByCharId(id)
         val target_discipline = disciplines.filter(a => a(1) == id_discipline)
@@ -470,7 +464,6 @@ object Char {
 	          SQL(eoceneSqlStrings.REMOVE_CHAR_DISCIPLINE).onParams(id, id_discipline)
 	          .executeUpdate()>0
 	        	}
-        }
       }
     }
   }
@@ -514,13 +507,10 @@ object Char {
    * @param id_talent
    * @return success
    */
-  def improveCharTalent(id: Int, id_talent: Int):Boolean = {
-    DB.withConnection("chars") { implicit c =>
-      {
+  def improveCharTalent(id: Int, id_talent: Int)(implicit c:Connection):Boolean = {
         val talents = getCharTalentRowsIdByCharId(id)
         val target_talent = talents.filter(a => a(1) == id_talent)
         val circle = getTalentByTalenAndDisciId(id_talent, id)
-
         if (target_talent.length > 0) {
           val step = target_talent(0)(2)
           if (step==15) return false
@@ -534,10 +524,9 @@ object Char {
             .executeUpdate()>0
           SQL(eoceneSqlStrings.ADD_TO_LP).onParams(lp_cost, id)
           	.executeUpdate()>0
-        }
       }
     }
-  }
+  
    
    /**
    * Remove one circle (or forget)
@@ -546,9 +535,8 @@ object Char {
    * @param id_talent
    * @return success
    */
-  def corruptCharTalent(id: Int, id_talent: Int):Boolean = {
-    DB.withConnection("chars") { implicit c =>
-      {
+  def corruptCharTalent(id: Int, id_talent: Int)(implicit c:Connection)
+  :Boolean = {
         val talents = getCharTalentRowsIdByCharId(id)
         val target_talent = talents.filter(a => a(1) == id_talent)
         if (target_talent.size==0) return false
@@ -564,11 +552,10 @@ object Char {
           SQL(eoceneSqlStrings.REMOVE_CHAR_TALENT).onParams(id, id_talent)
            .executeUpdate()>0
           SQL(eoceneSqlStrings.ADD_TO_LP).onParams(-lp_cost, id)
-          .executeUpdate()>0
-        }
+          .executeUpdate()>0        
       }
     }
-  }
+  
 
   
   def getCharSkillRowsByCharId(id: Int): List[List[Int]] = {
@@ -588,9 +575,8 @@ object Char {
    * @param id_skill
    * @return success
    */
-  def improveCharSkill(id: Int, id_skill: Int): Boolean = {
-    DB.withTransaction("chars") { implicit c =>
-      {
+  def improveCharSkill(id: Int, id_skill: Int)(implicit c:Connection)
+  : Boolean = {
         val skills = getCharSkillRowsByCharId(id)
         val target_skill = skills.filter(a => a(1) == id_skill)
         if (target_skill.length > 0) {
@@ -606,9 +592,8 @@ object Char {
           SQL(eoceneSqlStrings.ADD_TO_LP).onParams(
             utilities.getSkillLPCcost(1), id).executeUpdate()>0
         }
-      }
-    }
   }
+  
    /**
    * Corrupt a skill (or forget it)
    *
@@ -616,8 +601,7 @@ object Char {
    * @param id_skill
    * @return success
    */
-  def corruptCharSkill(id: Int, id_skill: Int):Boolean = {
-    DB.withTransaction("chars") { implicit c =>
+  def corruptCharSkill(id: Int, id_skill: Int)(implicit c:Connection):Boolean = 
       {
         val skills = getCharSkillRowsByCharId(id)
         val target_skill = skills.filter(a => a(1) == id_skill)
@@ -633,10 +617,9 @@ object Char {
             .executeUpdate()>0
           SQL(eoceneSqlStrings.ADD_TO_LP).onParams(
             -utilities.getSkillLPCcost(1), id).executeUpdate()>0
-        }
       }
     }
-  }
+  
    
   /**
    * Return all Spells of a character
@@ -660,13 +643,9 @@ object Char {
    * @param id_spell  
    * @return success
    */
-  def learnCharSpell(id: Int, id_Spell: Int) = {
-    DB.withConnection("chars") { implicit c =>
-      {
+  def learnCharSpell(id: Int, id_Spell: Int)(implicit c:Connection) = {
         SQL(eoceneSqlStrings.INSERT_CHAR_SPELL).onParams(id,
           id_Spell,None).executeUpdate()>0
-      }
-    }
   }
   
   /**
@@ -676,13 +655,9 @@ object Char {
    * @param id_spell  
    * @return success
    */
-  def unlearnCharSpell(id: Int, id_Spell: Int) = {
-    DB.withConnection("chars") { implicit c =>
-      {
+  def unlearnCharSpell(id: Int, id_Spell: Int)(implicit c:Connection) = {
         SQL(eoceneSqlStrings.REMOVE_CHAR_SPELL).onParams(id, id_Spell,None)
         .executeUpdate()>0
-      }
-    }
   }
 
  
@@ -693,13 +668,9 @@ object Char {
    * @param name teh new name
    * @return success
    */
-  def changeCharName(id: Int, name: String) = {
-    DB.withConnection("chars") { implicit c =>
-      {
+  def changeCharName(id: Int, name: String)(implicit c:Connection) = {
         SQL(eoceneSqlStrings.UPATE_CHAR_NAME).onParams(name, id)
         .executeUpdate()>0
-      }
-    }
   }
  
   /**
@@ -709,10 +680,8 @@ object Char {
    * @param id_armor
    * @return success
    */
-  def getArmor(id:Int,id_armor:Int) ={
-     DB.withConnection("chars") { implicit c =>
+  def getArmor(id:Int,id_armor:Int)(implicit c:Connection) ={
        eoceneSqlStrings.INSERT_ARMOR.onParams(id, id_armor).executeUpdate()>0
-     }    
   }
   
   /**
@@ -722,10 +691,8 @@ object Char {
    * @param id_armor
    * @return success
    */
-  def removeArmor(id:Int,id_armor:Int) ={
-     DB.withConnection("chars") { implicit c =>
+  def removeArmor(id:Int,id_armor:Int)(implicit c:Connection) ={
        eoceneSqlStrings.REMOVE_ARMOR.onParams(id, id_armor).executeUpdate()>0
-     }    
   }
   
   /**
@@ -735,10 +702,8 @@ object Char {
    * @param id_armor
    * @return success
    */
-  def attachThreadArmor(id:Int,id_armor:Int) ={
-     DB.withConnection("chars") { implicit c =>
+  def attachThreadArmor(id:Int,id_armor:Int)(implicit c:Connection) ={
        eoceneSqlStrings.UPATE_ARMOR .onParams(1,id, id_armor).executeUpdate()>0
-     }    
   }
   
   /**
@@ -748,10 +713,8 @@ object Char {
    * @param id_armor
    * @return success
    */
-  def removeThreadArmor(id:Int,id_armor:Int) ={
-     DB.withConnection("chars") { implicit c =>
+  def removeThreadArmor(id:Int,id_armor:Int)(implicit c:Connection) ={
        eoceneSqlStrings.UPATE_ARMOR .onParams(-1,id, id_armor).executeUpdate()>0
-     }    
   }
   
   /**

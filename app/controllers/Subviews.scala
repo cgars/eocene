@@ -106,7 +106,7 @@ extends securesocial.core.SecureSocial[EoceneUser] {
         case None => BadRequest("")
         case _ =>
 	      val char_view = views.html.char(char.get)
-	
+	      Logger.debug(routes.Subviews.getChar(id,date).toString)
 	      Ok(char_view).withHeaders(CACHE_CONTROL -> "no-cache",
 	                                ETAG -> char.get.hashCode.toString)
       }
