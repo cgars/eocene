@@ -30,10 +30,10 @@ case class Discipline(val id: Int, val name: String, val abilities: String,
    *           
    * @return The summed modiefiers
    */  
-  def getModifierValueByName(name:String) = {
-	  val mod_filt = modifiers.filter(mod=>mod.id  == Modifier.modfierName2Id(name))
+  def getModifierValueByName(name:String):Int = {
+	  modifiers.filter(mod=>mod.id  == Modifier.modfierName2Id(name))
 	  .map(mod => mod.value)
-	  .reduceOption((a1,a2)=>a1 + a2).getOrElse(0)
+	  .reduceOption((a1,a2)=>a1+a2).getOrElse(0)
   }  
 }
 

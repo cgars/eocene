@@ -66,12 +66,9 @@ case class Char(val id: Int, val name: String, val dex_mod: Int, val str_mod: In
    * @return The summed modiefiers
    */  
   def getModifierValueByName(name:String) = {
-    disciplines .size match {
-      case 0 => None
-      case _ => Some(disciplines.map(disci => disci.getModifierValueByName(name).getOrElse(0))
-      .reduce((a1,a2)=>max(a1,a2)))
-    }
-  } 
+	  disciplines.map(disci =>disci.getModifierValueByName(name))
+      .reduceOption((a1,a2)=>max(a1,a2))
+  	} 
 }
 
   /**
@@ -172,17 +169,17 @@ object Char {
       "per_step" -> eoceneServices.utilities.getAttrStep(attributes("per")),
       "physDef" -> (eoceneServices.utilities.getAttrDefense(attributes("dex")) +
     		  		disciplines.map(discipline=>
-      				  discipline.getModifierValueByName("physDef").getOrElse(0))
+      				  discipline.getModifierValueByName("physDef"))
       				.reduceOption((a1,a2)=>a1+a2).getOrElse(0)
       				),
       "spellDef" -> (eoceneServices.utilities.getAttrDefense(attributes("per")) +
     		  		race.spell_def + 
     		  		disciplines.map(discipline=>
-      				  discipline.getModifierValueByName("spellDef").getOrElse(0))
+      				  discipline.getModifierValueByName("spellDef"))
       				 .reduceOption((a1,a2)=>a1+a2).getOrElse(0)
       				  ),
       "socDef" -> (disciplines.map(discipline=>
-      			   discipline.getModifierValueByName("socDef").getOrElse(0))
+      			   discipline.getModifierValueByName("socDef"))
       			   .reduceOption((a1,a2)=>a1+a2).getOrElse(0)
       				 ),
       "movement" -> eoceneServices.utilities.getAttrMovement(attributes("dex") +
@@ -196,7 +193,7 @@ object Char {
       "rec" -> (eoceneServices.utilities.getAttrRec(attributes("tou"))+
     		  	race.rec_test + 
     		    disciplines.map(discipline=>
-      			  discipline.getModifierValueByName("rec").getOrElse(0))
+      			  discipline.getModifierValueByName("rec"))
       			.reduceOption((a1,a2)=>a1+a2).getOrElse(0)
     		  ),
       "mystic" -> (eoceneServices.utilities.getAttrMystic(attributes("wil")) + 
@@ -210,7 +207,7 @@ object Char {
         		   	  armors.map(armor=>armor.getInitiativeBonus()).
         		   	  reduceOption((a1,a2)=>a1+a2).getOrElse(0) +
         		   	  disciplines.map(discipline=>
-      				  discipline.getModifierValueByName("ini").getOrElse(0))
+      				  discipline.getModifierValueByName("ini"))
       				  .reduceOption((a1,a2)=>a1+a2).getOrElse(0))
     				)	
 
