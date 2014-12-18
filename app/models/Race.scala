@@ -49,7 +49,7 @@ object Race {
   def getRaceById(id: Int): Race = {
     DB.withConnection("chars") { implicit c =>
       val querry = SQL(eoceneSqlStrings.GET_RACE_BY_ID).onParams(id)()
-      getRaceByRow(querry(0))
+      getRaceByRow(querry.head)
     }
   }
 

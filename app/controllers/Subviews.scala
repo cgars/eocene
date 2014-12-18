@@ -197,8 +197,8 @@ extends securesocial.core.SecureSocial[EoceneUser] {
 		    char match {
 		      case None => BadRequest("")
 		      case _ => Ok(views.html.dice(char.get, target_class, target_id, dice))
-		      .withHeaders(CACHE_CONTROL -> "no-cache",
-	                                ETAG -> char.get.hashCode.toString)
+		      			.withHeaders(CACHE_CONTROL -> "no-cache",
+	                                 ETAG -> char.get.hashCode.toString)
 		    }
 	    }
   }
@@ -215,7 +215,8 @@ extends securesocial.core.SecureSocial[EoceneUser] {
 		    val char = Char.getCharById(char_id)
 		    char match{
 		      case None => BadRequest("")
-		      case _ =>try{
+		      case _ => 
+		       try{
 			    val spell = char.get.spells.filter(spell=>spell.id==id_spell).head
 			    val spells_discipline_name = char.get.disciplines.
 			    	filter(discipline=>discipline.id==spell.id_disciline.get).head.
@@ -246,7 +247,7 @@ extends securesocial.core.SecureSocial[EoceneUser] {
 			    Ok(views.html.castSpell(char.get, spell, thread_weaving, 
 			        spellcasting, effect_dice))
 			        .withHeaders(CACHE_CONTROL -> "no-cache",
-	                                ETAG -> char.get.hashCode.toString)
+	                             ETAG -> char.get.hashCode.toString)
 		      }
 		      catch{
 		        case _ => BadRequest ("")

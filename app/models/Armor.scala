@@ -29,11 +29,12 @@ case class Armor(val id:Int, name:String, cost:Int,init:Int,phys:Int,mystic:Int,
    * @return the mystical armor bonus
    */ 
   def getMysticalArmor() = {
-    if (powers.filter(power=>power.effect == "Mystic Armor").size>0)
-	    mystic + powers.filter(power=>power.effect == "Mystic Armor").
-	    map(power=>power.value ).reduce((p1,p2)=>if(p1>p2)p1 else p2)
-    else mystic
-  }
+ 	    mystic + 
+ 	    powers.filter(power=>power.effect == "Mystic Armor")
+ 	    .map(power=>power.value )
+	    .reduceOption((p1,p2)=>if(p1>p2)p1 else p2).
+	    getOrElse(0)
+     }
    
  /**
   * Get the physical armor value that this item provides (including threaded powers)
@@ -41,10 +42,10 @@ case class Armor(val id:Int, name:String, cost:Int,init:Int,phys:Int,mystic:Int,
   * @return the physical armor bonus
   */  
   def getPhysicalArmor() = {
-	if (powers.filter(power=>power.effect == "Physic Armor").size>0)
-	    phys + powers.filter(power=>power.effect == "Physic Armor").
-	    map(power=>power.value ).reduce((p1,p2)=>if(p1>p2)p1 else p2)
-    else phys
+	phys + 
+	powers.filter(power=>power.effect == "Physic Armor")
+	.map(power=>power.value ).reduceOption((p1,p2)=>if(p1>p2)p1 else p2)
+	.getOrElse(0)
   }
   
   /**
@@ -53,10 +54,10 @@ case class Armor(val id:Int, name:String, cost:Int,init:Int,phys:Int,mystic:Int,
   * @return the ini bonus
   */   
   def getInitiativeBonus() = {
-    if (powers.filter(power=>power.effect == "Initiative").size>0)
-	    init + powers.filter(power=>power.effect == "Initiative").
-	    map(power=>power.value ).reduce((p1,p2)=>if(p1>p2)p1 else p2)
-    else init
+	init + 
+	powers.filter(power=>power.effect == "Initiative")
+	.map(power=>power.value )
+	.reduceOption((p1,p2)=>if(p1>p2)p1 else p2).getOrElse(0)
   }
   
 }

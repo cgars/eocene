@@ -88,9 +88,9 @@ object Char {
   def getCharIdByName(name: String) = {
     DB.withConnection("chars") { implicit c =>
       val querry = SQL(eoceneSqlStrings.GET_CHAR_ID_FROM_NAME).onParams(name)()
-      querry.size match{
-        case 0 => None
-        case _ => Some(querry(0)[Int]("id"))
+      querry.headOption match{
+        case None => None
+        case Some(row) => row[Option[Int]]("id")
       }
     }
   }
@@ -171,32 +171,22 @@ object Char {
       "wil_step" -> eoceneServices.utilities.getAttrStep(attributes("wil")),
       "per_step" -> eoceneServices.utilities.getAttrStep(attributes("per")),
       "physDef" -> (eoceneServices.utilities.getAttrDefense(attributes("dex")) +
-    		  		(disciplines.size match{
-    		  		case 0 => 0 
-    		  		case _ => disciplines.map(discipline=>
+    		  		disciplines.map(discipline=>
       				  discipline.getModifierValueByName("physDef").getOrElse(0))
-      				  .reduce((a1,a2)=>a1+a2)
-      				  })),
+      				.reduceOption((a1,a2)=>a1+a2).getOrElse(0)
+      				),
       "spellDef" -> (eoceneServices.utilities.getAttrDefense(attributes("per")) +
     		  		race.spell_def + 
-    		  		(disciplines.size match{
-    		  		case 0 => 0 
-    		  		case _ => 
-    		  		  disciplines.map(discipline=>
+    		  		disciplines.map(discipline=>
       				  discipline.getModifierValueByName("spellDef").getOrElse(0))
-      				  .reduce((a1,a2)=>a1+a2)
-      				  })),
-      "socDef" -> (eoceneServices.utilities.getAttrDefense(attributes("cha")) +
-        		  race.social_def + 
-    		  		(disciplines.size match{
-    		  		case 0 =>0 
-    		  		case _ => 
-    		  		  disciplines.map(discipline=>
-      				  discipline.getModifierValueByName("socDef").getOrElse(0))
-      				  .reduce((a1,a2)=>a1+a2)
-      				  })),
+      				 .reduceOption((a1,a2)=>a1+a2).getOrElse(0)
+      				  ),
+      "socDef" -> (disciplines.map(discipline=>
+      			   discipline.getModifierValueByName("socDef").getOrElse(0))
+      			   .reduceOption((a1,a2)=>a1+a2).getOrElse(0)
+      				 ),
       "movement" -> eoceneServices.utilities.getAttrMovement(attributes("dex") +
-        race.movement),
+    		  		race.movement),
       "carrying" -> eoceneServices.utilities.getAttrCarrying(attributes("str")),
       "death" -> (eoceneServices.utilities.getAttrDeath(attributes("tou")) +
         utilities.getDurability(talents)(0)),
@@ -205,36 +195,24 @@ object Char {
       "wound" -> eoceneServices.utilities.getAttrWound(attributes("tou")),
       "rec" -> (eoceneServices.utilities.getAttrRec(attributes("tou"))+
     		  	race.rec_test + 
-    		  	(disciplines.size match{
-    		  		case 0 =>0 
-    		  		case _ => 
-    		  		  disciplines.map(discipline=>
-      				  discipline.getModifierValueByName("rec").getOrElse(0))
-      				  .reduce((a1,a2)=>a1+a2)
-      				  })),
-      "mystic" -> (armors.size match{//make sure that we wont call reduce on emtpy list
-        	case 0 => eoceneServices.utilities.getAttrMystic(attributes("wil"))
-      		case _ => eoceneServices.utilities.getAttrMystic(attributes("wil")) + 
+    		    disciplines.map(discipline=>
+      			  discipline.getModifierValueByName("rec").getOrElse(0))
+      			.reduceOption((a1,a2)=>a1+a2).getOrElse(0)
+    		  ),
+      "mystic" -> (eoceneServices.utilities.getAttrMystic(attributes("wil")) + 
         		   armors.map(armor=>armor.getMysticalArmor()).
-        		   reduce((a1,a2)=>a1+a2)}),
-      "physical" -> (armors.size match{//make sure that we wont call reduce on empty list 
-        	case 0 => 0
-        	case _ => armors.map(armor=>armor.getPhysicalArmor()).
-        			  reduce((a1,a2)=>a1+a2)
-         }),
-      "initiative" -> ((armors.size match{//make sure that we wont call reduce on emtpy list
-        	case 0 => eoceneServices.utilities.getAttrStep(attributes("dex"))
-      		case _ => eoceneServices.utilities.getAttrStep(attributes("dex")) + 
-        		   armors.map(armor=>armor.getInitiativeBonus()).
-        		   reduce((a1,a2)=>a1+a2)}) + 
-        	(disciplines.size match{
-    		  		case 0 =>0 
-    		  		case _ => 
-    		  		  disciplines.map(discipline=>
+        		   reduceOption((a1,a2)=>a1+a2).getOrElse(0)
+        		   ),
+      "physical" -> armors.map(armor=>armor.getPhysicalArmor()).
+        			  reduceOption((a1,a2)=>a1+a2).getOrElse(0)
+         ,
+      "initiative" -> (eoceneServices.utilities.getAttrStep(attributes("dex")) + 
+        		   	  armors.map(armor=>armor.getInitiativeBonus()).
+        		   	  reduceOption((a1,a2)=>a1+a2).getOrElse(0) +
+        		   	  disciplines.map(discipline=>
       				  discipline.getModifierValueByName("ini").getOrElse(0))
-      				  .reduce((a1,a2)=>a1+a2)
-      				  }))     	
-      )
+      				  .reduceOption((a1,a2)=>a1+a2).getOrElse(0))
+    				)	
 
     return result
   }
@@ -261,9 +239,9 @@ object Char {
 
   def getCharAttribute(id: Int, attribute: String)(implicit c: Connection):Option[Int] =  {
     val querry = SQL(eoceneSqlStrings.GET_CHAR_ATTRIBUTE).onParams(id)()
-    querry.size match {
-      case 0 => None
-      case _ => querry(0)[Option[Int]](attribute)
+    querry.headOption match {
+      case None => None
+      case Some(row) => row[Option[Int]](attribute)
     }
   }
   
@@ -301,28 +279,21 @@ object Char {
       val pp = getCharAttribute(id, "pp")
       if (direction.equals("up")) {
         current_value match{
-          case None => return false //if this is not None then the char and the atrribute exist!
-          case _ => current_value.get match {
-            case 13 => return false
-            case _ =>
-	        updateCharAttribute(id, attribute, current_value.get + 1)
+          case None => false //if this is not None then the char and the atrribute exist!
+          case Some(13) => false
+          case Some(value) => updateCharAttribute(id, attribute, value + 1)
 	        updateCharAttribute(id, "pp", pp.get +
-	          eoceneServices.utilities.getPPCost(current_value.get + 1) -
-	          eoceneServices.utilities.getPPCost(current_value.get))
-          }
-  
-        }
+	          eoceneServices.utilities.getPPCost(value + 1) -
+	          eoceneServices.utilities.getPPCost(value))  
+        	}
       } else {
           current_value match{
-          case None => return false 
-          case _ => current_value.get match {
-            case -3 => return false
-            case _ =>
-	        updateCharAttribute(id, attribute, current_value.get - 1)
+          case None => false           
+          case Some(-3) => false
+          case Some(value) => updateCharAttribute(id, attribute, value - 1)
 	        updateCharAttribute(id, "pp", pp.get +
-	          eoceneServices.utilities.getPPCost(current_value.get - 1) -
-	          eoceneServices.utilities.getPPCost(current_value.get))
-          }
+	          eoceneServices.utilities.getPPCost(value - 1) -
+	          eoceneServices.utilities.getPPCost(value))         
          }
       }
     }
@@ -344,13 +315,11 @@ object Char {
       if (direction.equals("up")) {
           current_value match{
           case None => return false
-          case _ => current_value.get match {
-            case 5 => return false
-            case _ =>
-	        updateCharAttribute(id, attribute, current_value.get + 1)
+          case Some(5) => return false
+          case Some(value) => updateCharAttribute(id, attribute, value + 1)
 	        updateCharAttribute(id, "lp_sp", lp.get +
-	          eoceneServices.utilities.getAttributeIncreaseLPCost(current_value.get + 1))
-          	}
+	          eoceneServices.utilities.getAttributeIncreaseLPCost(value + 1))
+          	
           }
       } else {
           current_value match{
@@ -376,9 +345,9 @@ object Char {
   def getRaceIdByCharId(id: Int)= {
     DB.withConnection("chars") { implicit c =>
       val querry = SQL(eoceneSqlStrings.GET_CHAR_RACE).onParams(id)()
-      querry.length match {
-        case 0 => None 
-        case _ => Some(querry(0)[Int]("id_race"))
+      querry.headOption match {
+        case None => None 
+        case Some(row) => row[Option[Int]]("id_race")
       }
      }
   }
@@ -413,7 +382,7 @@ object Char {
       {
         val querry = SQL(eoceneSqlStrings.GET_CHAR_DISCIPLINES).onParams(id)()
         return querry.map(a => List(a[Int]("id_char"), a[Int]("id_discipline"),
-          a[Int]("circle"))).toList
+        				  a[Int]("circle"))).toList
       }
     }
   }
@@ -453,8 +422,8 @@ object Char {
       {
         val disciplines = getCharDisciplineRowsByCharId(id)
         val target_discipline = disciplines.filter(a => a(1) == id_discipline)
-        target_discipline.size match {
-          case 0 => false
+        target_discipline.headOption match {
+          case None => false
           case _ => 
             val circle = target_discipline(0)(2)        
 	        if (circle > 1) {
@@ -481,7 +450,7 @@ object Char {
       {
         val querry = SQL(eoceneSqlStrings.GET_CHAR_TALENTS).onParams(id)()
         return querry.map(a => List(a[Int]("id_char"), a[Int]("id_talent"),
-          a[Int]("step"))).toList
+        				  a[Int]("step"))).toList
       }
     }
   }

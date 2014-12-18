@@ -227,7 +227,7 @@ function changeCharName(){
 		});
 	}
 	
-function talentUp(event
+function talentUp(event){
 	$.post("/API/characters/"+$("#char_id").text()+"/talents/"+event.target.id+"/improve/",reload_char);
 	}
 	

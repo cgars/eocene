@@ -62,8 +62,8 @@ object utilities {
    */  
   val DiceStep = Map(
 		  			0->"0",
-		  			1->"d4-2",
-		  			2->"d4-1",
+		  			1->"d4+-2",
+		  			2->"d4+-1",
 		  			3->"1d4",
 		  			4->"1d6",
 		  			5->"1d8",
@@ -342,11 +342,11 @@ object utilities {
 		    		  						  .reduce((a1,a2)=>a1+a2)
 		      case pattern_2(sides) => rollDice(sides.toInt)
 		      case pattern_3(step) => rollDiceString(getDiceForStep(step.toInt)
-		          .get)
+		    		  				  .get)
 		      case pattern_4(value) => value.toInt
 		      case pattern_5(value) => -1*value.toInt
 		      case default => {Logger.error("I couldnt make sense of a dice instruction: %s".format(default))
-		                0
+		                	  0
 		                }		      
     		}
     	)

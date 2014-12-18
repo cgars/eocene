@@ -44,9 +44,9 @@ extends securesocial.core.SecureSocial[EoceneUser] {
       val char = Char.getCharById(id)
       char match{
         case None => NotFound("")
-        case _ => Ok(Json.prettyPrint(Json.toJson(char)))
+        case Some(char) => Ok(Json.prettyPrint(Json.toJson(char)))
         .withHeaders(CACHE_CONTROL -> "no-cache",
-	                                ETAG -> char.get.hashCode.toString)
+	                 ETAG -> char.hashCode.toString)
       }      
     }
   }
@@ -63,9 +63,9 @@ extends securesocial.core.SecureSocial[EoceneUser] {
       val char = Char.createCharByName(name) 
       char match{
         case None => BadRequest ("")
-        case _ => Created (Json.toJson(JsNumber(char.get)))
-        .withHeaders(CACHE_CONTROL -> "no-cache",
-	                                ETAG -> char.get.hashCode.toString)
+        case Some(char) => Created (Json.toJson(JsNumber(char)))
+        		  .withHeaders(CACHE_CONTROL -> "no-cache",
+	              ETAG -> char.hashCode.toString)
       }
     }
   }
@@ -83,7 +83,7 @@ extends securesocial.core.SecureSocial[EoceneUser] {
           eoceneServices.utilities.getRandomName())
       result match{
         case None => BadRequest ("")
-        case _ =>  	Created (Json.toJson(JsNumber(result.get)))
+        case Some(result) =>  	Created (Json.toJson(JsNumber(result)))
             		.withHeaders(CACHE_CONTROL -> "no-cache")
       }
     }
@@ -99,9 +99,8 @@ extends securesocial.core.SecureSocial[EoceneUser] {
   def improveAttributeLP(id: Int, attribute: String) = 
     SecuredAction(UserAllowedWithCharacterId(id)) {implicit request =>
     DB.withTransaction("chars") { implicit c =>
-    val x = Char.updateCharAttributeWithLP(id, attribute, "up")
-	    Logger.info("%s".format(x))
-		   x match{
+    Char.updateCharAttributeWithLP(id, attribute, "up")
+	     match{
 		      case false => BadRequest ("")
 		      case _ => utilities.storeAction(routes.Charackters.
 		    		  		improveAttributeLP(id, attribute).toString,
@@ -121,7 +120,7 @@ extends securesocial.core.SecureSocial[EoceneUser] {
   def corruptAttributeLP(id: Int, attribute: String) = 
     SecuredAction(UserAllowedWithCharacterId(id)) {implicit request =>
     DB.withTransaction("chars") { implicit c =>
-	    Char.updateCharAttributeWithLP(id, attribute, "down")match{
+	    Char.updateCharAttributeWithLP(id, attribute, "down") match{
 	      case false => BadRequest ("")
 	      case _ => utilities.storeAction(routes.Charackters.corruptAttributeLP(id, attribute).toString,
 	    		    id,request.user .main .userId )
@@ -203,12 +202,14 @@ extends securesocial.core.SecureSocial[EoceneUser] {
 	    Char.improveCharDiscipline(id: Int, id_discipline: Int) match{
 	      case false => BadRequest ("")
 	      case _ => utilities.storeAction(routes.Charackters.
-	    		  		improveCharDiscipline(id: Int, id_discipline: Int) .toString,
+	    		  		improveCharDiscipline(id: Int, id_discipline: Int)
+	    		  		.toString,
 	    		  		id,request.user .main.userId )
 	    		  		Ok("")
 	    	}
     	}
   	}
+  
   /**
   * DisAdvance the character in a given discipline
   *
@@ -222,7 +223,8 @@ extends securesocial.core.SecureSocial[EoceneUser] {
 		    Char.corruptCharDiscipline(id: Int, id_discipline: Int) match{
 		      case false => BadRequest ("")
 		      case _ => utilities.storeAction(routes.Charackters.
-	    		  		corruptCharDiscipline(id: Int, id_discipline: Int) .toString,
+	    		  		corruptCharDiscipline(id: Int, id_discipline: Int)
+	    		  		.toString,
 	    		  		id,request.user .main.userId )
 	    		  		Ok("")
 	    	}
@@ -242,7 +244,7 @@ extends securesocial.core.SecureSocial[EoceneUser] {
 		    Char.improveCharTalent(id: Int, id_talent: Int) match{
 		      case false => BadRequest ("")
 		      case _ => utilities.storeAction(routes.Charackters.
-	    		  		improveCharTalent(id: Int, id_talent: Int) .toString,
+	    		  		improveCharTalent(id: Int, id_talent: Int).toString,
 	    		  		id,request.user .main.userId )
 	    		  		Ok("")
 	    	}
@@ -262,7 +264,7 @@ extends securesocial.core.SecureSocial[EoceneUser] {
 		    Char.corruptCharTalent(id: Int, id_talent: Int) match{
 		      case false => BadRequest ("")
 		      case _ => utilities.storeAction(routes.Charackters.
-	    		  		corruptCharTalent(id: Int, id_talent: Int) .toString,
+	    		  		corruptCharTalent(id: Int, id_talent: Int).toString,
 	    		  		id,request.user .main.userId )
 	    		  		Ok("")
 	    	}
@@ -401,7 +403,7 @@ extends securesocial.core.SecureSocial[EoceneUser] {
 	      case _ => utilities.storeAction(routes.Charackters.
 		    		  		removeArmor(id: Int, id_armor:Int).toString,
 		    		  		id,request.user .main.userId )
-	    		  		Ok("")
+	    		  	Ok("")
 	    	}
 	    }
 	  }
@@ -439,9 +441,10 @@ extends securesocial.core.SecureSocial[EoceneUser] {
 		    Char.removeThreadArmor(id, id_armor) match{
 		      case false => BadRequest ("")
 		      case _ => utilities.storeAction(routes.Charackters.
-			    		  		removeThreadArmor(id: Int, id_armor:Int).toString,
+			    		  		removeThreadArmor(id: Int, id_armor:Int)
+			    		  		.toString,
 			    		  		id,request.user .main.userId )
-		    		  		Ok("")
+		    		  	Ok("")
 		    }
 	    }
 	  }
@@ -486,7 +489,7 @@ extends securesocial.core.SecureSocial[EoceneUser] {
         case None => BadRequest ("")
         case _ => Ok(Json.toJson(JsString(dice.get))) 
         		  .withHeaders(CACHE_CONTROL -> "no-cache",
-	                                ETAG -> dice.get.hashCode.toString)
+	                           ETAG -> dice.get.hashCode.toString)
       }      
     }
   
@@ -515,8 +518,9 @@ extends securesocial.core.SecureSocial[EoceneUser] {
   def rollDiceString(dices:String) = SecuredAction{
     try{
       val result:Int = utilities.rollDiceString(dices)
-      Ok(Json.toJson(JsNumber(result))).withHeaders(CACHE_CONTROL -> "no-cache",
-	                                ETAG -> result.hashCode.toString)
+      Ok(Json.toJson(JsNumber(result)))
+      .withHeaders(CACHE_CONTROL -> "no-cache",
+	               ETAG -> result.hashCode.toString)
     }
     catch{
       case e: Exception => BadRequest ("")

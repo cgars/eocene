@@ -31,8 +31,10 @@ object Spell {
    * @param rows the rows from a db call 
    * @return Spell
    */ 
-  def getSpellByRow(row: anorm.Row, step: Int = 0, circle: Int = 1, disciplined: Boolean = false) = {
-    Spell(row[Int]("id"), row[String]("name"), row[Int]("Spells.circle"), row[Int]("threads"),
+  def getSpellByRow(row: anorm.Row, step: Int = 0, circle: Int = 1, 
+      disciplined: Boolean = false) = {
+	  Spell(row[Int]("id"), row[String]("name"), row[Int]("Spells.circle"), 
+	      row[Int]("threads"),
       row[Int]("weaving_diff"), row[Int]("reatuning"),
       row[String]("runge"), row[String]("duration"),
       row[String]("effect"), row[String]("difficulty"),
@@ -47,10 +49,11 @@ object Spell {
    * @param id
    * @return Spell
    */ 
-  def getSpellById(id: Int, step: Int = 0, circle: Int = 1, disciplined: Boolean = false): Spell = {
+  def getSpellById(id: Int, step: Int = 0, circle: Int = 1, disciplined: 
+      Boolean = false): Spell = {
     DB.withConnection("chars") { implicit c =>
       val querry = SQL(eoceneSqlStrings.GET_SPELL_BY_ID).onParams(id)()
-      getSpellByRow(querry(0), step, circle, disciplined)
+      getSpellByRow(querry.head, step, circle, disciplined)
     }
   }
 
@@ -61,8 +64,8 @@ object Spell {
     id_discipline:Option[Int],  spell_matrix:Option[Int]) =
     {
       Spell(id, name, circle, threads, weaving_difficulty, reatunging,
-        range, duration, effect, difficulty, discription, id_char, id_discipline,
-        spell_matrix)
+        range, duration, effect, difficulty, discription, id_char, 
+        id_discipline, spell_matrix)
 
     }
   

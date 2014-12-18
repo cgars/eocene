@@ -32,10 +32,8 @@ case class Discipline(val id: Int, val name: String, val abilities: String,
    */  
   def getModifierValueByName(name:String) = {
 	  val mod_filt = modifiers.filter(mod=>mod.id  == Modifier.modfierName2Id(name))
-	  mod_filt.size match{
-	    case 0 => None
-	    case _ => Some(mod_filt.map(mod => mod.value).reduce((a1,a2)=>a1 + a2))
-	  }
+	  .map(mod => mod.value)
+	  .reduceOption((a1,a2)=>a1 + a2).getOrElse(0)
   }  
 }
 
@@ -48,7 +46,8 @@ object Discipline {
    * @return Discipline
    */ 
   def getDisciplineByRow(discipline_rows:Stream[anorm.Row]) = {
-    val modifiers = discipline_rows(0)[Option[Int]]("disciplines_modifiers.circle") match{
+    val modifiers = discipline_rows(0)[Option[Int]]("disciplines_modifiers.circle") 
+    match{
       case None => List()
       case _ => discipline_rows.map(row=>Modifier.getModifierByRow(row))
       			.toList

@@ -86,10 +86,11 @@ object Talent {
    * @param row: A row from a db querry
    * @return Talent 
    */ 
-  def getTalentById(id: Int, step: Int = 0, circle: Int = 1, disciplined: Boolean = false)(
+  def getTalentById(id: Int, step: Int = 0, circle: Int = 1, 
+      disciplined: Boolean = false)(
       implicit c: Connection): Talent = {
     val querry = eoceneSqlStrings.TALENT_JOIN.onParams(id)()
-    getTalentByRow(querry(0))
+    getTalentByRow(querry.head)
   }
 
   def getTalent(id: Int, name: String, action: Boolean, karma: Boolean, strain: String,
