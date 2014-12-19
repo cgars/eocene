@@ -221,9 +221,25 @@
 <td class="defenseName">Legend Point spent</td>
 <td class="defenseValue">@char.lp_sp</td>
 </tr>
+<tr class="defenseRow">
+<td class="defenseName">Legend Point earned</td>
+<td class="defenseValue">@char.lp_av</td>
+</tr>
+<tr class="Add LP">
+<td class="KarmaBuy">Add LP</td>
+<td class="defenseValue"><input type="text" id="AddLP_textfield" value = "" ></td>
+</tr>
 <tr class="Karma">
 <td class="KarmaName">Karma</td>
 <td class="defenseValue">@{char.kar_curr}/@{char.race.kar_max+char.getModifierValueByName("karmaMax").getOrElse(0)}</td>
+</tr>
+<tr class="Buy Karma">
+<td class="KarmaBuy">Buy Karma</td>
+<td class="defenseValue"><input type="text" id="BuyKarma_textfield" value = "" ></td>
+</tr>
+<tr class="Spent Karma">
+<td class="KarmaSpent">Spent Karma</td>
+<td class="defenseValue"><input type="text" id="SpentKarma_textfield" value = "" ></td>
 </tr>
 <tr class="Initiative">
 <td class="InitiativeName">Initiative</td>

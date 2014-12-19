@@ -188,7 +188,7 @@ object Char {
       "death" -> (eoceneServices.utilities.getAttrDeath(attributes("tou")) +
         utilities.getDurability(talents)(0)),
       "unconc" -> (eoceneServices.utilities.getAttrUnconc(attributes("tou")) +
-        utilities.getDurability(talents)(1)),
+    		  	   utilities.getDurability(talents)(1)),
       "wound" -> eoceneServices.utilities.getAttrWound(attributes("tou")),
       "rec" -> (eoceneServices.utilities.getAttrRec(attributes("tou"))+
     		  	race.rec_test + 
@@ -222,9 +222,11 @@ object Char {
    * 			 the controller.   
    * @return the id of the new character
    */
-  def createCharByName(name: String)(implicit user:eoceneServices.EoceneUser) = {
+  def createCharByName(name: String)(implicit user:eoceneServices.EoceneUser) =
+  {
     DB.withTransaction("chars") { implicit c =>      
-      val result: Boolean = SQL(eoceneSqlStrings.INSERT_CHAR).onParams(name).executeUpdate()>0
+      val result: Boolean = SQL(eoceneSqlStrings.INSERT_CHAR).onParams(name).
+      executeUpdate()>0
       val char_id = getCharIdByName(name)
       changeCharRace(char_id.get, 1)
       eoceneSqlStrings.INSERT_CHARS_USERS .onParams(char_id, 
@@ -234,7 +236,8 @@ object Char {
     }    
   }
 
-  def getCharAttribute(id: Int, attribute: String)(implicit c: Connection):Option[Int] =  {
+  def getCharAttribute(id: Int, attribute: String)(implicit c: Connection):
+  Option[Int] =  {
     val querry = SQL(eoceneSqlStrings.GET_CHAR_ATTRIBUTE).onParams(id)()
     querry.headOption match {
       case None => None
@@ -269,7 +272,8 @@ object Char {
    * @param c A sql connection. comes from the controller
    * @return Succes indicator
    */
-  def updateCharAttributeWithPP(id: Int, attribute: String, direction: String): Boolean = {
+  def updateCharAttributeWithPP(id: Int, attribute: String, direction: String): 
+  Boolean = {
     DB.withConnection("chars") { implicit c =>
       val current_value = getCharAttribute(id, attribute)
       Logger.info("current_value:%s".format(current_value))
@@ -326,7 +330,8 @@ object Char {
             case _ =>
 		        updateCharAttribute(id, attribute, current_value.get - 1)
 		        updateCharAttribute(id, "lp_sp", lp.get -
-		          eoceneServices.utilities.getAttributeIncreaseLPCost(current_value.get))
+		          eoceneServices.utilities.
+		          getAttributeIncreaseLPCost(current_value.get))
           }
       }
     }
@@ -392,8 +397,8 @@ object Char {
    * @param id_discipline
    * @return success
    */
-  def improveCharDiscipline(id: Int, id_discipline: Int) (implicit c:Connection)= {
-      {
+  def improveCharDiscipline(id: Int, id_discipline: Int) 
+  (implicit c:Connection)= {
         val disciplines = getCharDisciplineRowsByCharId(id)
         val target_discipline = disciplines.filter(a => a(1) == id_discipline)
             if (target_discipline.length > 0) {
@@ -403,7 +408,6 @@ object Char {
 	        } else {
 	          SQL(eoceneSqlStrings.INSERT_CHAR_DISCIPLINE).onParams(id, id_discipline, 1)
             .executeUpdate()>0
-      }
     }
   }
   
@@ -415,7 +419,8 @@ object Char {
    * @param id_discipline
    * @return success
    */
-  def corruptCharDiscipline(id: Int, id_discipline: Int)(implicit c:Connection) = {
+  def corruptCharDiscipline(id: Int, id_discipline: Int)(implicit c:Connection) 
+  = {
       {
         val disciplines = getCharDisciplineRowsByCharId(id)
         val target_discipline = disciplines.filter(a => a(1) == id_discipline)
@@ -424,13 +429,14 @@ object Char {
           case _ => 
             val circle = target_discipline(0)(2)        
 	        if (circle > 1) {
-	          SQL(eoceneSqlStrings.UPDATE_CHAR_DISCIPLINE).onParams(circle - 1, id,
-	            id_discipline).executeUpdate()>0
+	          SQL(eoceneSqlStrings.UPDATE_CHAR_DISCIPLINE).onParams(circle - 1, 
+	              id, id_discipline).executeUpdate()>0
 	        } else {
-	          SQL(eoceneSqlStrings.REMOVE_CHAR_DISCIPLINE).onParams(id, id_discipline)
+	          SQL(eoceneSqlStrings.REMOVE_CHAR_DISCIPLINE)
+	          .onParams(id, id_discipline)
 	          .executeUpdate()>0
 	        	}
-      }
+        }
     }
   }
 
@@ -460,7 +466,8 @@ object Char {
    * @param id_discipline
    * @return success
    */
-  def getTalentByTalenAndDisciId(id_talent: Int, id_char: Int)(implicit c: Connection) = {
+  def getTalentByTalenAndDisciId(id_talent: Int, id_char: Int)
+  (implicit c: Connection) = {
     val querry = SQL(eoceneSqlStrings.GET_TALENT_CIRCLE).onParams(
       id_char, id_talent)()
     querry(0)[Int]("circle")
@@ -473,7 +480,8 @@ object Char {
    * @param id_talent
    * @return success
    */
-  def improveCharTalent(id: Int, id_talent: Int)(implicit c:Connection):Boolean = {
+  def improveCharTalent(id: Int, id_talent: Int)(implicit c:Connection):
+  Boolean = {
         val talents = getCharTalentRowsIdByCharId(id)
         val target_talent = talents.filter(a => a(1) == id_talent)
         val circle = getTalentByTalenAndDisciId(id_talent, id)
@@ -749,6 +757,47 @@ object Char {
     }    
   }
   
+  /**
+  * Buy Karma with LP
+  * 
+  * @param id_char    
+  * @param nr_points the number of karma points to buy
+  * @return Redirect
+  */  
+  def buyKarma(id_char:Int, nr_points:Int)(implicit c:Connection) = {
+	val char = getCharById(id_char)  
+    SQL(eoceneSqlStrings.UPDATE_CHAR_ATTRIBUTE.format("kar_curr"))
+	  .onParams(char.get.kar_curr + nr_points,id_char).executeUpdate>0 &&
+	SQL(eoceneSqlStrings.UPDATE_CHAR_ATTRIBUTE.format("lp_sp"))
+	  .onParams(char.get.lp_sp  + nr_points*char.get.race.kar_cost ,id_char)
+	  .executeUpdate>0
+  } 
+
+  /**
+  * Spent Karma points
+  * 
+  * @param id_char    
+  * @param nr_points the number of karma points spent
+  * @return Redirect
+  */  
+  def spentKarma(id_char:Int, nr_points:Int)(implicit c:Connection) = {
+	val char = getCharById(id_char)  
+    SQL(eoceneSqlStrings.UPDATE_CHAR_ATTRIBUTE.format("kar_curr"))
+	  .onParams(char.get.kar_curr - nr_points,id_char).executeUpdate>0 
+  }
+
+  /**
+  * Adding legend points
+  * 
+  * @param id_char    
+  * @param nr_points the number of lp to add
+  * @return Redirect
+  */  
+  def addLP(id_char:Int, nr_points:Int)(implicit c:Connection) = {
+	val char = getCharById(id_char)  
+    SQL(eoceneSqlStrings.UPDATE_CHAR_ATTRIBUTE.format("lp_av"))
+	  .onParams(char.get.lp_av  + nr_points,id_char).executeUpdate>0 
+  } 
 
   implicit object CharonParams extends Format[Char] {
 

@@ -217,32 +217,42 @@ extends securesocial.core.SecureSocial[EoceneUser] {
 		      case None => BadRequest("")
 		      case _ => 
 		       try{
-			    val spell = char.get.spells.filter(spell=>spell.id==id_spell).head
+			    val spell = char.get.spells.filter(spell=>spell.id==id_spell)
+			    .head
 			    val spells_discipline_name = char.get.disciplines.
-			    	filter(discipline=>discipline.id==spell.id_disciline.get).head.
+			    	filter(discipline=>discipline.id==spell.id_disciline.get)
+			    	.head.
 			    	name 
 			    val thread_weaving = char.get.talents.
 			    	filter(talent=> talent.name contains "Thread").
-			    	filter(talent=> talent.name contains spells_discipline_name.substring(1, 5)).
+			    	filter(talent=> talent.name contains spells_discipline_name.
+			    	    substring(1, 5)).
 			    	head
 			    val spellcasting = char.get.talents.
 			    	filter(talent => talent.name contains "Spellcasting").head
 			    	val effect_step:Option[Int] = 
 			    	  if(spell.effect.contains("Willforce")){  
 			    	    try {			    	    	
-			    	        val bonus:Int = spell.effect.split("\\+")(1).trim.toInt 
+			    	        val bonus:Int = spell.effect.split("\\+")(1).trim
+			    	        				.toInt 
 			    	    	val willforce:Int = char.get.talents.
 			    	    	filter(talent=>talent.name.contains("Wilforce"))
 			    	    	.map(talent=>talent.step.getOrElse(0)).headOption.
 			    	    	getOrElse(0)
-			    	    	val willpower :Int = char.get.derived("wil_step").asInstanceOf[Int]
+			    	    	val willpower :Int = char.get.derived("wil_step")
+			    	    	.asInstanceOf[Int]
 			    	    	Some(bonus + willforce + willpower)
 			    	    	
 			    	    } catch {
-			    	    	case e:Exception => None
-			    	    }
+			    	    	case e:Exception => {Logger.error(
+				    	    	    """Error when getting the Effect for a 
+			    	    			Spell view.Error was:%s""".format(e))
+				    	    	    None
+			    	    			}
+			    	    		}
 			    	} else None 
-			    	val effect_dice = utilities.getDiceForStep(effect_step.getOrElse(0))
+			    	val effect_dice = utilities.getDiceForStep(effect_step.
+			    	    getOrElse(0))
 			    	
 			    Ok(views.html.castSpell(char.get, spell, thread_weaving, 
 			        spellcasting, effect_dice))
@@ -250,7 +260,9 @@ extends securesocial.core.SecureSocial[EoceneUser] {
 	                             ETAG -> char.get.hashCode.toString)
 		      }
 		      catch{
-		        case _ => BadRequest ("")
+		        case e:Throwable => {Logger.debug(e.toString())
+		          					BadRequest ("")
+		          					}
 		      }
 		    }
 	    }	

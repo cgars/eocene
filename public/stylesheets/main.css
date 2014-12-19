@@ -87,7 +87,10 @@ input {
 	border:solid #ffffff;
 	cursor:default;
 	}
-	
+
+#BuyKarma_textfield,#SpentKarma_textfield,#AddLP_textfield{
+	width: 40pt;	
+	}
 Table {
 	margin:0px;padding:0px;
 	border:1px solid #ffffff;

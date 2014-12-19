@@ -342,6 +342,6 @@ object eoceneSqlStrings {
   val INSERT_HISTORY = SQL("""
 		  INSERT INTO History VALUES ({call},{char_id},{user_id})
 	    """)
-	    
+    
 }
 

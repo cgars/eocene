@@ -566,8 +566,67 @@ extends securesocial.core.SecureSocial[EoceneUser] {
       Char.shareChar(id_char, user_mail) match{
         case true => Ok("")
         case false => BadRequest ("")
+      }    	
+  	}
+  
+  /**
+  * Buy Karma
+  * 
+  * @param id_char
+  * @param nr_points    
+  * @return Success
+  */   
+  def buyKarma(id_char:Int, nr_points:Int) = 
+    SecuredAction(UserAllowedWithCharacterId(id_char)){implicit request =>
+      DB.withTransaction("chars") { implicit c =>
+	      Char.buyKarma(id_char, nr_points) match{
+	        case true => utilities.storeAction( routes.Charackters.buyKarma(
+	        							id_char:Int, nr_points:Int).toString, 
+	        			 				id_char,request.user.main.userId)
+	          			 Ok("")
+	        case false => BadRequest ("")
+	      }    	
       }
-    	
+  	}
+  
+  /**
+  * Spent Karma
+  * 
+  * @param id_char
+  * @param nr_points    
+  * @return Success
+  */   
+  def spentKarma(id_char:Int, nr_points:Int) = 
+    SecuredAction(UserAllowedWithCharacterId(id_char)){implicit request =>
+      DB.withTransaction("chars") { implicit c =>
+	      Char.spentKarma(id_char, nr_points) match{
+	        case true => utilities.storeAction( routes.Charackters.spentKarma(
+	        							id_char:Int, nr_points:Int).toString, 
+	        			 				id_char, request.user.main.userId)
+	          			 Ok("")
+	        case false => BadRequest ("")
+	      }    	
+      }
+  	}
+  
+  /**
+  * Add LP
+  * 
+  * @param id_char
+  * @param nr_points    
+  * @return Success
+  */   
+  def addLP(id_char:Int, nr_points:Int) = 
+    SecuredAction(UserAllowedWithCharacterId(id_char)){implicit request =>
+      DB.withTransaction("chars") { implicit c =>
+	      Char.addLP(id_char, nr_points) match{
+	        case true => utilities.storeAction( routes.Charackters.addLP(
+	        							id_char:Int, nr_points:Int).toString, 
+	        			 				id_char, request.user.main.userId)
+	          			 Ok("")
+	        case false => BadRequest ("")
+	      }    	
+      }
   	}
 }
 

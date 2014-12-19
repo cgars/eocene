@@ -44,7 +44,22 @@ $(document).ready(function(){
 	$("#root").on("mouseleave",".discipline_abilities_vis", hideAbilities);
 	$("#root").on("click",".delete_char", deleteChar);
 	$("#root").on("click",".share_now", shareChar);	
+	$("#root").on('focusout',"#BuyKarma_textfield", buyKarma);
+	$("#root").on('focusout',"#SpentKarma_textfield", spentKarma);
+	$("#root").on('focusout',"#AddLP_textfield", addLP);
 });
+
+function addLP(event){	
+	$.post("/API/characters/"+$("#char_id").text()+"/lp/add/"+$("#AddLP_textfield").val()+"/",reload_char);
+	}
+	
+function buyKarma(event){	
+	$.post("/API/characters/"+$("#char_id").text()+"/karma/buy/"+$("#BuyKarma_textfield").val()+"/",reload_char);
+	}
+	
+function spentKarma(event){	
+	$.post("/API/characters/"+$("#char_id").text()+"/karma/spent/"+$("#SpentKarma_textfield").val()+"/",reload_char);
+	}
 
 function shareChar(event){
 	$.post("/API/characters/share/"+event.target.id+"/"+$("#share_textfield").val()+"/",reload_chars);

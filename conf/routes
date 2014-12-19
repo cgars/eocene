@@ -39,6 +39,9 @@ POST 	/API/characters/:id_char/addmatrix/:id_spell/			@controllers.Charackters.S
 POST	/API/characters/:id_char/frommatrix/:id_spell/			@controllers.Charackters.SpellFromMatrix(id_spell:Int, id_char:Int)
 POST	/API/characters/delete/:id_char/						@controllers.Charackters.removeUserFromChar(id_char:Int)
 POST	/API/characters/share/:id_char/:user_mail/				@controllers.Charackters.shareChar(id_char:Int, user_mail:String)
+POST	/API/characters/:id_char/karma/buy/:points/				@controllers.Charackters.buyKarma(id_char:Int, points:Int)
+POST	/API/characters/:id_char/karma/spent/:points/			@controllers.Charackters.spentKarma(id_char:Int, points:Int)
+POST	/API/characters/:id_char/lp/add/:points/				@controllers.Charackters.addLP(id_char:Int, points:Int)
 
 #HTML API
 GET		/HTML/chars/										    @controllers.Subviews.getChars()
