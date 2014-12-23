@@ -119,7 +119,7 @@ object Talent {
         "disciplined" -> JsBoolean(false),
         "circle" -> JsNumber(0)))
 
-      case talent.step => JsObject(Seq("id" -> JsNumber(talent.id),
+      case _ => JsObject(Seq("id" -> JsNumber(talent.id),
         "name" -> JsString(talent.name),
         "action" -> JsBoolean(talent.action),
         "karma" -> JsBoolean(talent.karma),

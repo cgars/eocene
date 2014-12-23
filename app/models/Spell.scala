@@ -100,7 +100,7 @@ object Spell {
         "description" -> JsString(spell.discription),
         "id_char" -> JsNumber(0)))
 
-      case spell.id_char => JsObject(Seq("id" -> JsNumber(spell.id),
+      case _ => JsObject(Seq("id" -> JsNumber(spell.id),
         "name" -> JsString(spell.name),
         "circle" -> JsNumber(spell.circle),
         "threads" -> JsNumber(spell.threads),

@@ -103,7 +103,7 @@ object Skill {
         "comm" -> JsString(skill.comm),
         "step" -> JsNumber(0)))
 
-      case skill.step => JsObject(Seq("id" -> JsNumber(skill.id),
+      case _ => JsObject(Seq("id" -> JsNumber(skill.id),
         "name" -> JsString(skill.name),
         "formula" -> JsString(skill.formula),
         "skill_type" -> JsString(skill.skill_type),
