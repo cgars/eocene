@@ -125,7 +125,8 @@ class Charackters(override implicit val env: RuntimeEnvironment[EoceneUser])
         Char.updateCharAttributeWithLP(id, attribute, "down") match {
           case false => BadRequest("")
           case _ =>
-            utilities.storeAction(routes.Charackters.corruptAttributeLP(id, attribute).toString,
+            utilities.storeAction(routes.Charackters.corruptAttributeLP(id,
+              attribute).toString,
               id, request.user.main.userId)
             Ok("")
         }
@@ -533,11 +534,21 @@ class Charackters(override implicit val env: RuntimeEnvironment[EoceneUser])
    * @return Result as JSON
    */
   def rollDiceString(dices: String) = SecuredAction {
+    
     try {
-      val result: Int = utilities.rollDiceString(dices)
-      Ok(Json.toJson(JsNumber(result)))
+      
+      if(dices contains ";"){
+        val result = dices.split(";").map(sub_dices => 
+          utilities.rollDiceString(sub_dices))
+        Ok(Json.toJson(result)).withHeaders(CACHE_CONTROL -> "no-cache",
+                                            ETAG -> result.hashCode.toString)
+      }
+      else { 
+        val result: Int = utilities.rollDiceString(dices)
+        Ok(Json.toJson(JsNumber(result)))
         .withHeaders(CACHE_CONTROL -> "no-cache",
           ETAG -> result.hashCode.toString)
+      }
     } catch {
       case e: Exception => BadRequest("")
     }

@@ -100,7 +100,7 @@ object Discipline {
         "Abilities" -> JsString(discipline.abilities),
         "circle" -> JsNumber(0)))
 
-      case discipline.circle => JsObject(Seq("id" -> JsNumber(discipline.id),
+      case _ => JsObject(Seq("id" -> JsNumber(discipline.id),
         "name" -> JsString(discipline.name),
         "Abilities" -> JsString(discipline.abilities),
         "circle" -> JsNumber(discipline.circle.get)))
