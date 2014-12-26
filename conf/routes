@@ -56,5 +56,6 @@ GET		/HTML/armors/								    		@controllers.Subviews.Armors()
 GET		/HTML/dice/:target_class/:target_id/:dice/:char_id/		@controllers.Subviews.Dice(target_class:String,target_id:String, dice:String, char_id:Int)
 GET		/HTML/spell/:id_spell/:id_char/							@controllers.Subviews.Spell(id_spell:Int, id_char:Int)
 GET		/HTML/char/share/:id_char/								@controllers.Subviews.Share(id_char:Int)
-				
+GET		/HTML/map/												@controllers.Subviews.Map()
+
 -> /auth securesocial.Routes

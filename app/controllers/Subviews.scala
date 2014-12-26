@@ -271,15 +271,26 @@ class Subviews(override implicit val env: RuntimeEnvironment[EoceneUser])
     }
 
   /**
-   * Fetch the Spell Caster view
+   * Fetch share view
    *
    * @param id_char
-   * @return the spell caster view
+   * @return view
    */
   def Share(char_id: Int) =
     SecuredAction(UserAllowedWithCharacterId(char_id)) {
       Ok(views.html.share(char_id)).
         withHeaders(CACHE_CONTROL -> "no-cache")
     }
-
+  
+  /**
+   * Fetch the map view
+   *
+   * @param id_char
+   * @return view
+   */
+  def Map() =
+    SecuredAction() {implicit request =>
+      Ok(views.html.map(request.user.main)).
+        withHeaders(CACHE_CONTROL -> "no-cache")
+    }
 }

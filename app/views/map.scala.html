@@ -1,0 +1,9 @@
+@( user:securesocial.core.BasicProfile)
+
+@views.html.header(user)
+    <script src="https://maps.googleapis.com/maps/api/js?v=3.exp?sensor=false&libraries=drawing,geometry"></script>
+    <script src="@routes.Assets.at("javascripts/lEMON.js")"></script>
+
+    <div id="map-canvas"></div>
+@views.html.footer()
+
