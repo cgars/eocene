@@ -66,7 +66,7 @@ function shareChar(event){
 	}
 
 function getSharePage(event){
-	$("#roller").load("/HTML/char	/share/"+event.target.id+"/",	
+	$("#roller").load("/HTML/share/"+event.target.id+"/",	
 	function(){	
 	$("#roller").css({ top: $(event.target).position().top, left: $(event.target).position().left});
 	$("#roller").fadeIn("normal");});
