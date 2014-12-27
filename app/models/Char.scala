@@ -178,7 +178,8 @@ object Char {
       				  discipline.getModifierValueByName("spellDef"))
       				 .reduceOption((a1,a2)=>a1+a2).getOrElse(0)
       				  ),
-      "socDef" -> (disciplines.map(discipline=>
+      "socDef" -> (eoceneServices.utilities.getAttrDefense(attributes("cha")) +
+              race.social_def + disciplines.map(discipline=>
       			   discipline.getModifierValueByName("socDef"))
       			   .reduceOption((a1,a2)=>a1+a2).getOrElse(0)
       				 ),
