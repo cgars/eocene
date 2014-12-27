@@ -273,9 +273,8 @@ object Char {
    * @param c A sql connection. comes from the controller
    * @return Succes indicator
    */
-  def updateCharAttributeWithPP(id: Int, attribute: String, direction: String): 
-  Boolean = {
-    DB.withConnection("chars") { implicit c =>
+  def updateCharAttributeWithPP(id: Int, attribute: String, direction: String)
+  (implicit c:Connection): Boolean = {
       val current_value = getCharAttribute(id, attribute)
       Logger.info("current_value:%s".format(current_value))
       val pp = getCharAttribute(id, "pp")
@@ -297,7 +296,6 @@ object Char {
 	          eoceneServices.utilities.getPPCost(value - 1) -
 	          eoceneServices.utilities.getPPCost(value))         
          }
-      }
     }
   }
 
