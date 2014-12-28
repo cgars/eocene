@@ -106,9 +106,9 @@ object utilities {
    * @return the movement rating
    */
   def getAttrMovement(attr: Int): Int = {
-    if (attr < 7) return 5 + attr
-    else if (attr < 21) return attr * 2
-    else return attr % 20 * 3 + 40
+    if (attr < 7) return (5 + attr)*2
+    else if (attr < 21) return attr * 4
+    else return (attr % 20 * 3 + 40)*2
   }
 
   /**
@@ -119,12 +119,12 @@ object utilities {
    */
   def getAttrCarrying(attr: Int): Int = {
     if (attr < 7) return attr * 5
-    else if (attr < 12) return (attr - 7) * 10 + 40
-    else if (attr < 16) return (attr - 12) * 15 + 95
-    else if (attr < 19) return (attr - 16) * 20 + 160
-    else if (attr < 22) return (attr - 19) * 30 + 230
-    else if (attr < 28) return (attr - 22) * 40 + 330
-    else return (attr - 28) * 60 + 620
+    else if (attr < 12) return ((attr - 7) * 10 + 40) * 2
+    else if (attr < 16) return ((attr - 12) * 15 + 95) * 2
+    else if (attr < 19) return ((attr - 16) * 20 + 160) * 2
+    else if (attr < 22) return ((attr - 19) * 30 + 230) * 2
+    else if (attr < 28) return ((attr - 22) * 40 + 330) * 2
+    else return ((attr - 28) * 60 + 620) * 2
   }
 
   /**

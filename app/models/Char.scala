@@ -197,7 +197,8 @@ object Char {
       			  discipline.getModifierValueByName("rec"))
       			.reduceOption((a1,a2)=>a1+a2).getOrElse(0)
     		  ),
-      "mystic" -> (eoceneServices.utilities.getAttrMystic(attributes("wil")) + 
+      "mystic" -> (eoceneServices.utilities.getAttrMystic(attributes("wil")) +
+               race.phys_armor +
         		   armors.map(armor=>armor.getMysticalArmor()).
         		   reduceOption((a1,a2)=>a1+a2).getOrElse(0)
         		   ),

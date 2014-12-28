@@ -100,19 +100,6 @@
 <td class="attribute_up" id="str_level">up</td>
 </tr>
 
-<tr class = "attribute_row">
-<td class="attribute_name">cha</td>
-<td class="attribute_value">@char.derived("cha")</td>
-<td class="attribute_pp_down" id="cha_mod">down</td>
-<td class="attribute_pp_up" id="cha_mod">up</td>
-<td class="attribute_level">@char.cha_level</td>
-<td class="attribute_race_mod">@char.race.cha_mod</td>
-<td class="derived_atrr_step">@char.derived("cha_step")</td>
-<td id="cha_step" class="derived_atrr_dice">@{char.getDice(char.derived("cha_step").asInstanceOf[Int])}</td>
-<td class="attribute_down" id="cha_level">down</td>
-<td class="attribute_up" id="cha_level">up</td>
-</tr>
-
 <tr>
 <td class="attribute_name">tou</td>
 <td class="attribute_value">@char.derived("tou")</td>
@@ -124,6 +111,19 @@
 <td id="tou_step" class="derived_atrr_dice">@{char.getDice(char.derived("tou_step").asInstanceOf[Int])}</td>
 <td class="attribute_down" id="tou_level">down</td>
 <td class="attribute_up" id="tou_level">up</td>
+</tr>
+
+<tr class = "attribute_row">
+<td class="attribute_name">per</td>
+<td class="attribute_value">@char.derived("per")</td>
+<td class="attribute_pp_down" id="per_mod">down</td>
+<td class="attribute_pp_up" id="per_mod">up</td>
+<td class="attribute_level">@char.per_level</td>
+<td class="attribute_race_mod">@char.race.per_mod</td>
+<td class="derived_atrr_step">@char.derived("per_step")</td>
+<td id="per_step" class="derived_atrr_dice">@{char.getDice(char.derived("per_step").asInstanceOf[Int])}</td>
+<td class="attribute_down" id="per_level">down</td>
+<td class="attribute_up" id="per_level">up</td>
 </tr>
 
 <tr class = "attribute_row">
@@ -140,16 +140,16 @@
 </tr>
 
 <tr class = "attribute_row">
-<td class="attribute_name">per</td>
-<td class="attribute_value">@char.derived("per")</td>
-<td class="attribute_pp_down" id="per_mod">down</td>
-<td class="attribute_pp_up" id="per_mod">up</td>
-<td class="attribute_level">@char.per_level</td>
-<td class="attribute_race_mod">@char.race.per_mod</td>
-<td class="derived_atrr_step">@char.derived("per_step")</td>
-<td id="per_step" class="derived_atrr_dice">@{char.getDice(char.derived("per_step").asInstanceOf[Int])}</td>
-<td class="attribute_down" id="per_level">down</td>
-<td class="attribute_up" id="per_level">up</td>
+<td class="attribute_name">cha</td>
+<td class="attribute_value">@char.derived("cha")</td>
+<td class="attribute_pp_down" id="cha_mod">down</td>
+<td class="attribute_pp_up" id="cha_mod">up</td>
+<td class="attribute_level">@char.cha_level</td>
+<td class="attribute_race_mod">@char.race.cha_mod</td>
+<td class="derived_atrr_step">@char.derived("cha_step")</td>
+<td id="cha_step" class="derived_atrr_dice">@{char.getDice(char.derived("cha_step").asInstanceOf[Int])}</td>
+<td class="attribute_down" id="cha_level">down</td>
+<td class="attribute_up" id="cha_level">up</td>
 </tr>
 
 <tr class = "attribute_row">
