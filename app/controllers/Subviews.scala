@@ -49,6 +49,7 @@ class Subviews(override implicit val env: RuntimeEnvironment[EoceneUser])
       }
     }
   }
+  
   /**
    * Fetch a View of all characters availiable and wrap them in a complete page
    *
