@@ -534,20 +534,19 @@ class Charackters(override implicit val env: RuntimeEnvironment[EoceneUser])
    * @return Result as JSON
    */
   def rollDiceString(dices: String) = SecuredAction {
-    
+
     try {
-      
-      if(dices contains ";"){
-        val result = dices.split(";").map(sub_dices => 
+
+      if (dices contains ";") {
+        val result = dices.split(";").map(sub_dices =>
           utilities.rollDiceString(sub_dices))
         Ok(Json.toJson(result)).withHeaders(CACHE_CONTROL -> "no-cache",
-                                            ETAG -> result.hashCode.toString)
-      }
-      else { 
+          ETAG -> result.hashCode.toString)
+      } else {
         val result: Int = utilities.rollDiceString(dices)
         Ok(Json.toJson(JsNumber(result)))
-        .withHeaders(CACHE_CONTROL -> "no-cache",
-          ETAG -> result.hashCode.toString)
+          .withHeaders(CACHE_CONTROL -> "no-cache",
+            ETAG -> result.hashCode.toString)
       }
     } catch {
       case e: Exception => BadRequest("")

@@ -106,9 +106,9 @@ object utilities {
    * @return the movement rating
    */
   def getAttrMovement(attr: Int): Int = {
-    if (attr < 7) return (5 + attr)*2
+    if (attr < 7) return (5 + attr) * 2
     else if (attr < 21) return attr * 4
-    else return (attr % 20 * 3 + 40)*2
+    else return (attr % 20 * 3 + 40) * 2
   }
 
   /**

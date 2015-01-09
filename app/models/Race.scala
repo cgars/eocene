@@ -1,17 +1,19 @@
-/*******************************************************************************
+/**
+ * *****************************************************************************
  * Copyright (c) 2014 Christian Garbers.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Simplified BSD License
  * which accompanies this distribution
- * 
+ *
  * Contributors:
  *     Christian Garbers - initial API and implementation
- ******************************************************************************/
+ * ****************************************************************************
+ */
 package models
 
 import play.api.libs.json.Format
 import play.api.libs.json._
-import eoceneServices.eoceneSqlStrings 
+import eoceneServices.eoceneSqlStrings
 import anorm._
 import play.api.db.DB
 import play.api.Play.current
@@ -23,13 +25,13 @@ case class Race(var id: Int, var name: String, var dex_mod: Int, var str_mod: In
   var rec_test: Int, var phys_armor: Int, var wound_thresh: Int)
 
 object Race {
-  
+
   /**
    * Get a Race build from row
-   * 
+   *
    * @param rows the rows from a db call
    * @return Discipline
-   */ 
+   */
   def getRaceByRow(row: anorm.Row) = {
     Race(row[Int]("id"), row[String]("name"), row[Int]("dex_mod"),
       row[Int]("str_mod"), row[Int]("cha_mod"), row[Int]("tou_mod"), row[Int]("wil_mod"),
@@ -39,13 +41,13 @@ object Race {
       row[Int]("spell_def"), row[Int]("rec_test"), row[Int]("phys_arm"),
       row[Int]("wound_tresh"))
   }
-  
+
   /**
    * Get a Race By id
-   * 
-   * @param id 
+   *
+   * @param id
    * @return Discipline
-   */ 
+   */
   def getRaceById(id: Int): Race = {
     DB.withConnection("chars") { implicit c =>
       val querry = SQL(eoceneSqlStrings.GET_RACE_BY_ID).onParams(id)()

@@ -1,12 +1,14 @@
-/*******************************************************************************
+/**
+ * *****************************************************************************
  * Copyright (c) 2014 Christian Garbers.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Simplified BSD License
  * which accompanies this distribution
- * 
+ *
  * Contributors:
  *     Christian Garbers - initial API and implementation
- ******************************************************************************/
+ * ****************************************************************************
+ */
 import org.specs2.mutable._
 import org.specs2.runner._
 import org.junit.runner._

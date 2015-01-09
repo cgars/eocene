@@ -1,12 +1,14 @@
-/*******************************************************************************
+/**
+ * *****************************************************************************
  * Copyright (c) 2014 Christian Garbers.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Simplified BSD License
  * which accompanies this distribution
- * 
+ *
  * Contributors:
  *     Christian Garbers - initial API and implementation
- ******************************************************************************/
+ * ****************************************************************************
+ */
 package eoceneServices
 import anorm._
 
@@ -273,7 +275,7 @@ object eoceneSqlStrings {
 		ON chars_armors.id_char = {id_char} AND chars_armors.id_armor=Armors.id LEFT JOIN Powers ON
 		Powers.id_armor=Armors.id AND chars_armors.threads>=Powers.thread
       """)
-  
+
   val GET_ALL_ARMORS = SQL("""
 		SELECT *
 		FROM Armors
@@ -281,22 +283,22 @@ object eoceneSqlStrings {
 		LEFT JOIN chars_armors ON 1 =2
 		ORDER BY Powers.id_armor
       """)
-  
+
   val GET_POWR_BY_ARMOR_ID = SQL("""
   	  SELECT * FROM Powers 
       WHERE id_armor={id_armor}
       """)
-  
+
   val GET_ARMOR_BY_ID = SQL("""
   	  SELECT * FROM Armors 
       WHERE id={id_armor}
       """)
-  
+
   val INSERT_ARMOR = SQL("""
 	    INSERT INTO chars_armors
     	VALUES ({a},{b},0)
 	    """)
-  
+
   val REMOVE_ARMOR = SQL("""
 	    DELETE FROM chars_armors
     	WHERE id_char={id_char} AND id_armor={id_armor}
@@ -312,28 +314,28 @@ object eoceneSqlStrings {
 	    INSERT INTO chars_users
     	VALUES ({char_id},{user_id})
 	    """)
-	    
+
   val GET_CHARS_FOR_USER = SQL("""
 	    SELECT * FROM Chars JOIN chars_users ON 
 	    chars_users.id_char=Chars.id AND chars_users.id_user={id_user}  
-	    """)   
-  
+	    """)
+
   val ADD_SPELL_2_MATRIX = SQL("""
 		UPDATE chars_spells
       	SET spell_matrix=1
       	WHERE id_spell={id_spell} AND id_char={id_char};
-	    """)  
-  
+	    """)
+
   val REMOVE_SPELL_FROM_MATRIX = SQL("""
 		UPDATE chars_spells
       	SET spell_matrix=Null
       	WHERE id_spell={id_spell} AND id_char={id_char};
-	    """)  
+	    """)
   val REMOVE_USER_FROM_CHAR = SQL("""
 	    DELETE FROM chars_users
     	WHERE id_char={id_char} AND id_user={id_user}
 	    """)
-	    
+
   val INSERT_CHARS_USERS_BY_MAIL = SQL("""
 		  INSERT INTO chars_users VALUES ({char_id},
 		  (SELECT userId FROM Users WHERE email ={mail}))
@@ -342,6 +344,6 @@ object eoceneSqlStrings {
   val INSERT_HISTORY = SQL("""
 		  INSERT INTO History VALUES ({call},{char_id},{user_id})
 	    """)
-    
+
 }
 

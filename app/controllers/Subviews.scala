@@ -49,7 +49,7 @@ class Subviews(override implicit val env: RuntimeEnvironment[EoceneUser])
       }
     }
   }
-  
+
   /**
    * Fetch a View of all characters availiable and wrap them in a complete page
    *
@@ -282,7 +282,7 @@ class Subviews(override implicit val env: RuntimeEnvironment[EoceneUser])
       Ok(views.html.share(char_id)).
         withHeaders(CACHE_CONTROL -> "no-cache")
     }
-  
+
   /**
    * Fetch the map view
    *
@@ -290,7 +290,7 @@ class Subviews(override implicit val env: RuntimeEnvironment[EoceneUser])
    * @return view
    */
   def Map() =
-    SecuredAction() {implicit request =>
+    SecuredAction() { implicit request =>
       Ok(views.html.map(request.user.main)).
         withHeaders(CACHE_CONTROL -> "no-cache")
     }
