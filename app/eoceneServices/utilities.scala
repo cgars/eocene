@@ -49,7 +49,7 @@ object utilities {
     List(98700, 159700, 258400, 418100))
 
   /**
-   * a map modeeling legend point costs when increasing attributes
+   * a map modeling legend point costs when increasing attributes
    */
   val AtrributeIncreaseCost = Map(1 -> 800, 2 -> 1300, 3 -> 2100, 4 -> 3400, 5 -> 5500)
 
@@ -59,6 +59,16 @@ object utilities {
   val SkillIncreaseCost = Map(1 -> 200, 2 -> 300, 3 -> 500, 4 -> 800, 5 -> 1300, 6 -> 2100,
     7 -> 3400, 8 -> 5500, 9 -> 8900, 10 -> 14400)
 
+  /**
+   * a list giving MovementRates
+   */
+  val MovementRate = List("25/13","28/14","30/15","32/16","35/18","38/19",
+		  				  "40/20","43/22","48/24","50/25","54/27","57/29",
+		  				  "60/30","65/33","70/35","75/38","80/40","85/42",
+		  				  "90/45","100/50","110/55","120/60","130/65","140/70",
+		  				  "150/75","160/80","170/85","180/90","200/100",
+		  				  "220/110"
+		  				  )
   /**
    * a map providing the seed for step to dice conversion
    */
@@ -77,7 +87,8 @@ object utilities {
     11 -> "1d10+1d8",
     12 -> "1d10+1d10",
     13 -> "1d12+1d10")
-  /**
+  
+   /**
    * get the step associated with a given attribute value
    *
    * @param attr the value of the atrribute
@@ -105,10 +116,8 @@ object utilities {
    * @param attr the value of the atrribute
    * @return the movement rating
    */
-  def getAttrMovement(attr: Int): Int = {
-    if (attr < 7) return (5 + attr) * 2
-    else if (attr < 21) return attr * 4
-    else return (attr % 20 * 3 + 40) * 2
+  def getAttrMovement(attr: Int): String = {
+	  MovementRate(attr-1)
   }
 
   /**
