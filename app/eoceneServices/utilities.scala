@@ -70,6 +70,17 @@ object utilities {
 		  				  "220/110"
 		  				  )
   /**
+   * a list giving MovementRates
+   */
+  val CarrCap = List("10/20","15/30","20/40","25/50","30/65","35/75",
+		  				  "40/85","50/100","60/115","70/135","80/160","90/185",
+		  				  "105/210","125/250","145/290","165/310","200/400","230/460",
+		  				  "270/540","315/630","360/735","430/860","500/1000","580/1160",
+		  				  "675/1350","790/1580","920/1840","1075/2150","1200/2500",
+		  				  "1450/2900"
+		  				  )
+		  				  
+  /**
    * a map providing the seed for step to dice conversion
    */
   val DiceStep = Map(
@@ -126,14 +137,8 @@ object utilities {
    * @param attr the value of the atrribute
    * @return the carrying rating
    */
-  def getAttrCarrying(attr: Int): Int = {
-    if (attr < 7) return attr * 5
-    else if (attr < 12) return ((attr - 7) * 10 + 40) * 2
-    else if (attr < 16) return ((attr - 12) * 15 + 95) * 2
-    else if (attr < 19) return ((attr - 16) * 20 + 160) * 2
-    else if (attr < 22) return ((attr - 19) * 30 + 230) * 2
-    else if (attr < 28) return ((attr - 22) * 40 + 330) * 2
-    else return ((attr - 28) * 60 + 620) * 2
+  def getAttrCarrying(attr: Int): String = {
+    CarrCap (attr-1)
   }
 
   /**
