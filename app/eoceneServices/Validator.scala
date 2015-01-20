@@ -32,14 +32,61 @@ class Validator(char: models.Char) {
 
   def validate(): Boolean = {
     if (char.disciplines.size == 0) {
-      message += "No Discipline selcted"
-      return false
+      message += "No Discipline selected"
     }
-    return char.disciplines.map(discipline => checkDiscilineCircleRequirements(discipline)).
-      reduce((a1, a2) => a1 && a2) &&
-      checkAtrributeImprovements
+    List(char.disciplines.map(discipline => checkDiscilineCircleRequirements(discipline)).
+      foldLeft(true)((a1, a2) => a1 && a2),
+      checkAtrributeImprovements,
+      checkWindlingStrength,
+      checkObsidimanStrength,
+      checkTrollStrength,
+      checkTrollToughness).reduce((a1,a2)=> a1&&a2)
   }
 
+  def checkTrollToughness() = {
+    if(char.race.name.equals("Troll")) 
+      char.derived("tou").asInstanceOf[Int]>10 match{
+        case false => {message += "Minimum Toughness of 11 required\n" 
+        			  false
+        			 }
+        case true => true
+      }
+    else true
+  }
+  
+  def checkTrollStrength() = {
+    if(char.race.name.equals("Troll")) 
+      char.derived("str").asInstanceOf[Int]>10 match{
+        case false => {message += "Minimum Strength is 11\n" 
+        			  false
+        			 }
+        case true => true
+      }
+    else true
+  }
+  
+  def checkObsidimanStrength() = {
+    if(char.race.name.equals("Obsidiman")) 
+      char.derived("str").asInstanceOf[Int]>14 match{
+        case false => {message += "Minimum Strength of 15 required\n" 
+        			  false
+        			 }
+        case true => true
+      }
+    else true
+  }
+
+  def checkWindlingStrength() = {
+    if(char.race.name.equals("Windling")) 
+      char.derived("str").asInstanceOf[Int]<12 match{
+        case false => {message += "Maximum Strength is 11\n" 
+        			  false
+        			 }
+        case true => true
+      }
+    else true
+  }
+  
   def checkDiscilineCircleRequirements(discipline: models.Discipline): Boolean = {
     if (discipline.circle.get == 1) return true
     ((2).to(discipline.circle.get)).
@@ -83,7 +130,7 @@ class Validator(char: models.Char) {
     val improvements = char.dex_level + char.cha_level + char.per_level +
       char.will_level + char.tou_level + char.str_level
     if (improvements > allowed) {
-      message += "You have improved to many atrributes"
+      message += "You have improved to many atrributes\n"
       return false
     } else return true
 
