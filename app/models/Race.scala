@@ -22,7 +22,8 @@ case class Race(var id: Int, var name: String, var dex_mod: Int, var str_mod: In
   var cha_mod: Int, var tou_mod: Int, var wil_mod: Int, var per_mod: Int, var kar_step: Int,
   var kar_start: Int, var kar_max: Int, var kar_cost: Int, var movement: Int,
   var abilities: String, var social_def: Int, var spell_def: Int,
-  var rec_test: Int, var phys_armor: Int, var wound_thresh: Int)
+  var rec_test: Int, var phys_armor: Int, var wound_thresh: Int, 
+  var phys_def: Int)
 
 object Race {
 
@@ -39,7 +40,7 @@ object Race {
       row[Int]("kar_max"), row[Int]("kar_cost"), row[Int]("movement"),
       row[String]("abilities"), row[Int]("social_def"),
       row[Int]("spell_def"), row[Int]("rec_test"), row[Int]("phys_arm"),
-      row[Int]("wound_tresh"))
+      row[Int]("wound_tresh"),row[Int]("phys_def"))
   }
 
   /**

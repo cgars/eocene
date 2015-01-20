@@ -170,7 +170,8 @@ object Char {
       "physDef" -> (eoceneServices.utilities.getAttrDefense(attributes("dex")) +
         disciplines.map(discipline =>
           discipline.getModifierValueByName("physDef"))
-        .foldLeft(0)((a1, a2) => a1 + a2)),
+        .foldLeft(0)((a1, a2) => a1 + a2) + 
+        race.phys_def ),
       "spellDef" -> (eoceneServices.utilities.getAttrDefense(attributes("per")) +
         race.spell_def +
         disciplines.map(discipline =>
