@@ -154,7 +154,7 @@ object Char {
       "tou" -> (5 + row[Int]("tou_mod") + row[Int]("tou_level") + race.tou_mod),
       "wil" -> (5 + row[Int]("wil_mod") + row[Int]("wil_level") + race.wil_mod),
       "per" -> (5 + row[Int]("per_mod") + row[Int]("per_level") + race.per_mod))
-    val result = Map(
+    Map(
       "dex" -> (5 + row[Int]("dex_mod") + row[Int]("dex_level") + race.dex_mod),
       "str" -> (5 + row[Int]("str_mod") + row[Int]("str_level") + race.str_mod),
       "cha" -> (5 + row[Int]("cha_mod") + row[Int]("cha_level") + race.cha_mod),
@@ -206,8 +206,6 @@ object Char {
         disciplines.map(discipline =>
           discipline.getModifierValueByName("ini"))
         .foldLeft(0)((a1, a2) => a1 + a2)))
-
-    return result
   }
 
   /**
