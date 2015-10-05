@@ -537,12 +537,28 @@ class Charackters(override implicit val env: RuntimeEnvironment[EoceneUser])
 
     try {
 
-      if (dices contains ";") {
-        val result = dices.split(";").map(sub_dices =>
+      if (dices contains "x") {        
+    	  val pattern  = """(\d+)x(.+)""".r
+          val dice_match = pattern.findFirstMatchIn(dices).get
+          val result = 1.to(dice_match.group(1).toInt).map(count=>
+          	if(dice_match.group(2) contains ";"){
+          		  dice_match.group(2).split(";").map(sub_dices =>
+		          utilities.rollDiceString(sub_dices))		          
+          	} 
+          	else{
+          	  Array(utilities.rollDiceString(dice_match.group(2)))
+          	  }          	
+           )
+          Ok(Json.toJson(result)).withHeaders(CACHE_CONTROL -> "no-cache",
+          ETAG -> result.hashCode.toString) 
+      	} 
+      else if(dices contains ";"){
+          val result = dices.split(";").map(sub_dices =>
           utilities.rollDiceString(sub_dices))
-        Ok(Json.toJson(result)).withHeaders(CACHE_CONTROL -> "no-cache",
+          Ok(Json.toJson(result)).withHeaders(CACHE_CONTROL -> "no-cache",
           ETAG -> result.hashCode.toString)
-      } else {
+      } 
+      else {
         val result: Int = utilities.rollDiceString(dices)
         Ok(Json.toJson(JsNumber(result)))
           .withHeaders(CACHE_CONTROL -> "no-cache",
