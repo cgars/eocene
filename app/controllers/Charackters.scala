@@ -521,6 +521,23 @@ class Charackters(override implicit val env: RuntimeEnvironment[EoceneUser])
     val result: Int = utilities.rollDice(dice)
     Ok(Json.toJson(JsNumber(result))).withHeaders(CACHE_CONTROL -> "no-cache")
   }
+  
+    /**
+   * Return the probability to reach value with step
+   *
+   * @param value
+   * @param step  
+   * @return Result as JSON
+   */
+  def getProbForValue(value: Int, step:Int) = SecuredAction {
+    if (step>2 && step<101){
+    val result = utilities.getProbabilityWithStep(value, step)
+    Ok(Json.toJson(JsNumber(result))).withHeaders(CACHE_CONTROL -> "no-cache")
+    }
+    else{
+      BadRequest("step not known")
+    }
+  }
 
   /**
    * Return the result of rolling dice according to the dice string

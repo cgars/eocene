@@ -42,6 +42,8 @@ POST	/API/characters/share/:id_char/:user_mail/				@controllers.Charackters.shar
 POST	/API/characters/:id_char/karma/buy/:points/				@controllers.Charackters.buyKarma(id_char:Int, points:Int)
 POST	/API/characters/:id_char/karma/spent/:points/			@controllers.Charackters.spentKarma(id_char:Int, points:Int)
 POST	/API/characters/:id_char/lp/add/:points/				@controllers.Charackters.addLP(id_char:Int, points:Int)
+GET		/API/prob/:value/:step/									@controllers.Charackters.getProbForValue(value:Int,step:Int)
+
 
 #HTML API
 GET		/HTML/chars/										    @controllers.Subviews.getChars()
