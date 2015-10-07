@@ -489,7 +489,7 @@ object utilities {
    */
   def getProbabilityWithStep(value:Int,step:Int) = {
     val params = CdfParamters(step)
-    1-generalizedExtremeValueCDF(value, params(1), params(2), -1*params(0))
+    1-generalizedExtremeValueCDF(value-1, params(1), params(2), -1*params(0))
   }
 
     /**
