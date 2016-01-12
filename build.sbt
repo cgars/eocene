@@ -14,6 +14,6 @@ libraryDependencies ++= Seq(
   cache,
   ws,
   "mysql" % "mysql-connector-java" % "5.1.27",
-  "ws.securesocial" %% "securesocial" %     "master-SNAPSHOT"
+  "ws.securesocial" % "securesocial_2.11" % "3.0-M3"
 )
 
