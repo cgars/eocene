@@ -223,8 +223,8 @@ object utilities {
     val base = (attr - 4) / 7
     val modu = (attr - 4) % 7
 
-    if (List(0, 1, 2) contains modu) return base * 3 + 4
-    else if (List(3, 4) contains modu) return base * 3 + 5
+    if (List(0, 1, 2) contains modu)  base * 3 + 4
+    else if (List(3, 4) contains modu) base * 3 + 5
     else return base * 3 + 6
   }
 
@@ -283,8 +283,8 @@ object utilities {
    * @return the # rec test
    */
   def getAttrRec(attr: Int): Double = {
-    if (attr < 3) return 0.5
-    else if (attr < 8) return 1
+    if (attr < 3) 0.5
+    else if (attr < 8) 1
     else return (attr - 8) / 6 + 2
   }
 
@@ -295,8 +295,8 @@ object utilities {
    * @return mystic armor
    */
   def getAttrMystic(attr: Int): Int = {
-    if (attr < 11) return 0
-    else return (attr - 11) / 3 + 1
+    if (attr < 11)  0
+    else (attr - 11) / 3 + 1
   }
 
   /**
@@ -393,7 +393,7 @@ object utilities {
    * @return An Option with dice string
    */
   def getDiceForStep(step: Int): Option[String] = {
-    if (step < 0) return None
+    if (step < 0) None
     if (step < 14) Some(DiceStep(step))
     else if (step < 25) Some("1d20+" + DiceStep(step - 11))
     else Some("%sd20+".format((step - 14) / 11) + "1d10+1d8+" + DiceStep((step - 14) % 11 + 3))
@@ -406,10 +406,10 @@ object utilities {
    * @return number rolled
    */
   def rollDice(dice: Int): Int = {
-    if (!(dice > 1)) return 0
+    if (!(dice > 1)) 0
     val result = rand_gen.nextInt(dice) + 1
-    if (result == dice) return result + rollDice(dice)
-    else return result
+    if (result == dice) result + rollDice(dice)
+    else result
   }
 
   /**

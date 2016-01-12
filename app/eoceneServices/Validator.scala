@@ -88,7 +88,7 @@ class Validator(char: models.Character) {
   }
   
   def checkDiscilineCircleRequirements(discipline: models.Discipline): Boolean = {
-    if (discipline.circle.get == 1) return true
+    if (discipline.circle.get == 1) true
     ((2).to(discipline.circle.get)).
       map(circle => eligableForCircle(circle, discipline)).
       reduce((a1, a2) => a1 && a2)
@@ -131,8 +131,8 @@ class Validator(char: models.Character) {
       char.will_level + char.tou_level + char.str_level
     if (improvements > allowed) {
       message += "You have improved to many atrributes\n"
-      return false
-    } else return true
+      false
+    } else true
 
   }
 }

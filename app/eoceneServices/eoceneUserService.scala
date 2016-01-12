@@ -38,7 +38,7 @@ class eoceneUserService extends UserService[EoceneUser] {
   def findProfile(providerId: String, userId: String): Option[BasicProfile] = {
     DB.withConnection("chars") { implicit c =>
       val querry = FIND_USER_BY_EMAIL_AND_ID.onParams(providerId, userId)()
-      if (querry.size == 0) return None
+      if (querry.size == 0) None
       val row = querry.head
       Some(BasicProfile(providerId, row[String]("userId"),
         row[Option[String]]("firstName"),
@@ -61,7 +61,7 @@ class eoceneUserService extends UserService[EoceneUser] {
   def findByEmailAndProvider(email: String, providerId: String): Future[Option[BasicProfile]] = {
     DB.withConnection("chars") { implicit c =>
       val querry = FIND_USER_BY_EMAIL_AND_PROVIDER.onParams(providerId, email)()
-      if (querry.size == 0) return Future.successful(None)
+      if (querry.size == 0) Future.successful(None)
       val row = querry.head
       Future.successful(Some(BasicProfile(providerId, row[String]("userId"),
         row[Option[String]]("firstName"),
@@ -125,12 +125,12 @@ class eoceneUserService extends UserService[EoceneUser] {
   }
 
   def getOAuth1WithRow(row: anorm.Row): Option[OAuth1Info] = {
-    if (row[Option[String]]("token") == None) return None
+    if (row[Option[String]]("token") == None) None
     Some(OAuth1Info(row[String]("token"), row[String]("secret")))
   }
 
   def getOAuth2WithRow(row: anorm.Row): Option[OAuth2Info] = {
-    if (row[Option[String]]("accessToken") == None) return None
+    if (row[Option[String]]("accessToken") == None) None
     Some(OAuth2Info(row[String]("accessToken"),
       row[Option[String]]("tokenType"),
       row[Option[Int]]("expiresIn"),
@@ -138,7 +138,7 @@ class eoceneUserService extends UserService[EoceneUser] {
   }
 
   def getPasswordInfoWithRow(row: anorm.Row): Option[PasswordInfo] = {
-    if (row[Option[String]]("hasher") == None) return None
+    if (row[Option[String]]("hasher") == None) None
     Some(PasswordInfo(row[String]("hasher"),
       row[String]("password"),
       row[Option[String]]("salt")))

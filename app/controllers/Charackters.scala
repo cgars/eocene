@@ -30,6 +30,7 @@ import play.api.libs.json.JsNumber
 import eoceneServices.eoceneUserService
 import eoceneServices.eoceneSqlService
 import eoceneServices.eoceneDao
+import scala.util.control.NonFatal
 
 /**
  * Main controller for modifications on characters
@@ -543,7 +544,7 @@ class Charackters(override implicit val env: RuntimeEnvironment[EoceneUser],
             ETAG -> result.hashCode.toString)
       }
     } catch {
-      case e: Exception => BadRequest("")
+      case NonFatal(e) => BadRequest("")
     }
   }
 
