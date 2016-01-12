@@ -35,7 +35,7 @@ object Power {
   }
 
   /**
-   * Get power that belong to a Armor
+   * Get power that belongs to a Armor
    *
    * @param id The id of the armmor
    * @return Discipline
@@ -45,10 +45,7 @@ object Power {
     querry.map(row => getPowerByRow(row)).toList
   }
 
-  implicit object RaceFormat extends Format[Power] {
-
-    def reads(json: JsValue) = JsSuccess(Power(0, 0, "", 0))
-
+  implicit val powerWrites = new Writes[Power] {
     def writes(power: Power) = JsObject(
       Seq("id_armor" -> JsNumber(power.id_armor),
         "threads" -> JsNumber(power.threads),

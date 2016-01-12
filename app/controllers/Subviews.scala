@@ -20,7 +20,7 @@ import play.api.db.DB
 import eoceneServices.eoceneSqlStrings
 import eoceneServices.utilities
 import play.api.libs.json.Json
-import models.Char
+import models.Character
 import play.api.libs.json.JsString
 import eoceneServices.EoceneUser
 import play.api.mvc.{ Action, RequestHeader }
@@ -31,9 +31,10 @@ import views.html.defaultpages.badRequest
  * Return is responsible for handlign out propper
  * HTML
  */
-class Subviews(override implicit val env: RuntimeEnvironment[EoceneUser])
+class Subviews(override implicit val env: RuntimeEnvironment[EoceneUser],
+    dao:eoceneServices.eoceneSqlService)
   extends securesocial.core.SecureSocial[EoceneUser] {
-
+  	
   /**
    * Fetch a character ad prepare the Talent view
    *
@@ -41,12 +42,10 @@ class Subviews(override implicit val env: RuntimeEnvironment[EoceneUser])
    * @return the talent view
    */
   def getTalentsByCharId(id: Int) = SecuredAction(UserAllowedWithCharacterId(id)) {
-    DB.withConnection("chars") { implicit c =>
-      val char = Char.getCharById(id)
+      val char = dao.getCharById(id)
       char match {
         case None => BadRequest("")
         case _ => Ok(views.html.talents(char.get))
-      }
     }
   }
 
@@ -56,12 +55,8 @@ class Subviews(override implicit val env: RuntimeEnvironment[EoceneUser])
    * @return the characters view
    */
   def showChars() = SecuredAction { implicit request =>
-    DB.withConnection("chars") { implicit c =>
-      val result = eoceneSqlStrings.GET_CHARS_FOR_USER.onParams(
-        request.user.main.userId)().
-        map(row => (row[String]("name"), row[Int]("id"))).toList
+      val result = dao.getCharsForUser(request.user.main.userId)
       Ok(views.html.showChars(result, request.user.main))
-    }
   }
   /**
    * Fetch a View of all characters availiable
@@ -69,13 +64,9 @@ class Subviews(override implicit val env: RuntimeEnvironment[EoceneUser])
    * @return the characters view
    */
   def getChars() = SecuredAction { implicit request =>
-    DB.withConnection("chars") { implicit c =>
-      val result = eoceneSqlStrings.GET_CHARS_FOR_USER.onParams(
-        request.user.main.userId)().map(row => (row[String]("name"),
-          row[Int]("id"))).toList
-      Ok(views.html.chars(result))
+    val result = dao.getCharsForUser(request.user.main.userId)
+    Ok(views.html.chars(result))
     }
-  }
 
   /**
    * Fetch a View of all characters availiable and wrap them in a complete page
@@ -84,15 +75,13 @@ class Subviews(override implicit val env: RuntimeEnvironment[EoceneUser])
    */
   def showChar(id: Int) = SecuredAction(UserAllowedWithCharacterId(id)) {
     implicit request =>
-      DB.withConnection("chars") { implicit c =>
-        val char = Char.getCharById(id)
+        val char = dao.getCharById(id)
         char match {
           case None => BadRequest("")
           case _ =>
             val validator = char.get.getValidator
             val char_view = views.html.showChar(char.get, request.user.main)
             Ok(char_view)
-        }
       }
   }
 
@@ -103,8 +92,7 @@ class Subviews(override implicit val env: RuntimeEnvironment[EoceneUser])
    */
   def getChar(id: Int, date: String) =
     SecuredAction(UserAllowedWithCharacterId(id)) {
-      DB.withConnection("chars") { implicit c =>
-        val char = Char.getCharById(id)
+        val char = dao.getCharById(id)
         char match {
           case None => BadRequest("")
           case _ =>
@@ -112,7 +100,6 @@ class Subviews(override implicit val env: RuntimeEnvironment[EoceneUser])
             Logger.debug(routes.Subviews.getChar(id, date).toString)
             Ok(char_view).withHeaders(CACHE_CONTROL -> "no-cache",
               ETAG -> char.get.hashCode.toString)
-        }
       }
     }
 
@@ -122,10 +109,8 @@ class Subviews(override implicit val env: RuntimeEnvironment[EoceneUser])
    * @return the race view
    */
   def Races() = SecuredAction {
-    DB.withConnection("chars") { implicit c =>
-      val races = utilities.getRaces()
+      val races = dao.getRaces()
       Ok(views.html.races(races))
-    }
   }
 
   /**
@@ -134,10 +119,8 @@ class Subviews(override implicit val env: RuntimeEnvironment[EoceneUser])
    * @return the discipline view
    */
   def Disciplines() = SecuredAction {
-    DB.withConnection("chars") { implicit c =>
-      val disciplines = utilities.getDisciplines()
+      val disciplines = dao.getDisciplines()
       Ok(views.html.disciplines(disciplines))
-    }
   }
 
   /**
@@ -146,10 +129,8 @@ class Subviews(override implicit val env: RuntimeEnvironment[EoceneUser])
    * @return the spell view
    */
   def Spells() = SecuredAction {
-    DB.withConnection("chars") { implicit c =>
-      val spells = utilities.getSpells()
+      val spells = dao.getSpells()
       Ok(views.html.spells(spells))
-    }
   }
 
   /**
@@ -158,10 +139,8 @@ class Subviews(override implicit val env: RuntimeEnvironment[EoceneUser])
    * @return the spells view
    */
   def SpellsForChar(id: Int) = SecuredAction(UserAllowedWithCharacterId(id)) {
-    DB.withConnection("chars") { implicit c =>
-      val spells = utilities.getSpellsForChar(id)
+      val spells = dao.getSpellsForChar(id)
       Ok(views.html.spells(spells)).withHeaders(CACHE_CONTROL -> "no-cache")
-    }
   }
 
   /**
@@ -170,10 +149,8 @@ class Subviews(override implicit val env: RuntimeEnvironment[EoceneUser])
    * @return the skills view
    */
   def Skills() = SecuredAction {
-    DB.withConnection("chars") { implicit c =>
-      val skills = utilities.getSkills()
+      val skills = dao.getSkills()
       Ok(views.html.skills(skills))
-    }
   }
 
   /**
@@ -182,10 +159,8 @@ class Subviews(override implicit val env: RuntimeEnvironment[EoceneUser])
    * @return the armor view
    */
   def Armors() = SecuredAction {
-    DB.withConnection("chars") { implicit c =>
-      val armors = utilities.getArmors()
+      val armors = dao.getArmors()
       Ok(views.html.armors(armors))
-    }
   }
 
   /**
@@ -195,14 +170,12 @@ class Subviews(override implicit val env: RuntimeEnvironment[EoceneUser])
    */
   def Dice(target_class: String, target_id: String, dice: String, char_id: Int) =
     SecuredAction(UserAllowedWithCharacterId(char_id)) {
-      DB.withConnection("chars") { implicit c =>
-        val char = Char.getCharById(char_id)
+        val char = dao.getCharById(char_id)
         char match {
           case None => BadRequest("")
           case _ => Ok(views.html.dice(char.get, target_class, target_id, dice))
             .withHeaders(CACHE_CONTROL -> "no-cache",
               ETAG -> char.get.hashCode.toString)
-        }
       }
     }
 
@@ -213,8 +186,7 @@ class Subviews(override implicit val env: RuntimeEnvironment[EoceneUser])
    */
   def Spell(id_spell: Int, char_id: Int) =
     SecuredAction(UserAllowedWithCharacterId(char_id)) {
-      DB.withConnection("chars") { implicit c =>
-        val char = Char.getCharById(char_id)
+        val char = dao.getCharById(char_id)
         char match {
           case None => BadRequest("")
           case _ =>
@@ -265,7 +237,6 @@ class Subviews(override implicit val env: RuntimeEnvironment[EoceneUser])
               case e: Throwable => {
                 Logger.debug(e.toString())
                 BadRequest("")
-              }
             }
         }
       }

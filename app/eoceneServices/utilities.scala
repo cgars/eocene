@@ -339,37 +339,8 @@ object utilities {
     TalenRankCost(rank - 1)(circle_bin)
   }
 
-  def getRaces()(implicit c: Connection) =
-    eoceneSqlStrings.GET_RACES().map(row => Race.getRaceByRow(row)).toList
-      .sortWith((a1, a2) => a1.name < a2.name)
-
-  def getDisciplines()(implicit c: Connection) =
-    eoceneSqlStrings.GET_DISCIPLINES().groupBy(row => row[Int]("Disciplines.id")).
-      map(row => models.Discipline.getDisciplineByRow(row._2)).toList.
-      sortWith((a1, a2) => a1.name < a2.name)
-
-  def getSkills()(implicit c: Connection) =
-    eoceneSqlStrings.GET_SKILLS().map(row => models.Skill.getSkillByRow(row)).toList
-
-  def getSpells()(implicit c: Connection) =
-    eoceneSqlStrings.GET_SPELLS().map(row => models.Spell.getSpellWithDisciplineAsMap(row)).toList
-
-  def getSpellsForChar(id: Int)(implicit c: Connection) =
-    eoceneSqlStrings.GET_SPELLS_FOR_CHAR.onParams(id)().map(
-      row => models.Spell.getSpellWithDisciplineAsMap(row)).toList
-
   /**
-   * Return a list of Availiable Armor Objects
-   *
-   * @param
-   * @return a list of Armor
-   */
-  def getArmors()(implicit c: Connection) =
-    eoceneSqlStrings.GET_ALL_ARMORS().groupBy(x => x[Int]("armors.id"))
-      .map(rows => Armor.getArmorByRows(rows._2)).toList.sortBy(x => x.id).reverse
-
-  /**
-   * filter the durabilitie talent and return its values as a list of 2 integers
+   * filter the durability talent and return its values as a list of 2 integers
    *
    * @param talents list of talents
    * @return the durability ratings
@@ -475,9 +446,6 @@ object utilities {
     "NoName%sPleaseChangeME".format(rand_gen.nextInt(100000))
   }
 
-  def storeAction(call: String, id_char: Int, id_user: String)(implicit c: Connection) = {
-    eoceneSqlStrings.INSERT_HISTORY.onParams(call, id_char, id_user).executeUpdate() > 0
-  }
    
   /**
    * Return the probability of reaching a certain value with a given step 

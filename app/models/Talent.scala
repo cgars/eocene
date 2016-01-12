@@ -34,7 +34,7 @@ case class Talent(val id: Int, val name: String, val action: Boolean,
    * @param char The Character who has this talent
    * @return The rank of this talent or 0
    */
-  def getRank(char: Char) = {
+  def getRank(char: Character) = {
     val formula_split = formula.split("\\+") // Split the formula (for cases like Dex+3)
     step match {
       case None => 0 //in case we have no step rank is not defined
@@ -62,55 +62,19 @@ case class Talent(val id: Int, val name: String, val action: Boolean,
    * @param char The Character who has this talent
    * @return The Dice String for this talent
    */
-  def getDice(char: Char) = eoceneServices.utilities.getDiceForStep(getRank(char))
+  def getDice(char: Character) = eoceneServices.utilities.getDiceForStep(getRank(char))
 
 }
 
 object Talent {
-
-  /**
-   * 	Returns a Talent created from the entries in the row
-   *
-   * @param row: A row from a db querry
-   * @return Talent
-   */
-  def getTalentByRow(row: anorm.Row) = {
-    Talent(row[Int]("id"), row[String]("name"), row[Boolean]("action"),
-      row[Boolean]("karma"), row[String]("strain"), row[String]("formula"),
-      row[Option[Int]]("step"), row[Option[Boolean]]("disciplined"),
-      row[Option[Int]]("talents_disciplines.circle"),
-      row[Option[Int]]("talents_disciplines.id_discipline"))
-  }
-
-  /**
-   * Return the Talent with id
-   *
-   * @param row: A row from a db querry
-   * @return Talent
-   */
-  def getTalentById(id: Int, step: Int = 0, circle: Int = 1,
-    disciplined: Boolean = false)(
-      implicit c: Connection): Talent = {
-    val querry = eoceneSqlStrings.TALENT_JOIN.onParams(id)()
-    getTalentByRow(querry.head)
-  }
-
   def getTalent(id: Int, name: String, action: Boolean, karma: Boolean, strain: String,
     formula: String, step: Int, disciplined: Boolean, circle: Int, discipline_id: Int) = {
     Talent(id: Int, name: String, action: Boolean, karma: Boolean, strain: String,
       formula: String, Option(step), Option(disciplined), Some(circle), Option(discipline_id))
   }
 
-  implicit object TalentFormat extends Format[Talent] {
-
-    def reads(json: JsValue) = {
-      DB.withConnection("chars") { implicit c =>
-        JsSuccess(getTalentById(1))
-      }
-    }
-
+  implicit val talentWrites = new Writes[Talent] {
     def writes(talent: Talent) = talent.step match {
-
       case None => JsObject(Seq("id" -> JsNumber(talent.id),
         "name" -> JsString(talent.name),
         "action" -> JsBoolean(talent.action),
@@ -120,7 +84,6 @@ object Talent {
         "step" -> JsNumber(0),
         "disciplined" -> JsBoolean(false),
         "circle" -> JsNumber(0)))
-
       case _ => JsObject(Seq("id" -> JsNumber(talent.id),
         "name" -> JsString(talent.name),
         "action" -> JsBoolean(talent.action),
@@ -130,7 +93,6 @@ object Talent {
         "step" -> JsNumber(talent.step.get),
         "disciplined" -> JsBoolean(talent.disciplined.get),
         "circle" -> JsNumber(talent.circle.get)))
-
-    }
+        }
   }
 }

@@ -40,71 +40,16 @@ case class Discipline(val id: Int, val name: String, val abilities: String,
 }
 
 object Discipline {
-
-  /**
-   * Get a Discipline
-   *
-   * @param rows the rows from a db call each row might correspond to a modifier
-   * @return Discipline
-   */
-  def getDisciplineByRow(discipline_rows: Stream[anorm.Row]) = {
-    val modifiers = discipline_rows(0)[Option[Int]]("disciplines_modifiers.circle") match {
-      case None => List()
-      case _ => discipline_rows.map(row => Modifier.getModifierByRow(row))
-        .toList
-    }
-    val row = discipline_rows.head
-    Discipline(row[Int]("id"), row[String]("name"), row[String]("abilities"),
-      row[Option[Int]]("chars_disciplines.circle"), modifiers)
-  }
-
-  /**
-   * Get a Discipline
-   *
-   * @param id
-   * @return Discipline
-   */
-  def getDisciplineById(id: Int, circle: Int = 0): Discipline = {
-    DB.withConnection("chars") { implicit c =>
-      val querry = SQL(eoceneSqlStrings.GET_DISCIPLINE_BY_ID).onParams(id)().
-        groupBy(row => row[Int]("Disciplines.id"))
-      getDisciplineByRow(querry(0))
-    }
-  }
-  /**
-   * Get a represenation of the talents_discipline table with all talents not
-   * higher than a certain circle
-   *
-   * @param id character id
-   * @param circle
-   * @return Discipline
-   */
-  def getTalentsByDisciplinesId(id: Int, circle: Int): List[List[AnyVal]] = {
-    DB.withConnection("chars") { implicit c =>
-      val querry = SQL(eoceneSqlStrings.GET_TALENT_ID_BY_DISCIPLINE_ID.format(id, circle))()
-      return querry.map(x => List(x[Int]("id_talent"),
-        x[Int]("id_discipline"),
-        x[Boolean]("disciplined"),
-        x[Int]("circle"))).toList
-
-    }
-  }
-
-  implicit object DisciplineFormat extends Format[Discipline] {
-
-    def reads(json: JsValue) = JsSuccess(getDisciplineById(1))
-
+  implicit val DisciplineWrites = new Writes[Discipline] {
     def writes(discipline: Discipline) = discipline.circle match {
       case None => JsObject(Seq("id" -> JsNumber(discipline.id),
         "name" -> JsString(discipline.name),
         "Abilities" -> JsString(discipline.abilities),
         "circle" -> JsNumber(0)))
-
       case _ => JsObject(Seq("id" -> JsNumber(discipline.id),
         "name" -> JsString(discipline.name),
         "Abilities" -> JsString(discipline.abilities),
         "circle" -> JsNumber(discipline.circle.get)))
-
     }
   }
 }

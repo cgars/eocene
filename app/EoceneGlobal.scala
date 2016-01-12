@@ -14,6 +14,8 @@ import securesocial.core.RuntimeEnvironment
 import eoceneServices.{ EoceneUser }
 import securesocial.core.providers._
 import scala.collection.immutable.ListMap
+import eoceneServices.eoceneDao
+import eoceneServices.eoceneSqlService
 
 object Global extends GlobalSettings {
 
@@ -31,6 +33,7 @@ object Global extends GlobalSettings {
       include(new GoogleProvider(routes, cacheService,
         oauth2ClientFor(GoogleProvider.Google))))
   }
+  val dao = new eoceneSqlService
 
   /**
    * An implementation that checks if the controller expects a RuntimeEnvironment and
@@ -49,6 +52,15 @@ object Global extends GlobalSettings {
     }.map {
       _.asInstanceOf[Constructor[A]].newInstance(MyRuntimeEnvironment)
     }
-    instance.getOrElse(super.getControllerInstance(controllerClass))
+    instance.getOrElse({
+        val instance2 = controllerClass.getConstructors.find { c =>
+        val params = c.getParameterTypes
+      params.length == 2 && params(0) == classOf[RuntimeEnvironment[EoceneUser]]
+    }.map {
+      _.asInstanceOf[Constructor[A]].newInstance(MyRuntimeEnvironment, 
+          dao)
+    }
+    instance2.getOrElse(super.getControllerInstance(controllerClass))
+    })
   }
 }

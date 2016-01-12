@@ -13,7 +13,7 @@ package eoceneServices
 
 import play.api._
 
-class Validator(char: models.Char) {
+class Validator(char: models.Character) {
   var message: String = ""
   val circle_requiremnents = Map(2 -> (5, 2, 1),
     3 -> (6, 3, 2),
@@ -139,7 +139,7 @@ class Validator(char: models.Char) {
 
 object Validator {
 
-  def getValidator(char: models.Char): eoceneServices.Validator = {
+  def getValidator(char: models.Character): eoceneServices.Validator = {
     val validator = new Validator(char)
     return validator
   }

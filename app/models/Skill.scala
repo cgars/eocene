@@ -30,7 +30,7 @@ case class Skill(val id: Int, val name: String, val formula: String,
    * @param char The Character who has this skill
    * @return The rank of this skill or 0
    */
-  def getRank(char: Char) = {
+  def getRank(char: Character) = {
     val formula_split = formula.split("\\+") // Split the formula (for cases like Dex+3)
     step match {
       case None => 0 //in case we have no step rank is not defined
@@ -58,52 +58,22 @@ case class Skill(val id: Int, val name: String, val formula: String,
    * @param char The Character who has this skill
    * @return The Dice String for this skill
    */
-  def getDice(char: Char) = eoceneServices.utilities.getDiceForStep(getRank(char))
+  def getDice(char: Character) = eoceneServices.utilities.getDiceForStep(getRank(char))
 
 }
 
 object Skill {
-
-  /**
-   * Get a Skill build from row
-   *
-   * @param rows the rows from a db call
-   * @return Discipline
-   */
-  def getSkillByRow(row: anorm.Row) = {
-    Skill(row[Int]("id"), row[String]("name"), row[String]("formula"),
-      row[String]("type"), row[String]("comm"), row[Option[Int]]("step"))
-  }
-
-  /**
-   * Get a Skill by its id
-   *
-   * @param id
-   * @return Discipline
-   */
-  def getSkillById(id: Int): Skill = {
-    DB.withConnection("chars") { implicit c =>
-      val querry = SQL(eoceneSqlStrings.GET_SKILL_BY_ID).onParams(id)()
-      getSkillByRow(querry(0))
-    }
-  }
-
   def getSkill(id: Int, name: String, formula: String, skill_type: String,
     comm: String, step: Option[Int]) = Skill(id, name, formula, skill_type, comm, step)
 
-  implicit object TalentFormat extends Format[Skill] {
-
-    def reads(json: JsValue) = JsSuccess(getSkillById(1))
-
+  implicit val skillWrites = new Writes[Skill] {
     def writes(skill: Skill) = skill.step match {
-
       case None => JsObject(Seq("id" -> JsNumber(skill.id),
         "name" -> JsString(skill.name),
         "formula" -> JsString(skill.formula),
         "skill_type" -> JsString(skill.skill_type),
         "comm" -> JsString(skill.comm),
         "step" -> JsNumber(0)))
-
       case _ => JsObject(Seq("id" -> JsNumber(skill.id),
         "name" -> JsString(skill.name),
         "formula" -> JsString(skill.formula),

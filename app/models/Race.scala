@@ -11,12 +11,8 @@
  */
 package models
 
-import play.api.libs.json.Format
 import play.api.libs.json._
 import eoceneServices.eoceneSqlStrings
-import anorm._
-import play.api.db.DB
-import play.api.Play.current
 
 case class Race(var id: Int, var name: String, var dex_mod: Int, var str_mod: Int,
   var cha_mod: Int, var tou_mod: Int, var wil_mod: Int, var per_mod: Int, var kar_step: Int,
@@ -27,39 +23,7 @@ case class Race(var id: Int, var name: String, var dex_mod: Int, var str_mod: In
 
 object Race {
 
-  /**
-   * Get a Race build from row
-   *
-   * @param rows the rows from a db call
-   * @return Discipline
-   */
-  def getRaceByRow(row: anorm.Row) = {
-    Race(row[Int]("id"), row[String]("name"), row[Int]("dex_mod"),
-      row[Int]("str_mod"), row[Int]("cha_mod"), row[Int]("tou_mod"), row[Int]("wil_mod"),
-      row[Int]("per_mod"), row[Int]("k_step"), row[Int]("kar_start"),
-      row[Int]("kar_max"), row[Int]("kar_cost"), row[Int]("movement"),
-      row[String]("abilities"), row[Int]("social_def"),
-      row[Int]("spell_def"), row[Int]("rec_test"), row[Int]("phys_arm"),
-      row[Int]("wound_tresh"),row[Int]("phys_def"))
-  }
-
-  /**
-   * Get a Race By id
-   *
-   * @param id
-   * @return Discipline
-   */
-  def getRaceById(id: Int): Race = {
-    DB.withConnection("chars") { implicit c =>
-      val querry = SQL(eoceneSqlStrings.GET_RACE_BY_ID).onParams(id)()
-      getRaceByRow(querry.head)
-    }
-  }
-
-  implicit object RaceFormat extends Format[Race] {
-
-    def reads(json: JsValue) = JsSuccess(getRaceById(1))
-
+  implicit val raceWrites = new Writes[Race] {
     def writes(race: Race) = JsObject(Seq("id" -> JsNumber(race.id),
       "name" -> JsString(race.name),
       "dex" -> JsNumber(race.dex_mod),
