@@ -11,21 +11,11 @@
  */
 package controllers
 
+import eoceneServices.{EoceneUser, utilities}
 import play.api._
-import play.api.mvc._
-import play.api.db._
-import play.api.Play.current
-import anorm._
-import play.api.db.DB
-import eoceneServices.eoceneSqlStrings
-import eoceneServices.utilities
-import play.api.libs.json.Json
-import models.Character
-import play.api.libs.json.JsString
-import eoceneServices.EoceneUser
-import play.api.mvc.{ Action, RequestHeader }
 import securesocial.core._
-import views.html.defaultpages.badRequest
+
+import scala.util.control.NonFatal
 
 /**
  * Return is responsible for handlign out propper
@@ -78,10 +68,10 @@ class Subviews(override implicit val env: RuntimeEnvironment[EoceneUser],
         val char = dao.getCharById(id)
         char match {
           case None => BadRequest("")
-          case _ =>
-            val validator = char.get.getValidator
-            val char_view = views.html.showChar(char.get, request.user.main)
-            Ok(char_view)
+          case Some(c) =>
+            val validator = c.getValidator
+            val charView = views.html.showChar(c, request.user.main)
+            Ok(charView)
       }
   }
 
@@ -184,36 +174,36 @@ class Subviews(override implicit val env: RuntimeEnvironment[EoceneUser],
    *
    * @return the spell caster view
    */
-  def Spell(id_spell: Int, char_id: Int) =
-    SecuredAction(UserAllowedWithCharacterId(char_id)) {
-        val char = dao.getCharById(char_id)
+  def Spell(idSpell: Int, charId: Int) =
+    SecuredAction(UserAllowedWithCharacterId(charId)) {
+        val char = dao.getCharById(charId)
         char match {
           case None => BadRequest("")
-          case _ =>
+          case Some(c) =>
             try {
-              val spell = char.get.spells.filter(spell => spell.id == id_spell)
+              val spell = c.spells.filter(spell => spell.id == idSpell)
                 .head
-              val spells_discipline_name = char.get.disciplines.
-                filter(discipline => discipline.id == spell.id_disciline.get)
+              val spells_discipline_name = c.disciplines.
+                filter(discipline => discipline.id == spell.idDiscipline.get)
                 .head.
                 name
-              val thread_weaving = char.get.talents.
+              val threadWeaving = c.talents.
                 filter(talent => talent.name contains "Thread").
                 filter(talent => talent.name contains spells_discipline_name.
                   substring(1, 5)).
                 head
-              val spellcasting = char.get.talents.
+              val spellcasting = c.talents.
                 filter(talent => talent.name contains "Spellcasting").head
-              val effect_step: Option[Int] =
+              val effectStep: Option[Int] =
                 if (spell.effect.contains("Willforce")) {
                   try {
                     val bonus: Int = spell.effect.split("\\+")(1).trim
                       .toInt
-                    val willforce: Int = char.get.talents.
+                    val willforce: Int = c.talents.
                       filter(talent => talent.name.contains("Wilforce"))
                       .map(talent => talent.step.getOrElse(0)).headOption.
                       getOrElse(0)
-                    val willpower: Int = char.get.derived("wil_step")
+                    val willpower: Int = c.derived("wil_step")
                       .asInstanceOf[Int]
                     Some(bonus + willforce + willpower)
 
@@ -226,15 +216,15 @@ class Subviews(override implicit val env: RuntimeEnvironment[EoceneUser],
                     }
                   }
                 } else None
-              val effect_dice = utilities.getDiceForStep(effect_step.
+              val effectDice = utilities.getDiceForStep(effectStep.
                 getOrElse(0))
 
-              Ok(views.html.castSpell(char.get, spell, thread_weaving,
-                spellcasting, effect_dice))
+              Ok(views.html.castSpell(c, spell, threadWeaving,
+                spellcasting, effectDice))
                 .withHeaders(CACHE_CONTROL -> "no-cache",
-                  ETAG -> char.get.hashCode.toString)
+                  ETAG -> c.hashCode.toString)
             } catch {
-              case e: Throwable => {
+              case NonFatal(e)=> {
                 Logger.debug(e.toString())
                 BadRequest("")
             }
@@ -245,19 +235,18 @@ class Subviews(override implicit val env: RuntimeEnvironment[EoceneUser],
   /**
    * Fetch share view
    *
-   * @param id_char
+    * @param charId
    * @return view
    */
-  def Share(char_id: Int) =
-    SecuredAction(UserAllowedWithCharacterId(char_id)) {
-      Ok(views.html.share(char_id)).
+  def Share(charId: Int) =
+    SecuredAction(UserAllowedWithCharacterId(charId)) {
+      Ok(views.html.share(charId)).
         withHeaders(CACHE_CONTROL -> "no-cache")
     }
 
   /**
    * Fetch the map view
    *
-   * @param id_char
    * @return view
    */
   def Map() =

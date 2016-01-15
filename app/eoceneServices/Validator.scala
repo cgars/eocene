@@ -14,8 +14,7 @@ package eoceneServices
 import play.api._
 
 class Validator(char: models.Character) {
-  var message: String = ""
-  val circle_requiremnents = Map(2 -> (5, 2, 1),
+  val circleRequiremnents = Map(2 ->(5, 2, 1),
     3 -> (6, 3, 2),
     4 -> (7, 4, 3),
     5 -> (8, 5, 4),
@@ -29,10 +28,11 @@ class Validator(char: models.Character) {
     13 -> (16, 12, 12),
     14 -> (17, 12, 13),
     15 -> (18, 13, 14))
+  var message: String = ""
 
   def validate(): Boolean = {
-    if (char.disciplines.size == 0) {
-      message += "No Discipline selected"
+    if (char.disciplines.isEmpty) {
+      message.concat("No Discipline selected")
     }
     List(char.disciplines.map(discipline => checkDiscilineCircleRequirements(discipline)).
       foldLeft(true)((a1, a2) => a1 && a2),
@@ -44,31 +44,34 @@ class Validator(char: models.Character) {
   }
 
   def checkTrollToughness() = {
-    if(char.race.name.equals("Troll")) 
+    if (char.race.name.equals("Troll"))
       char.derived("tou").asInstanceOf[Int]>10 match{
-        case false => {message += "Minimum Toughness of 11 required\n" 
+        case false => {
+          message += "Minimum Toughness of 11 required\n"
         			  false
         			 }
         case true => true
       }
     else true
   }
-  
+
   def checkTrollStrength() = {
-    if(char.race.name.equals("Troll")) 
+    if (char.race.name.equals("Troll"))
       char.derived("str").asInstanceOf[Int]>10 match{
-        case false => {message += "Minimum Strength is 11\n" 
+        case false => {
+          message += "Minimum Strength is 11\n"
         			  false
         			 }
         case true => true
       }
     else true
   }
-  
+
   def checkObsidimanStrength() = {
-    if(char.race.name.equals("Obsidiman")) 
+    if (char.race.name.equals("Obsidiman"))
       char.derived("str").asInstanceOf[Int]>14 match{
-        case false => {message += "Minimum Strength of 15 required\n" 
+        case false => {
+          message += "Minimum Strength of 15 required\n"
         			  false
         			 }
         case true => true
@@ -77,54 +80,54 @@ class Validator(char: models.Character) {
   }
 
   def checkWindlingStrength() = {
-    if(char.race.name.equals("Windling")) 
+    if (char.race.name.equals("Windling"))
       char.derived("str").asInstanceOf[Int]<12 match{
-        case false => {message += "Maximum Strength is 11\n" 
+        case false => {
+          message += "Maximum Strength is 11\n"
         			  false
         			 }
         case true => true
       }
     else true
   }
-  
+
   def checkDiscilineCircleRequirements(discipline: models.Discipline): Boolean = {
     if (discipline.circle.get == 1) true
-    ((2).to(discipline.circle.get)).
+    (2).to(discipline.circle.getOrElse(0)).
       map(circle => eligableForCircle(circle, discipline)).
       reduce((a1, a2) => a1 && a2)
   }
 
   def eligableForCircle(circle: Int, discipline: models.Discipline): Boolean = {
-    val talents_o_discipline = char.talents.
-      filter(talent => talent.step != None).
-      filter(talent => talent.discipline_id.get == discipline.id)
-    val nr_talents = talents_o_discipline.size >= circle_requiremnents(circle)._1
-    val min_rank = talents_o_discipline.filter(talent => talent.step.get >= circle)
-      .size >= circle_requiremnents(circle)._2
-    val single_talent = talents_o_discipline.
-      filter(talent => talent.circle.get > circle - 2).
-      filter(talent => talent.step.get >= circle_requiremnents(circle)._3).size > 0
-    if (!nr_talents) {
+    val talentsOdiscipline = char.talents.
+      filter(talent => talent.step.isDefined).
+      filter(talent => talent.disciplineId.get == discipline.id)
+    val nrTalents = talentsOdiscipline.size >= circleRequiremnents(circle)._1
+    val minRank = talentsOdiscipline.count(talent => talent.step.getOrElse(0) >= circle) >= circleRequiremnents(circle)._2
+    val singleTalent = talentsOdiscipline.
+      filter(p = talent => talent.circle.get > circle - 2).
+      exists(talent => talent.step.getOrElse(0) >= circleRequiremnents(circle)._3)
+    if (!nrTalents) {
       message += "\nRequired: A minimum of %s %s talents is required to be %s in circle %s".
-        format(circle_requiremnents(circle)._1, discipline.name, discipline.name, circle)
+        format(circleRequiremnents(circle)._1, discipline.name, discipline.name, circle)
     }
-    if (!min_rank) {
+    if (!minRank) {
       message += "\nRequired: A minimum of %s %s Talents of rank %s is required to be %s in circle %s".
-        format(circle_requiremnents(circle)._2, discipline.name, circle, discipline.name, circle)
+        format(circleRequiremnents(circle)._2, discipline.name, circle, discipline.name, circle)
     }
-    if (!single_talent) {
+    if (!singleTalent) {
       message += "\nRequired: One %s talents from circle %s with at least rank %s is required to be %s in circle %s".
-        format(discipline.name, circle - 1, circle_requiremnents(circle)._3, discipline.name, circle)
+        format(discipline.name, circle - 1, circleRequiremnents(circle)._3, discipline.name, circle)
     }
-    nr_talents && min_rank && single_talent
+    nrTalents && minRank && singleTalent
   }
 
   def checkAtrributeImprovements(): Boolean = {
     var allowed = 0
-    if (!(char.disciplines.size == 0)) {
-      allowed += char.disciplines.head.circle.get - 1
+    if (char.disciplines.nonEmpty) {
+      allowed += char.disciplines.head.circle.getOrElse(0) - 1
       char.disciplines.takeRight(char.disciplines.size - 1)
-        .map(discipline => allowed += discipline.circle.get / 2)
+        .foreach(discipline => allowed += discipline.circle.get / 2)
     }
 
     val improvements = char.dex_level + char.cha_level + char.per_level +
@@ -141,7 +144,7 @@ object Validator {
 
   def getValidator(char: models.Character): eoceneServices.Validator = {
     val validator = new Validator(char)
-    return validator
+    validator
   }
 
 }
