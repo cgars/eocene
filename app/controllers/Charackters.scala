@@ -11,25 +11,12 @@
  */
 package controllers
 
-import play.api._
-import play.api.mvc._
-import play.api.db._
-import play.api.Play.current
-import anorm._
-import play.api.db.DB
-import eoceneServices.eoceneSqlStrings
-import eoceneServices.utilities
-import play.api.libs.json.Json
-import models.Character
-import play.api.libs.json.JsString
-import play.api.libs.json.JsNumber
+
+import eoceneServices.{EoceneUser, eoceneUserService, utilities}
+import play.api.libs.json.{JsNumber, JsString, Json}
+import play.api.mvc.RequestHeader
 import securesocial.core._
-import eoceneServices.EoceneUser
-import play.api.mvc.{ Action, RequestHeader }
-import play.api.libs.json.JsNumber
-import eoceneServices.eoceneUserService
-import eoceneServices.eoceneSqlService
-import eoceneServices.eoceneDao
+
 import scala.util.control.NonFatal
 
 /**
@@ -74,7 +61,6 @@ class Charackters(override implicit val env: RuntimeEnvironment[EoceneUser],
   /**
    * Create a character with a random name
    *
-   * @param name
    * @return char id as Json
    */
   def createWithoutName() = SecuredAction { implicit request =>
@@ -168,16 +154,16 @@ class Charackters(override implicit val env: RuntimeEnvironment[EoceneUser],
    * Change (or set) a characters Race
    *
    * @param id character id
-   * @param id_race
+    * @param idRace
    * @return success
    */
-  def changeCharRace(id: Int, id_race: Int) =
+  def changeCharRace(id: Int, idRace: Int) =
     SecuredAction(UserAllowedWithCharacterId(id)) { implicit request =>
-        dao.changeCharRace(id: Int, id_race: Int) match {
+      dao.changeCharRace(id: Int, idRace: Int) match {
           case false => BadRequest("")
           case _ =>
             dao.storeAction(routes.Charackters.
-              changeCharRace(id, id_race).toString,
+              changeCharRace(id, idRace).toString,
               id, request.user.main.userId)
             Ok("")
       }
@@ -187,16 +173,16 @@ class Charackters(override implicit val env: RuntimeEnvironment[EoceneUser],
    * Advance the character in a given discipline
    *
    * @param id character id
-   * @param id_race
+    * @param idDiscipline
    * @return success
    */
-  def improveCharDiscipline(id: Int, id_discipline: Int) =
+  def improveCharDiscipline(id: Int, idDiscipline: Int) =
     SecuredAction(UserAllowedWithCharacterId(id)) { implicit request =>
-        dao.improveCharDiscipline(id: Int, id_discipline: Int) match {
+      dao.improveCharDiscipline(id: Int, idDiscipline: Int) match {
           case false => BadRequest("")
           case _ =>
             dao.storeAction(routes.Charackters.
-              improveCharDiscipline(id: Int, id_discipline: Int)
+              improveCharDiscipline(id: Int, idDiscipline: Int)
               .toString,
               id, request.user.main.userId)
             Ok("")
@@ -207,16 +193,16 @@ class Charackters(override implicit val env: RuntimeEnvironment[EoceneUser],
    * DisAdvance the character in a given discipline
    *
    * @param id character id
-   * @param id_race
+    * @param idDiscipline
    * @return success
    */
-  def corruptCharDiscipline(id: Int, id_discipline: Int) =
+  def corruptCharDiscipline(id: Int, idDiscipline: Int) =
     SecuredAction(UserAllowedWithCharacterId(id)) { implicit request =>
-        dao.corruptCharDiscipline(id: Int, id_discipline: Int) match {
+      dao.corruptCharDiscipline(id: Int, idDiscipline: Int) match {
           case false => BadRequest("")
           case _ =>
             dao.storeAction(routes.Charackters.
-              corruptCharDiscipline(id: Int, id_discipline: Int)
+              corruptCharDiscipline(id: Int, idDiscipline: Int)
               .toString,
               id, request.user.main.userId)
             Ok("")
@@ -227,16 +213,16 @@ class Charackters(override implicit val env: RuntimeEnvironment[EoceneUser],
    * Improve the a talent
    *
    * @param id character id
-   * @param id_talent
+    * @param idTalent
    * @return success
    */
-  def improveCharTalent(id: Int, id_talent: Int) =
+  def improveCharTalent(id: Int, idTalent: Int) =
     SecuredAction(UserAllowedWithCharacterId(id)) { implicit request =>
-        dao.improveCharTalent(id: Int, id_talent: Int) match {
+      dao.improveCharTalent(id: Int, idTalent: Int) match {
           case false => BadRequest("")
           case _ =>
             dao.storeAction(routes.Charackters.
-              improveCharTalent(id: Int, id_talent: Int).toString,
+              improveCharTalent(id: Int, idTalent: Int).toString,
               id, request.user.main.userId)
             Ok("")
       }
@@ -246,16 +232,16 @@ class Charackters(override implicit val env: RuntimeEnvironment[EoceneUser],
    * Reduce a talent
    *
    * @param id character id
-   * @param id_talent
+    * @param idTalent
    * @return success
    */
-  def corruptCharTalent(id: Int, id_talent: Int) =
+  def corruptCharTalent(id: Int, idTalent: Int) =
     SecuredAction(UserAllowedWithCharacterId(id)) { implicit request =>
-        dao.corruptCharTalent(id: Int, id_talent: Int) match {
+      dao.corruptCharTalent(id: Int, idTalent: Int) match {
           case false => BadRequest("")
           case _ =>
             dao.storeAction(routes.Charackters.
-              corruptCharTalent(id: Int, id_talent: Int).toString,
+              corruptCharTalent(id: Int, idTalent: Int).toString,
               id, request.user.main.userId)
             Ok("")
       }
@@ -265,16 +251,16 @@ class Charackters(override implicit val env: RuntimeEnvironment[EoceneUser],
    * Improve a skill (or add it)
    *
    * @param id character id
-   * @param id_skill
+    * @param idSkill
    * @return success
    */
-  def improveCharSkill(id: Int, id_skill: Int) =
+  def improveCharSkill(id: Int, idSkill: Int) =
     SecuredAction(UserAllowedWithCharacterId(id)) { implicit request =>
-        dao.improveCharSkill(id: Int, id_skill: Int) match {
+      dao.improveCharSkill(id: Int, idSkill: Int) match {
           case false => BadRequest("")
           case _ =>
             dao.storeAction(routes.Charackters.
-              improveCharSkill(id: Int, id_skill: Int).toString,
+              improveCharSkill(id: Int, idSkill: Int).toString,
               id, request.user.main.userId)
             Ok("")
       }
@@ -284,16 +270,16 @@ class Charackters(override implicit val env: RuntimeEnvironment[EoceneUser],
    * Reduce a skill (or remnove it)
    *
    * @param id character id
-   * @param id_skill
+    * @param idSkill
    * @return success
    */
-  def corruptCharSkill(id: Int, id_skill: Int) =
+  def corruptCharSkill(id: Int, idSkill: Int) =
     SecuredAction(UserAllowedWithCharacterId(id)) { implicit request =>
-        dao.corruptCharSkill(id: Int, id_skill: Int) match {
+      dao.corruptCharSkill(id: Int, idSkill: Int) match {
           case false => BadRequest("")
           case _ =>
             dao.storeAction(routes.Charackters.
-              corruptCharSkill(id: Int, id_skill: Int).toString,
+              corruptCharSkill(id: Int, idSkill: Int).toString,
               id, request.user.main.userId)
             Ok("")
       }
@@ -303,16 +289,16 @@ class Charackters(override implicit val env: RuntimeEnvironment[EoceneUser],
    * Learn a spell
    *
    * @param id character id
-   * @param id_spell
+    * @param idSpell
    * @return success
    */
-  def learnCharSpell(id: Int, id_spell: Int) =
+  def learnCharSpell(id: Int, idSpell: Int) =
     SecuredAction(UserAllowedWithCharacterId(id)) { implicit request =>
-        dao.learnCharSpell(id: Int, id_spell: Int) match {
+      dao.learnCharSpell(id: Int, idSpell: Int) match {
           case false => BadRequest("")
           case _ =>
             dao.storeAction(routes.Charackters.
-              learnCharSpell(id: Int, id_spell: Int).toString,
+              learnCharSpell(id: Int, idSpell: Int).toString,
               id, request.user.main.userId)
             Ok("")
       }
@@ -322,16 +308,16 @@ class Charackters(override implicit val env: RuntimeEnvironment[EoceneUser],
    * Forget a spell
    *
    * @param id character id
-   * @param id_spell
+    * @param idSpell
    * @return success
    */
-  def unlearnCharSpell(id: Int, id_spell: Int) =
+  def unlearnCharSpell(id: Int, idSpell: Int) =
     SecuredAction(UserAllowedWithCharacterId(id)) { implicit request =>
-        dao.unlearnCharSpell(id: Int, id_spell: Int) match {
+      dao.unlearnCharSpell(id: Int, idSpell: Int) match {
           case false => BadRequest("")
           case _ =>
             dao.storeAction(routes.Charackters.
-              unlearnCharSpell(id: Int, id_spell: Int).toString,
+              unlearnCharSpell(id: Int, idSpell: Int).toString,
               id, request.user.main.userId)
             Ok("")
       }
@@ -346,7 +332,7 @@ class Charackters(override implicit val env: RuntimeEnvironment[EoceneUser],
   def changeCharName(id: Int) = SecuredAction(UserAllowedWithCharacterId(id)) { implicit request =>
       val data = request.body.asJson
       val name = (data.get \ "name").asOpt[String]
-      dao.changeCharName(id, name.get) match {
+    dao.changeCharName(id, name.getOrElse("")) match {
         case false => BadRequest("")
         case _ => Ok("")
     }
@@ -356,16 +342,16 @@ class Charackters(override implicit val env: RuntimeEnvironment[EoceneUser],
    * Add armor to the character
    *
    * @param id character id
-   * @param id_armor
+    * @param idArmor
    * @return success
    */
-  def getArmor(id: Int, id_armor: Int) =
+  def getArmor(id: Int, idArmor: Int) =
     SecuredAction(UserAllowedWithCharacterId(id)) { implicit request =>
-        dao.getArmor(id, id_armor) match {
+      dao.getArmor(id, idArmor) match {
           case false => BadRequest("")
           case _ =>
             dao.storeAction(routes.Charackters.
-              getArmor(id: Int, id_armor: Int).toString,
+              getArmor(id: Int, idArmor: Int).toString,
               id, request.user.main.userId)
             Ok("")
       }
@@ -375,16 +361,16 @@ class Charackters(override implicit val env: RuntimeEnvironment[EoceneUser],
    * Remove armor from the character
    *
    * @param id character id
-   * @param id_armor
+    * @param idArmor
    * @return success
    */
-  def removeArmor(id: Int, id_armor: Int) =
+  def removeArmor(id: Int, idArmor: Int) =
     SecuredAction(UserAllowedWithCharacterId(id)) { implicit request =>
-        dao.removeArmor(id, id_armor) match {
+      dao.removeArmor(id, idArmor) match {
           case false => BadRequest("")
           case _ =>
             dao.storeAction(routes.Charackters.
-              removeArmor(id: Int, id_armor: Int).toString,
+              removeArmor(id: Int, idArmor: Int).toString,
               id, request.user.main.userId)
             Ok("")
       }
@@ -394,16 +380,16 @@ class Charackters(override implicit val env: RuntimeEnvironment[EoceneUser],
    * Attach a thread to an armor item
    *
    * @param id character id
-   * @param id_armor
+    * @param idArmor
    * @return success
    */
-  def attachThreadArmor(id: Int, id_armor: Int) =
+  def attachThreadArmor(id: Int, idArmor: Int) =
     SecuredAction(UserAllowedWithCharacterId(id)) { implicit request =>
-        dao.attachThreadArmor(id, id_armor) match {
+      dao.attachThreadArmor(id, idArmor) match {
           case false => BadRequest("")
           case _ =>
             dao.storeAction(routes.Charackters.
-              attachThreadArmor(id: Int, id_armor: Int).toString,
+              attachThreadArmor(id: Int, idArmor: Int).toString,
               id, request.user.main.userId)
             Ok("")
       }
@@ -413,16 +399,16 @@ class Charackters(override implicit val env: RuntimeEnvironment[EoceneUser],
    * Remove a thread to an armor item
    *
    * @param id character id
-   * @param id_armor
+    * @param idArmor
    * @return success
    */
-  def removeThreadArmor(id: Int, id_armor: Int) =
+  def removeThreadArmor(id: Int, idArmor: Int) =
     SecuredAction(UserAllowedWithCharacterId(id)) { implicit request =>
-        dao.removeThreadArmor(id, id_armor) match {
+      dao.removeThreadArmor(id, idArmor) match {
           case false => BadRequest("")
           case _ =>
             dao.storeAction(routes.Charackters.
-              removeThreadArmor(id: Int, id_armor: Int)
+              removeThreadArmor(id: Int, idArmor: Int)
               .toString,
               id, request.user.main.userId)
             Ok("")
@@ -432,12 +418,12 @@ class Charackters(override implicit val env: RuntimeEnvironment[EoceneUser],
   /**
    * Add a spell to matrix
    *
-   * @param id_spell
-   * @param id_char
+    * @param idSpell
+    * @param idChar
    * @return Success
    */
-  def Spell2Matrix(id_spell: Int, id_char: Int) = SecuredAction {
-    dao.Spell2Matrix(id_spell, id_char) match {
+  def Spell2Matrix(idSpell: Int, idChar: Int) = SecuredAction {
+    dao.Spell2Matrix(idSpell, idChar) match {
       case false => BadRequest("")
       case _ => Ok("")
     }
@@ -446,12 +432,12 @@ class Charackters(override implicit val env: RuntimeEnvironment[EoceneUser],
   /**
    * Remove a spell from a  matrix
    *
-   * @param id_spell
-   * @param id_char
+    * @param idSpell
+    * @param idChar
    * @return Success
    */
-  def SpellFromMatrix(id_spell: Int, id_char: Int) = SecuredAction {
-    dao.SpellFromMatrix(id_spell, id_char) match {
+  def SpellFromMatrix(idSpell: Int, idChar: Int) = SecuredAction {
+    dao.SpellFromMatrix(idSpell, idChar) match {
       case false => BadRequest("")
       case _ => Ok("")
     }
@@ -469,7 +455,9 @@ class Charackters(override implicit val env: RuntimeEnvironment[EoceneUser],
       case None => BadRequest("")
       case _ => Ok(Json.toJson(JsString(dice.get)))
         .withHeaders(CACHE_CONTROL -> "no-cache",
-          ETAG -> dice.get.hashCode.toString)
+          ETAG -> dice.getOrElse {
+            0
+          }.hashCode.toString)
     }
   }
 
@@ -509,7 +497,7 @@ class Charackters(override implicit val env: RuntimeEnvironment[EoceneUser],
    * thrown. It is fellowd by the lower case letter d which in turn is fellowed
    * by the number of sides
    *
-   * @param dieces A string modeeling dices
+    * @param dices A string modeeling dices
    * @return Result as JSON
    */
   def rollDiceString(dices: String) = SecuredAction {
@@ -518,22 +506,22 @@ class Charackters(override implicit val env: RuntimeEnvironment[EoceneUser],
 
       if (dices contains "x") {        
     	  val pattern  = """(\d+)x(.+)""".r
-          val dice_match = pattern.findFirstMatchIn(dices).get
-          val result = 1.to(dice_match.group(1).toInt).map(count=>
-          	if(dice_match.group(2) contains ";"){
-          		  dice_match.group(2).split(";").map(sub_dices =>
-		          utilities.rollDiceString(sub_dices))		          
+        val diceMatch = pattern.findFirstMatchIn(dices).get
+        val result = 1.to(diceMatch.group(1).toInt).map(count =>
+          if (diceMatch.group(2) contains ";") {
+            diceMatch.group(2).split(";").map(subDices =>
+              utilities.rollDiceString(subDices))
           	} 
           	else{
-          	  Array(utilities.rollDiceString(dice_match.group(2)))
+              Array(utilities.rollDiceString(diceMatch.group(2)))
           	  }          	
            )
           Ok(Json.toJson(result)).withHeaders(CACHE_CONTROL -> "no-cache",
           ETAG -> result.hashCode.toString) 
       	} 
       else if(dices contains ";"){
-          val result = dices.split(";").map(sub_dices =>
-          utilities.rollDiceString(sub_dices))
+        val result = dices.split(";").map(subDices =>
+          utilities.rollDiceString(subDices))
           Ok(Json.toJson(result)).withHeaders(CACHE_CONTROL -> "no-cache",
           ETAG -> result.hashCode.toString)
       } 
@@ -564,12 +552,12 @@ class Charackters(override implicit val env: RuntimeEnvironment[EoceneUser],
   /**
    * Remove the current user from the users allowed to edit a character
    *
-   * @param id_char
+    * @param idChar
    * @return Redirect
    */
-  def removeUserFromChar(id_char: Int) =
-    SecuredAction(UserAllowedWithCharacterId(id_char)) { implicit request =>
-      dao.removeUserFromChar(id_char, request.user.main.userId) match {
+  def removeUserFromChar(idChar: Int) =
+    SecuredAction(UserAllowedWithCharacterId(idChar)) { implicit request =>
+      dao.removeUserFromChar(idChar, request.user.main.userId) match {
         case false => BadRequest("")
         case true => Ok("")
       }
@@ -578,12 +566,12 @@ class Charackters(override implicit val env: RuntimeEnvironment[EoceneUser],
   /**
    * Share a character with a user
    *
-   * @param id_char
+    * @param idChar
    * @return Redirect
    */
-  def shareChar(id_char: Int, user_mail: String) =
-    SecuredAction(UserAllowedWithCharacterId(id_char)) { implicit request =>
-      dao.shareChar(id_char, user_mail) match {
+  def shareChar(idChar: Int, userMail: String) =
+    SecuredAction(UserAllowedWithCharacterId(idChar)) { implicit request =>
+      dao.shareChar(idChar, userMail) match {
         case true => Ok("")
         case false => BadRequest("")
       }
@@ -592,17 +580,17 @@ class Charackters(override implicit val env: RuntimeEnvironment[EoceneUser],
   /**
    * Buy Karma
    *
-   * @param id_char
-   * @param nr_points
+    * @param idChar
+    * @param nrPoints
    * @return Success
    */
-  def buyKarma(id_char: Int, nr_points: Int) =
-    SecuredAction(UserAllowedWithCharacterId(id_char)) { implicit request =>
-        dao.buyKarma(id_char, nr_points) match {
+  def buyKarma(idChar: Int, nrPoints: Int) =
+    SecuredAction(UserAllowedWithCharacterId(idChar)) { implicit request =>
+      dao.buyKarma(idChar, nrPoints) match {
           case true =>
             dao.storeAction(routes.Charackters.buyKarma(
-              id_char: Int, nr_points: Int).toString,
-              id_char, request.user.main.userId)
+              idChar: Int, nrPoints: Int).toString,
+              idChar, request.user.main.userId)
             Ok("")
           case false => BadRequest("")
       }
@@ -611,17 +599,17 @@ class Charackters(override implicit val env: RuntimeEnvironment[EoceneUser],
   /**
    * Spent Karma
    *
-   * @param id_char
-   * @param nr_points
+    * @param idChar
+    * @param nrPoints
    * @return Success
    */
-  def spentKarma(id_char: Int, nr_points: Int) =
-    SecuredAction(UserAllowedWithCharacterId(id_char)) { implicit request =>
-        dao.spentKarma(id_char, nr_points) match {
+  def spentKarma(idChar: Int, nrPoints: Int) =
+    SecuredAction(UserAllowedWithCharacterId(idChar)) { implicit request =>
+      dao.spentKarma(idChar, nrPoints) match {
           case true =>
             dao.storeAction(routes.Charackters.spentKarma(
-              id_char: Int, nr_points: Int).toString,
-              id_char, request.user.main.userId)
+              idChar: Int, nrPoints: Int).toString,
+              idChar, request.user.main.userId)
             Ok("")
           case false => BadRequest("")
       }
@@ -630,17 +618,17 @@ class Charackters(override implicit val env: RuntimeEnvironment[EoceneUser],
   /**
    * Add LP
    *
-   * @param id_char
-   * @param nr_points
+    * @param idChar
+    * @param nrPoints
    * @return Success
    */
-  def addLP(id_char: Int, nr_points: Int) =
-    SecuredAction(UserAllowedWithCharacterId(id_char)) { implicit request =>
-        dao.addLP(id_char, nr_points) match {
+  def addLP(idChar: Int, nrPoints: Int) =
+    SecuredAction(UserAllowedWithCharacterId(idChar)) { implicit request =>
+      dao.addLP(idChar, nrPoints) match {
           case true =>
             dao.storeAction(routes.Charackters.addLP(
-              id_char: Int, nr_points: Int).toString,
-              id_char, request.user.main.userId)
+              idChar: Int, nrPoints: Int).toString,
+              idChar, request.user.main.userId)
             Ok("")
           case false => BadRequest("")
       }

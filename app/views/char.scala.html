@@ -178,6 +178,7 @@
 <td class="defenseName">Physical Defense</td>
 <td class="defenseValue">@char.derived("physDef")</td>
 </tr>
+	<tr>
 <td class="defenseName">Spell Defense</td>
 <td class="defenseValue">@char.derived("spellDef")</td>
 </tr>
@@ -271,8 +272,10 @@
 @char.skills.map{skill=> 
 	<tr id=@{"ab_id"+skill.id}>
 	<td class="table_field" id="@{"ab_id"+skill.id+"name"}">@skill.name</td>
-	<td class="table_field" id="@{"ab_id"+skill.id+"circle"}">@skill.step</td>	
-	<td class="table_field" id="@{"ab_id"+skill.id+"action"}">@skill.skill_type</td>
+	<td class="table_field" id="@{"ab_id"+skill.id+"circle"}">@skill.step</td>
+		<td class="table_field" id="@{
+			"ab_id" + skill.id + "action"
+		}">@skill.skillType</td>
 	<td class="table_field" id="@{"ab_id"+skill.id+"karma"}">@skill.formula</td>
 	<td class="table_field" id="@{"ab_id"+skill.id+"strain"}">@skill.comm</td>
 	<td class="table_field" id="@{"ab_id"+skill.id+"rank"}">@{skill.step}@{if(skill.getRank(char)>0)"/"+skill.getRank(char) else ""}</td>
@@ -307,7 +310,7 @@
 	<tr id=@{"ab_id"+spell.id}>
 	<td class="table_field" id="@{"ab_id"+spell.id+"name"}">@spell.name</td>
 	<td class="cast_spell" id="@{""+spell.id}">Cast</td>
-	@if(spell.spell_matrix==None){
+		@if(spell.spellMatrix == None) {
 		<td class="nomatrix" id="@{""+spell.id}"></td>
 	}else{
 		<td class="inmatrix" id="@{""+spell.id}"></td>
@@ -318,7 +321,9 @@
 	<td class="table_field" id="@{"ab_id"+spell.id+"strain"}">@spell.duration</td>
 	<td class="table_field" id="@{"ab_id"+spell.id+"strain"}">@spell.effect</td>
 	<td class="table_field" id="@{"ab_id"+spell.id+"strain"}">@spell.discription</td>
-	<td class="table_field" id="@{"ab_id"+spell.id+"karma"}">@spell.weaving_diff</td>
+		<td class="table_field" id="@{
+			"ab_id" + spell.id + "karma"
+		}">@spell.weavingDiff</td>
 	<td class="table_field" id="@{"ab_id"+spell.id+"strain"}">@spell.reatunging</td>
 	<td class="table_field" id="@{"ab_id"+spell.id+"strain"}">@spell.difficulty</td>
 	<td class="unlearn_spell" id="@{""+spell.id}">Unlearn</td>
