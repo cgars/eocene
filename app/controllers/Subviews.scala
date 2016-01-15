@@ -86,9 +86,9 @@ class Subviews(override implicit val env: RuntimeEnvironment[EoceneUser],
         char match {
           case None => BadRequest("")
           case _ =>
-            val char_view = views.html.char(char.get)
+            val charView = views.html.char(char.get)
             Logger.debug(routes.Subviews.getChar(id, date).toString)
-            Ok(char_view).withHeaders(CACHE_CONTROL -> "no-cache",
+            Ok(charView).withHeaders(CACHE_CONTROL -> "no-cache",
               ETAG -> char.get.hashCode.toString)
       }
     }
@@ -158,12 +158,12 @@ class Subviews(override implicit val env: RuntimeEnvironment[EoceneUser],
    *
    * @return the dice roller view
    */
-  def Dice(target_class: String, target_id: String, dice: String, char_id: Int) =
+  def Dice(targetClass: String, target_id: String, dice: String, char_id: Int) =
     SecuredAction(UserAllowedWithCharacterId(char_id)) {
         val char = dao.getCharById(char_id)
         char match {
           case None => BadRequest("")
-          case _ => Ok(views.html.dice(char.get, target_class, target_id, dice))
+          case _ => Ok(views.html.dice(char.get, targetClass, target_id, dice))
             .withHeaders(CACHE_CONTROL -> "no-cache",
               ETAG -> char.get.hashCode.toString)
       }
@@ -208,7 +208,7 @@ class Subviews(override implicit val env: RuntimeEnvironment[EoceneUser],
                     Some(bonus + willforce + willpower)
 
                   } catch {
-                    case e: Exception => {
+                    case NonFatal(e) => {
                       Logger.error(
                         """Error when getting the Effect for a 
 			    	    			Spell view.Error was:%s""".format(e))

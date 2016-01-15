@@ -1,57 +1,14 @@
 package eoceneServices
 
-import models.Race
-import play.api.db.DB
-import play.api.Play.current
 import anorm._
-import models.Modifier
-import models.Discipline
-import models.Talent
-import models.Spell
-import models.Skill
-import models.Power
-import models.Armor
-import models.Character
-import java.sql.Connection
 import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException
+import models.{Armor, Character, Discipline, Modifier, Power, Race, Skill, Spell, Talent}
 import play.Logger
-import securesocial.core._
+import play.api.Play.current
+import play.api.db.DB
 
 
 class eoceneSqlService extends eoceneDao{
-  
-  /**
-   * Get a Race By id
-   *
-   * @param id
-   * @return Race
-   */
-  def getRaceById(id: Int): Option[Race] = {
-    DB.withConnection("chars") { implicit c =>
-      val querry = SQL(eoceneSqlStrings.GET_RACE_BY_ID).onParams(id)()
-      querry.size match {
-        case 0 => None
-        case _ =>
-          this.getRaceWithRow(querry.head)
-      }
-    }
-  }
-  
-  /**
-   * Get a Race By id
-   *
-   * @param row
-   * @return Some(Race)
-   */
-  def getRaceWithRow(row:anorm.Row): Option[Race] = {
-      Some(Race(row[Int]("id"), row[String]("name"), row[Int]("dex_mod"),
-        row[Int]("str_mod"), row[Int]("cha_mod"), row[Int]("tou_mod"),
-        row[Int]("wil_mod"), row[Int]("per_mod"), row[Int]("k_step"), 
-        row[Int]("kar_start"), row[Int]("kar_max"), row[Int]("kar_cost"), 
-        row[Int]("movement"), row[String]("abilities"), row[Int]("social_def"),
-        row[Int]("spell_def"), row[Int]("rec_test"), row[Int]("phys_arm"),
-        row[Int]("wound_tresh"), row[Int]("phys_def")))      
-  }
   
    /**
    * Get all availible races
@@ -66,64 +23,22 @@ class eoceneSqlService extends eoceneDao{
   }
   
   /**
-   * Get the id of a character with a certain name
+    * Get a Race By id
    *
    * @param id
-   * @return Creates the character of that id from the database
+    * @return Race
    */
-  def getCharById(id: Int) = {
-    DB.withTransaction("chars") { implicit c =>
-	    val char_querry = eoceneSqlStrings.GET_CHAR_BY_ID.onParams(id)()
-	    char_querry.size match{
-	      case 0 => None
-	      case _ => 	    
-		    val race_querry = eoceneSqlStrings.RACE_JOIN.onParams(id)()    
-		    val disciplines_querry = eoceneSqlStrings.DISCIPLINE_JOIN.onParams(id)().
-		      groupBy(row => row[Int]("Disciplines.id"))
-		    val talent_querry = eoceneSqlStrings.TALENT_JOIN.onParams(id)()
-		    val spell_querry = eoceneSqlStrings.SPELL_JOIN.onParams(id)()
-		    val skill_querry = eoceneSqlStrings.SKILL_JOIN.onParams(id)()
-		    val armor_map = eoceneSqlStrings.GET_ARMOR.onParams(id)().
-		      groupBy(row => row[Int]("Armors.id"))
-		    val row = char_querry.head        
-		    val race = getRaceWithRow(race_querry.head).get
-		    val disciplines = disciplines_querry.map(rows =>
-		      getDisciplineByRow(rows._2)).toList
-		    val talents = utilities.popDurability(talent_querry.map(
-		      row => getTalentByRow(row)).toList)          
-		    val spells = spell_querry.map(row => getSpellByRow(row)).toList
-		    val skills = skill_querry.map(row => getSkillByRow(row)).toList
-		    val armors = armor_map.map(rows => getArmorByRows(rows._2)).toList            
-		    val derived_values = getDerivedValues(row, race, talents, armors,
-		      disciplines)
-		    Some(Character(row[Int]("id"), row[String]("name"), row[Int]("dex_mod"),
-		      row[Int]("str_mod"), row[Int]("cha_mod"), row[Int]("tou_mod"),
-		      row[Int]("wil_mod"), row[Int]("per_mod"), row[Int]("dex_level"),
-		      row[Int]("str_level"), row[Int]("cha_level"), row[Int]("tou_level"),
-		      row[Int]("wil_level"), row[Int]("per_level"), row[Int]("lp_av"),
-		      row[Int]("lp_sp"), row[Int]("kar_curr"), row[Int]("pp"), race,
-		      disciplines, talents, spells, skills, armors, derived_values))  
-	    }
+  def getRaceById(id: Int): Option[Race] = {
+    DB.withConnection("chars") { implicit c =>
+      val querry = SQL(eoceneSqlStrings.GET_RACE_BY_ID).onParams(id)()
+      querry.size match {
+        case 0 => None
+        case _ =>
+          this.getRaceWithRow(querry.head)
+      }
     }
   }
   
-  /**
-   * Get a Discipline
-   *
-   * @param rows the rows from a db call each row might correspond to a modifier
-   * @return Discipline
-   */
-  def getDisciplineByRow(discipline_rows: Stream[anorm.Row]) = {
-    val modifiers = discipline_rows(0)[Option[Int]]("disciplines_modifiers.circle") match {
-      case None => List()
-      case _ => discipline_rows.map(row => Modifier.getModifierByRow(row))
-        .toList
-    }
-    val row = discipline_rows.head
-    Discipline(row[Int]("id"), row[String]("name"), row[String]("abilities"),
-      row[Option[Int]]("chars_disciplines.circle"), modifiers)
-  }
-
   /**
    * Get a Discipline
    *
@@ -137,6 +52,7 @@ class eoceneSqlService extends eoceneDao{
       getDisciplineByRow(querry(0))
     }
   }
+
   /**
    * Get a represenation of the talents_discipline table with all talents not
    * higher than a certain circle
@@ -156,20 +72,6 @@ class eoceneSqlService extends eoceneDao{
   }
   
   /**
-   * 	Returns a Talent created from the entries in the row
-   *
-   * @param row: A row from a db querry
-   * @return Talent
-   */
-  def getTalentByRow(row: anorm.Row) = {
-    Talent(row[Int]("id"), row[String]("name"), row[Boolean]("action"),
-      row[Boolean]("karma"), row[String]("strain"), row[String]("formula"),
-      row[Option[Int]]("step"), row[Option[Boolean]]("disciplined"),
-      row[Option[Int]]("talents_disciplines.circle"),
-      row[Option[Int]]("talents_disciplines.id_discipline"))
-  }
-
-  /**
    * Return the Talent with id
    *
    * @param row: A row from a db querry
@@ -182,54 +84,25 @@ class eoceneSqlService extends eoceneDao{
 	    getTalentByRow(querry.head)
     }
   }
-  
-  /**
-   * Get a Spell build from row
-   *
-   * @param rows the rows from a db call
-   * @return Spell
-   */
-  def getSpellByRow(row: anorm.Row, step: Int = 0, circle: Int = 1,
-    disciplined: Boolean = false) = {
-    Spell(row[Int]("id"), row[String]("name"), row[Int]("Spells.circle"),
-      row[Int]("threads"),
-      row[Int]("weaving_diff"), row[Int]("reatuning"),
-      row[String]("runge"), row[String]("duration"),
-      row[String]("effect"), row[String]("difficulty"),
-      row[String]("description"), row[Option[Int]]("id_char"),
-      row[Option[Int]]("id_discipline"),
-      row[Option[Int]]("spell_matrix"))
-  }
 
   /**
-   * Get a Spell by its id
-   *
-   * @param id
-   * @return Spell
-   */
+    * Get a Spell by its id
+    *
+    * @param id
+    * @return Spell
+    */
   def getSpellById(id: Int, step: Int = 0, circle: Int = 1, disciplined: Boolean = false): Spell = {
     DB.withConnection("chars") { implicit c =>
       val querry = SQL(eoceneSqlStrings.GET_SPELL_BY_ID).onParams(id)()
       getSpellByRow(querry.head, step, circle, disciplined)
     }
   }
- 
-/**
-   * Get a Skill build from row
-   *
-   * @param rows the rows from a db call
-   * @return Discipline
-   */
-  def getSkillByRow(row: anorm.Row) = {
-    Skill(row[Int]("id"), row[String]("name"), row[String]("formula"),
-      row[String]("type"), row[String]("comm"), row[Option[Int]]("step"))
-  }
 
   /**
-   * Get a Skill by its id
+    * Get a Skill by its id
    *
    * @param id
-   * @return Discipline
+    * @return Discipline
    */
   def getSkillById(id: Int): Skill = {
     DB.withConnection("chars") { implicit c =>
@@ -237,28 +110,11 @@ class eoceneSqlService extends eoceneDao{
       getSkillByRow(querry(0))
     }
   }
-  
-  /**
-   * Get a Armor
-   * @param rows the rows from a dab call each row might correspond to a power
-   * @return Armor
-   */
-  def getArmorByRows(rows: Stream[anorm.Row]) = {
-    //var powers:List[Power] = List() 
-    val powers = rows(0)[Option[Int]]("thread") match {
-      case None => List()
-      case _ => rows.map(row => Power.getPowerByRow(row)).toList
-    }
-    val row = rows.head
-    Armor(row[Int]("id"), row[String]("name"), row[Int]("cost"),
-      row[Int]("init"), row[Int]("phys"), row[Int]("mystic"),
-      row[Option[Int]]("shatter"), powers, row[Option[Int]]("threads"))
-  }
 
   /**
-   * Get a Armor
+    * Get a Armor
    * @param id
-   * @return Armor
+    * @return Armor
    */
   def getArmorById(id: Int) = {
     DB.withConnection("chars") { implicit c =>
@@ -268,97 +124,6 @@ class eoceneSqlService extends eoceneDao{
     }
   }
 
-/**
-   * Calculate the Values that depend on the characteristic of a charactor.
-   *
-   * @param row A row representing the character
-   * @param race the characters Race
-   * @param talents the characters talents
-   * @param armors the characters armors
-   * @return a map of values
-   *
-   *  The methods should be moved to the class and only called after the Char
-   *  object was created.
-   */
-  def getDerivedValues(row: anorm.Row, race: Race, talents: List[Talent],
-    armors: List[Armor], disciplines: List[Discipline]): Map[String, Any] = {
-    val attributes = Map(
-      "dex" -> (5 + row[Int]("dex_mod") + row[Int]("dex_level") + race.dex_mod),
-      "str" -> (5 + row[Int]("str_mod") + row[Int]("str_level") + race.str_mod),
-      "cha" -> (5 + row[Int]("cha_mod") + row[Int]("cha_level") + race.cha_mod),
-      "tou" -> (5 + row[Int]("tou_mod") + row[Int]("tou_level") + race.tou_mod),
-      "wil" -> (5 + row[Int]("wil_mod") + row[Int]("wil_level") + race.wil_mod),
-      "per" -> (5 + row[Int]("per_mod") + row[Int]("per_level") + race.per_mod))
-    Map(
-      "dex" -> (5 + row[Int]("dex_mod") + row[Int]("dex_level") + race.dex_mod),
-      "str" -> (5 + row[Int]("str_mod") + row[Int]("str_level") + race.str_mod),
-      "cha" -> (5 + row[Int]("cha_mod") + row[Int]("cha_level") + race.cha_mod),
-      "tou" -> (5 + row[Int]("tou_mod") + row[Int]("tou_level") + race.tou_mod),
-      "wil" -> (5 + row[Int]("wil_mod") + row[Int]("wil_level") + race.wil_mod),
-      "per" -> (5 + row[Int]("per_mod") + row[Int]("per_level") + race.per_mod),
-      "dex_step" -> eoceneServices.utilities.getAttrStep(attributes("dex")),
-      "str_step" -> eoceneServices.utilities.getAttrStep(attributes("str")),
-      "cha_step" -> eoceneServices.utilities.getAttrStep(attributes("cha")),
-      "tou_step" -> eoceneServices.utilities.getAttrStep(attributes("tou")),
-      "wil_step" -> eoceneServices.utilities.getAttrStep(attributes("wil")),
-      "per_step" -> eoceneServices.utilities.getAttrStep(attributes("per")),
-      "physDef" -> (eoceneServices.utilities.getAttrDefense(attributes("dex")) +
-        disciplines.map(discipline =>
-          discipline.getModifierValueByName("physDef"))
-        .foldLeft(0)((a1, a2) => a1 + a2) + 
-        race.phys_def ),
-      "spellDef" -> (eoceneServices.utilities.getAttrDefense(attributes("per")) +
-        race.spell_def +
-        disciplines.map(discipline =>
-          discipline.getModifierValueByName("spellDef"))
-        .foldLeft(0)((a1, a2) => a1 + a2)),
-      "socDef" -> (eoceneServices.utilities.getAttrDefense(attributes("cha")) +
-        race.social_def + disciplines.map(discipline =>
-          discipline.getModifierValueByName("socDef"))
-        .foldLeft(0)((a1, a2) => a1 + a2)),
-      "movement" -> eoceneServices.utilities.getAttrMovement(attributes("dex") +
-        race.movement),
-      "carrying" -> eoceneServices.utilities.getAttrCarrying(attributes("str")),
-      "death" -> (eoceneServices.utilities.getAttrDeath(attributes("tou")) +
-        utilities.getDurability(talents)(0)),
-      "unconc" -> (eoceneServices.utilities.getAttrUnconc(attributes("tou")) +
-        utilities.getDurability(talents)(1)),
-      "wound" -> eoceneServices.utilities.getAttrWound(attributes("tou")),
-      "rec" -> (eoceneServices.utilities.getAttrRec(attributes("tou")) +
-        race.rec_test +
-        disciplines.map(discipline =>
-          discipline.getModifierValueByName("rec"))
-        .foldLeft(0)((a1, a2) => a1 + a2)),
-      "mystic" -> (eoceneServices.utilities.getAttrMystic(attributes("wil")) +
-        race.phys_armor +
-        armors.map(armor => armor.getMysticalArmor()).
-        foldLeft(0)((a1, a2) => a1 + a2)),
-      "physical" -> armors.map(armor => armor.getPhysicalArmor()).
-        foldLeft(0)((a1, a2) => a1 + a2),
-      "initiative" -> (eoceneServices.utilities.getAttrStep(attributes("dex")) +
-        armors.map(armor => armor.getInitiativeBonus()).
-        foldLeft(0)((a1, a2) => a1 + a2) +
-        disciplines.map(discipline =>
-          discipline.getModifierValueByName("ini"))
-        .foldLeft(0)((a1, a2) => a1 + a2)))
-  }
-  
-  /**
-   * Get the id of a character with a certain name
-   *
-   * @param name
-   * @return The first chharacter with that name or None
-   */
-  def getCharIdByName(name: String) = {
-    DB.withConnection("chars") { implicit c =>
-      val querry = SQL(eoceneSqlStrings.GET_CHAR_ID_FROM_NAME).onParams(name)()
-      querry.headOption match {
-        case None => None
-        case Some(row) => row[Option[Int]]("id")
-      }
-    }
-  }
-  
  /**
    * Create a character with a name. ensure race
    *
@@ -379,7 +144,23 @@ class eoceneSqlService extends eoceneDao{
         char_id
       }
     }
- 
+
+  /**
+    * Get the id of a character with a certain name
+    *
+    * @param name
+    * @return The first chharacter with that name or None
+    */
+  def getCharIdByName(name: String) = {
+    DB.withConnection("chars") { implicit c =>
+      val querry = SQL(eoceneSqlStrings.GET_CHAR_ID_FROM_NAME).onParams(name)()
+      querry.headOption match {
+        case None => None
+        case Some(row) => row[Option[Int]]("id")
+      }
+    }
+  }
+
   /**
    * Change the race of an character
    *
@@ -398,7 +179,7 @@ class eoceneSqlService extends eoceneDao{
     	}
     }
   }
-  
+
   /**
    * Get the Race of a character
    *
@@ -414,34 +195,6 @@ class eoceneSqlService extends eoceneDao{
         case Some(row) => row[Option[Int]]("id_race")
       }
     }
-  }
-
-  def getCharAttribute(id: Int, attribute: String): Option[Int] = {
-    DB.withConnection("chars"){implicit c=>
-    	val querry = SQL(eoceneSqlStrings.GET_CHAR_ATTRIBUTE).onParams(id)()
-	    querry.headOption match {
-	      case None => None
-	      case Some(row) => row[Option[Int]](attribute)
-	    }
-    }
-  }
-
-  /**
-   * Update an attrribute
-   *
-   * @param id the id of the character
-   * @param attribute the name of the atrribute (eg. "dex_mod")
-   * @param direction either "up" or "down"
-   * @param c A sql connection. comes from the controller
-   * @return Success indicator
-   */
-  def updateCharAttribute(id: Int, attribute: String, new_value: Int): Boolean = {
-    DB.withConnection("chars"){implicit c=>
-	    val result = SQL(eoceneSqlStrings.UPDATE_CHAR_ATTRIBUTE.format(attribute)).
-	      onParams(new_value, id).executeUpdate()
-	    Logger.info("attr:%s,new:%s, result:%s".format(attribute, new_value, result))
-    return result > 0
-    }    
   }
 
   /**
@@ -481,6 +234,34 @@ class eoceneSqlService extends eoceneDao{
     }
   }
 
+  def getCharAttribute(id: Int, attribute: String): Option[Int] = {
+    DB.withConnection("chars") { implicit c =>
+      val querry = SQL(eoceneSqlStrings.GET_CHAR_ATTRIBUTE).onParams(id)()
+      querry.headOption match {
+        case None => None
+        case Some(row) => row[Option[Int]](attribute)
+      }
+    }
+  }
+
+  /**
+    * Update an attrribute
+    *
+    * @param id the id of the character
+    * @param attribute the name of the atrribute (eg. "dex_mod")
+    * @param direction either "up" or "down"
+    * @param c A sql connection. comes from the controller
+    * @return Success indicator
+    */
+  def updateCharAttribute(id: Int, attribute: String, new_value: Int): Boolean = {
+    DB.withConnection("chars") { implicit c =>
+      val result = SQL(eoceneSqlStrings.UPDATE_CHAR_ATTRIBUTE.format(attribute)).
+        onParams(new_value, id).executeUpdate()
+      Logger.info("attr:%s,new:%s, result:%s".format(attribute, new_value, result))
+      return result > 0
+    }
+  }
+
   /**
    * Update an attrribute using Legend points
    *
@@ -502,7 +283,7 @@ class eoceneSqlService extends eoceneDao{
 	          updateCharAttribute(id, attribute, value + 1)
 	          updateCharAttribute(id, "lp_sp", lp.get +
 	            eoceneServices.utilities.getAttributeIncreaseLPCost(value + 1))
-	
+
 	      }
 	    } else {
 	      current_value match {
@@ -516,26 +297,6 @@ class eoceneSqlService extends eoceneDao{
 	              getAttributeIncreaseLPCost(current_value.get))
 	        }
         }
-      }
-    }
-  }
-
-
-
-  /**
-   * Get  A List representing the chars_disciplines table entries for this
-   * character
-   *
-   * @param id the id of the character
-   * @return A nestetd List of integers corresponding to id_char,id_discipline
-   * 		 and circle
-   */
-  def getCharDisciplineRowsByCharId(id: Int): List[List[Int]] = {
-    DB.withConnection("chars") { implicit c =>
-      {
-        val querry = SQL(eoceneSqlStrings.GET_CHAR_DISCIPLINES).onParams(id)()
-        return querry.map(a => List(a[Int]("id_char"), a[Int]("id_discipline"),
-          a[Int]("circle"))).toList
       }
     }
   }
@@ -560,6 +321,23 @@ class eoceneSqlService extends eoceneDao{
 	      SQL(eoceneSqlStrings.INSERT_CHAR_DISCIPLINE).onParams(id, id_discipline, 1)
 	        .executeUpdate() > 0
 	    }
+    }
+  }
+
+  /**
+    * Get  A List representing the chars_disciplines table entries for this
+    * character
+    *
+    * @param id the id of the character
+    * @return A nestetd List of integers corresponding to id_char,id_discipline
+    *         and circle
+    */
+  def getCharDisciplineRowsByCharId(id: Int): List[List[Int]] = {
+    DB.withConnection("chars") { implicit c => {
+      val querry = SQL(eoceneSqlStrings.GET_CHAR_DISCIPLINES).onParams(id)()
+      return querry.map(a => List(a[Int]("id_char"), a[Int]("id_discipline"),
+        a[Int]("circle"))).toList
+    }
     }
   }
 
@@ -590,40 +368,6 @@ class eoceneSqlService extends eoceneDao{
 	          }
           }
       }
-    }
-  }
-
-  /**
-   * Get data for talents of a charcter
-   *
-   * @param id the id of the character
-   * @param id_discipline
-   * @return a nested list of integers with id_char, id_talent and step
-   * 		 respectively
-   */
-  def getCharTalentRowsIdByCharId(id: Int): List[List[Int]] = {
-    DB.withConnection("chars") { implicit c =>
-      {
-        val querry = SQL(eoceneSqlStrings.GET_CHAR_TALENTS).onParams(id)()
-        return querry.map(a => List(a[Int]("id_char"), a[Int]("id_talent"),
-          a[Int]("step"))).toList
-      }
-    }
-  }
-
-  /**
-   * Get data for talents of a character while ensuring that the circle is the
-   * lowest
-   *
-   * @param id the id of the character
-   * @param id_discipline
-   * @return success
-   */
-  def getTalentCircleByTalenAndDisciId(id_talent: Int, id_char: Int) = {
-    DB.withConnection("chars"){implicit c=>
-	    val querry = SQL(eoceneSqlStrings.GET_TALENT_CIRCLE).onParams(
-	      id_char, id_talent)()
-	    querry(0)[Int]("circle")
     }
   }
 
@@ -685,13 +429,37 @@ class eoceneSqlService extends eoceneDao{
     }
   }
 
-  def getCharSkillRowsByCharId(id: Int): List[List[Int]] = {
+  /**
+    * Get data for talents of a charcter
+    *
+    * @param id the id of the character
+    * @param id_discipline
+    * @return a nested list of integers with id_char, id_talent and step
+    *         respectively
+    */
+  def getCharTalentRowsIdByCharId(id: Int): List[List[Int]] = {
     DB.withConnection("chars") { implicit c =>
       {
-        val querry = SQL(eoceneSqlStrings.GET_CHAR_SKILLS).onParams(id)()
-        return querry.map(a => List(a[Int]("id_char"), a[Int]("id_skill"),
+        val querry = SQL(eoceneSqlStrings.GET_CHAR_TALENTS).onParams(id)()
+        return querry.map(a => List(a[Int]("id_char"), a[Int]("id_talent"),
           a[Int]("step"))).toList
       }
+    }
+  }
+
+  /**
+    * Get data for talents of a character while ensuring that the circle is the
+    * lowest
+    *
+    * @param id the id of the character
+    * @param id_discipline
+    * @return success
+    */
+  def getTalentCircleByTalenAndDisciId(id_talent: Int, id_char: Int) = {
+    DB.withConnection("chars") { implicit c =>
+      val querry = SQL(eoceneSqlStrings.GET_TALENT_CIRCLE).onParams(
+        id_char, id_talent)()
+      querry(0)[Int]("circle")
     }
   }
 
@@ -719,6 +487,15 @@ class eoceneSqlService extends eoceneDao{
 	      SQL(eoceneSqlStrings.ADD_TO_LP).onParams(
 	        utilities.getSkillLPCcost(1), id).executeUpdate() > 0
 	    }
+    }
+  }
+
+  def getCharSkillRowsByCharId(id: Int): List[List[Int]] = {
+    DB.withConnection("chars") { implicit c => {
+      val querry = SQL(eoceneSqlStrings.GET_CHAR_SKILLS).onParams(id)()
+      return querry.map(a => List(a[Int]("id_char"), a[Int]("id_skill"),
+        a[Int]("step"))).toList
+    }
     }
   }
 
@@ -764,6 +541,7 @@ class eoceneSqlService extends eoceneDao{
       }
     }
   }
+
   /**
    * Learn a spell
    *
@@ -935,9 +713,9 @@ class eoceneSqlService extends eoceneDao{
     DB.withTransaction("chars"){implicit c=>
     val char = getCharById(id_char)
 	    SQL(eoceneSqlStrings.UPDATE_CHAR_ATTRIBUTE.format("kar_curr"))
-	      .onParams(char.get.kar_curr + nr_points, id_char).executeUpdate > 0 &&
+        .onParams(char.get.karCurr + nr_points, id_char).executeUpdate > 0 &&
 	      SQL(eoceneSqlStrings.UPDATE_CHAR_ATTRIBUTE.format("lp_sp"))
-	      .onParams(char.get.lp_sp + nr_points * char.get.race.kar_cost, id_char)
+          .onParams(char.get.lpSp + nr_points * char.get.race.kar_cost, id_char)
 	      .executeUpdate > 0
     }
   }
@@ -953,8 +731,218 @@ class eoceneSqlService extends eoceneDao{
     DB.withConnection("chars"){implicit c=>
 	    val char = getCharById(id_char)
 	    SQL(eoceneSqlStrings.UPDATE_CHAR_ATTRIBUTE.format("kar_curr"))
-	      .onParams(char.get.kar_curr - nr_points, id_char).executeUpdate > 0
+        .onParams(char.get.karCurr - nr_points, id_char).executeUpdate > 0
     }
+  }
+
+  /**
+    * Get the id of a character with a certain name
+    *
+    * @param id
+    * @return Creates the character of that id from the database
+    */
+  def getCharById(id: Int) = {
+    DB.withTransaction("chars") { implicit c =>
+      val char_querry = eoceneSqlStrings.GET_CHAR_BY_ID.onParams(id)()
+      char_querry.size match {
+        case 0 => None
+        case _ =>
+          val race_querry = eoceneSqlStrings.RACE_JOIN.onParams(id)()
+          val disciplines_querry = eoceneSqlStrings.DISCIPLINE_JOIN.onParams(id)().
+            groupBy(row => row[Int]("Disciplines.id"))
+          val talent_querry = eoceneSqlStrings.TALENT_JOIN.onParams(id)()
+          val spell_querry = eoceneSqlStrings.SPELL_JOIN.onParams(id)()
+          val skill_querry = eoceneSqlStrings.SKILL_JOIN.onParams(id)()
+          val armor_map = eoceneSqlStrings.GET_ARMOR.onParams(id)().
+            groupBy(row => row[Int]("Armors.id"))
+          val row = char_querry.head
+          val race = getRaceWithRow(race_querry.head).get
+          val disciplines = disciplines_querry.map(rows =>
+            getDisciplineByRow(rows._2)).toList
+          val talents = utilities.popDurability(talent_querry.map(
+            row => getTalentByRow(row)).toList)
+          val spells = spell_querry.map(row => getSpellByRow(row)).toList
+          val skills = skill_querry.map(row => getSkillByRow(row)).toList
+          val armors = armor_map.map(rows => getArmorByRows(rows._2)).toList
+          val derived_values = getDerivedValues(row, race, talents, armors,
+            disciplines)
+          Some(Character(row[Int]("id"), row[String]("name"), row[Int]("dex_mod"),
+            row[Int]("str_mod"), row[Int]("cha_mod"), row[Int]("tou_mod"),
+            row[Int]("wil_mod"), row[Int]("per_mod"), row[Int]("dex_level"),
+            row[Int]("str_level"), row[Int]("cha_level"), row[Int]("tou_level"),
+            row[Int]("wil_level"), row[Int]("per_level"), row[Int]("lp_av"),
+            row[Int]("lp_sp"), row[Int]("kar_curr"), row[Int]("pp"), race,
+            disciplines, talents, spells, skills, armors, derived_values))
+      }
+    }
+  }
+
+  /**
+    * Get a Spell build from row
+    *
+    * @param rows the rows from a db call
+    * @return Spell
+    */
+  def getSpellByRow(row: anorm.Row, step: Int = 0, circle: Int = 1,
+                    disciplined: Boolean = false) = {
+    Spell(row[Int]("id"), row[String]("name"), row[Int]("Spells.circle"),
+      row[Int]("threads"),
+      row[Int]("weaving_diff"), row[Int]("reatuning"),
+      row[String]("runge"), row[String]("duration"),
+      row[String]("effect"), row[String]("difficulty"),
+      row[String]("description"), row[Option[Int]]("id_char"),
+      row[Option[Int]]("id_discipline"),
+      row[Option[Int]]("spell_matrix"))
+  }
+
+  /**
+    * Get a Armor
+    * @param rows the rows from a dab call each row might correspond to a power
+    * @return Armor
+    */
+  def getArmorByRows(rows: Stream[anorm.Row]) = {
+    //var powers:List[Power] = List()
+    val powers = rows(0)[Option[Int]]("thread") match {
+      case None => List()
+      case _ => rows.map(row => Power.getPowerByRow(row)).toList
+    }
+    val row = rows.head
+    Armor(row[Int]("id"), row[String]("name"), row[Int]("cost"),
+      row[Int]("init"), row[Int]("phys"), row[Int]("mystic"),
+      row[Option[Int]]("shatter"), powers, row[Option[Int]]("threads"))
+  }
+
+  /**
+    * Get a Race By id
+    *
+    * @param row
+    * @return Some(Race)
+    */
+  def getRaceWithRow(row: anorm.Row): Option[Race] = {
+    Some(Race(row[Int]("id"), row[String]("name"), row[Int]("dex_mod"),
+      row[Int]("str_mod"), row[Int]("cha_mod"), row[Int]("tou_mod"),
+      row[Int]("wil_mod"), row[Int]("per_mod"), row[Int]("k_step"),
+      row[Int]("kar_start"), row[Int]("kar_max"), row[Int]("kar_cost"),
+      row[Int]("movement"), row[String]("abilities"), row[Int]("social_def"),
+      row[Int]("spell_def"), row[Int]("rec_test"), row[Int]("phys_arm"),
+      row[Int]("wound_tresh"), row[Int]("phys_def")))
+  }
+
+  /**
+    * Returns a Talent created from the entries in the row
+    *
+    * @param row: A row from a db querry
+    * @return Talent
+    */
+  def getTalentByRow(row: anorm.Row) = {
+    Talent(row[Int]("id"), row[String]("name"), row[Boolean]("action"),
+      row[Boolean]("karma"), row[String]("strain"), row[String]("formula"),
+      row[Option[Int]]("step"), row[Option[Boolean]]("disciplined"),
+      row[Option[Int]]("talents_disciplines.circle"),
+      row[Option[Int]]("talents_disciplines.id_discipline"))
+  }
+
+  /**
+    * Get a Skill build from row
+    *
+    * @param rows the rows from a db call
+    * @return Discipline
+    */
+  def getSkillByRow(row: anorm.Row) = {
+    Skill(row[Int]("id"), row[String]("name"), row[String]("formula"),
+      row[String]("type"), row[String]("comm"), row[Option[Int]]("step"))
+  }
+
+  /**
+    * Calculate the Values that depend on the characteristic of a charactor.
+    *
+    * @param row A row representing the character
+    * @param race the characters Race
+    * @param talents the characters talents
+    * @param armors the characters armors
+    * @return a map of values
+    *
+    *         The methods should be moved to the class and only called after the Char
+    *         object was created.
+    */
+  def getDerivedValues(row: anorm.Row, race: Race, talents: List[Talent],
+                       armors: List[Armor], disciplines: List[Discipline]): Map[String, Any] = {
+    val attributes = Map(
+      "dex" -> (5 + row[Int]("dex_mod") + row[Int]("dex_level") + race.dex_mod),
+      "str" -> (5 + row[Int]("str_mod") + row[Int]("str_level") + race.str_mod),
+      "cha" -> (5 + row[Int]("cha_mod") + row[Int]("cha_level") + race.cha_mod),
+      "tou" -> (5 + row[Int]("tou_mod") + row[Int]("tou_level") + race.tou_mod),
+      "wil" -> (5 + row[Int]("wil_mod") + row[Int]("wil_level") + race.wil_mod),
+      "per" -> (5 + row[Int]("per_mod") + row[Int]("per_level") + race.per_mod))
+    Map(
+      "dex" -> (5 + row[Int]("dex_mod") + row[Int]("dex_level") + race.dex_mod),
+      "str" -> (5 + row[Int]("str_mod") + row[Int]("str_level") + race.str_mod),
+      "cha" -> (5 + row[Int]("cha_mod") + row[Int]("cha_level") + race.cha_mod),
+      "tou" -> (5 + row[Int]("tou_mod") + row[Int]("tou_level") + race.tou_mod),
+      "wil" -> (5 + row[Int]("wil_mod") + row[Int]("wil_level") + race.wil_mod),
+      "per" -> (5 + row[Int]("per_mod") + row[Int]("per_level") + race.per_mod),
+      "dex_step" -> eoceneServices.utilities.getAttrStep(attributes("dex")),
+      "str_step" -> eoceneServices.utilities.getAttrStep(attributes("str")),
+      "cha_step" -> eoceneServices.utilities.getAttrStep(attributes("cha")),
+      "tou_step" -> eoceneServices.utilities.getAttrStep(attributes("tou")),
+      "wil_step" -> eoceneServices.utilities.getAttrStep(attributes("wil")),
+      "per_step" -> eoceneServices.utilities.getAttrStep(attributes("per")),
+      "physDef" -> (eoceneServices.utilities.getAttrDefense(attributes("dex")) +
+        disciplines.map(discipline =>
+          discipline.getModifierValueByName("physDef"))
+          .foldLeft(0)((a1, a2) => a1 + a2) +
+        race.phys_def),
+      "spellDef" -> (eoceneServices.utilities.getAttrDefense(attributes("per")) +
+        race.spell_def +
+        disciplines.map(discipline =>
+          discipline.getModifierValueByName("spellDef"))
+          .foldLeft(0)((a1, a2) => a1 + a2)),
+      "socDef" -> (eoceneServices.utilities.getAttrDefense(attributes("cha")) +
+        race.social_def + disciplines.map(discipline =>
+        discipline.getModifierValueByName("socDef"))
+        .foldLeft(0)((a1, a2) => a1 + a2)),
+      "movement" -> eoceneServices.utilities.getAttrMovement(attributes("dex") +
+        race.movement),
+      "carrying" -> eoceneServices.utilities.getAttrCarrying(attributes("str")),
+      "death" -> (eoceneServices.utilities.getAttrDeath(attributes("tou")) +
+        utilities.getDurability(talents)(0)),
+      "unconc" -> (eoceneServices.utilities.getAttrUnconc(attributes("tou")) +
+        utilities.getDurability(talents)(1)),
+      "wound" -> eoceneServices.utilities.getAttrWound(attributes("tou")),
+      "rec" -> (eoceneServices.utilities.getAttrRec(attributes("tou")) +
+        race.rec_test +
+        disciplines.map(discipline =>
+          discipline.getModifierValueByName("rec"))
+          .foldLeft(0)((a1, a2) => a1 + a2)),
+      "mystic" -> (eoceneServices.utilities.getAttrMystic(attributes("wil")) +
+        race.phys_armor +
+        armors.map(armor => armor.getMysticalArmor()).
+          foldLeft(0)((a1, a2) => a1 + a2)),
+      "physical" -> armors.map(armor => armor.getPhysicalArmor()).
+        foldLeft(0)((a1, a2) => a1 + a2),
+      "initiative" -> (eoceneServices.utilities.getAttrStep(attributes("dex")) +
+        armors.map(armor => armor.getInitiativeBonus()).
+          foldLeft(0)((a1, a2) => a1 + a2) +
+        disciplines.map(discipline =>
+          discipline.getModifierValueByName("ini"))
+          .foldLeft(0)((a1, a2) => a1 + a2)))
+  }
+
+  /**
+    * Get a Discipline
+    *
+    * @param rows the rows from a db call each row might correspond to a modifier
+    * @return Discipline
+    */
+  def getDisciplineByRow(discipline_rows: Stream[anorm.Row]) = {
+    val modifiers = discipline_rows(0)[Option[Int]]("disciplines_modifiers.circle") match {
+      case None => List()
+      case _ => discipline_rows.map(row => Modifier.getModifierByRow(row))
+        .toList
+    }
+    val row = discipline_rows.head
+    Discipline(row[Int]("id"), row[String]("name"), row[String]("abilities"),
+      row[Option[Int]]("chars_disciplines.circle"), modifiers)
   }
 
   /**
@@ -968,7 +956,7 @@ class eoceneSqlService extends eoceneDao{
     DB.withConnection("chars"){implicit c=>
 	    val char = getCharById(id_char)
 	    SQL(eoceneSqlStrings.UPDATE_CHAR_ATTRIBUTE.format("lp_av"))
-	      .onParams(char.get.lp_av + nr_points, id_char).executeUpdate > 0
+        .onParams(char.get.lpAv + nr_points, id_char).executeUpdate > 0
     }
   }
   
@@ -977,7 +965,7 @@ class eoceneSqlService extends eoceneDao{
     	eoceneSqlStrings.INSERT_HISTORY.onParams(call, id_char, id_user).executeUpdate() > 0
     }
   }
-  
+
   def getCharsForUser(userid:String): List[(String, Int)] = {
       DB.withConnection("chars") { implicit c =>
       	val result = eoceneSqlStrings.GET_CHARS_FOR_USER.onParams(

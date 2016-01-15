@@ -54,13 +54,13 @@ object Spell {
   }
 
   def getSpell(id: Int, name: String, circle: Int, threads: Int,
-    weaving_difficulty: Int, reatunging: Int,
-    range: String, duration: String, effect: String,
-    difficulty: String, discription: String, id_char: Option[Int],
-    id_discipline: Option[Int], spell_matrix: Option[Int]) =
+               weavingDifficulty: Int, reatunging: Int,
+               range: String, duration: String, effect: String,
+               difficulty: String, discription: String, id_char: Option[Int],
+               idDiscipline: Option[Int], spellMatrix: Option[Int]) =
     {
-      Spell(id, name, circle, threads, weaving_difficulty, reatunging,
+      Spell(id, name, circle, threads, weavingDifficulty, reatunging,
         range, duration, effect, difficulty, discription, id_char,
-        id_discipline, spell_matrix)
+        idDiscipline, spellMatrix)
     }
 }

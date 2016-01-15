@@ -11,8 +11,6 @@
  */
 package eoceneServices
 
-import play.api._
-
 class Validator(char: models.Character) {
   val circleRequiremnents = Map(2 ->(5, 2, 1),
     3 -> (6, 3, 2),
@@ -130,8 +128,8 @@ class Validator(char: models.Character) {
         .foreach(discipline => allowed += discipline.circle.get / 2)
     }
 
-    val improvements = char.dex_level + char.cha_level + char.per_level +
-      char.will_level + char.tou_level + char.str_level
+    val improvements = char.dexLevel + char.chaLevel + char.perLevel +
+      char.willLevel + char.touLevel + char.strLevel
     if (improvements > allowed) {
       message += "You have improved to many atrributes\n"
       false
