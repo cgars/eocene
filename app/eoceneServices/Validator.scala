@@ -90,7 +90,7 @@ class Validator(char: models.Character) {
   }
 
   def checkDiscilineCircleRequirements(discipline: models.Discipline): Boolean = {
-    if (discipline.circle.get == 1) true
+    if (discipline.circle.getOrElse(0) == 1) true
     (2).to(discipline.circle.getOrElse(0)).
       map(circle => eligableForCircle(circle, discipline)).
       reduce((a1, a2) => a1 && a2)
@@ -103,7 +103,7 @@ class Validator(char: models.Character) {
     val nrTalents = talentsOdiscipline.size >= circleRequiremnents(circle)._1
     val minRank = talentsOdiscipline.count(talent => talent.step.getOrElse(0) >= circle) >= circleRequiremnents(circle)._2
     val singleTalent = talentsOdiscipline.
-      filter(p = talent => talent.circle.get > circle - 2).
+      filter(p = talent => talent.circle.getOrElse(0) > circle - 2).
       exists(talent => talent.step.getOrElse(0) >= circleRequiremnents(circle)._3)
     if (!nrTalents) {
       message += "\nRequired: A minimum of %s %s talents is required to be %s in circle %s".
@@ -125,7 +125,7 @@ class Validator(char: models.Character) {
     if (char.disciplines.nonEmpty) {
       allowed += char.disciplines.head.circle.getOrElse(0) - 1
       char.disciplines.takeRight(char.disciplines.size - 1)
-        .foreach(discipline => allowed += discipline.circle.get / 2)
+        .foreach(discipline => allowed += discipline.circle.getOrElse(0) / 2)
     }
 
     val improvements = char.dexLevel + char.chaLevel + char.perLevel +
