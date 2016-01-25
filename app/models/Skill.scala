@@ -1,13 +1,10 @@
-/**
- * *****************************************************************************
- * Copyright (c) 2014 Christian Garbers.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Simplified BSD License
- * which accompanies this distribution
- *
- * Contributors:
- *     Christian Garbers - initial API and implementation
- * ****************************************************************************
+/*
+ * Copyright (c) 2016 Christian Garbers.
+ *  All rights reserved. This program and the accompanying materials
+ *  are made available under the terms of the Simplified BSD License
+ *  which accompanies this distribution
+ *  Contributors:
+ *       Christian Garbers - initial API and implementation
  */
 package models
 
@@ -62,12 +59,7 @@ case class Skill(val id: Int, val name: String, val formula: String,
 object Skill {
   implicit val skillWrites = new Writes[Skill] {
     def writes(skill: Skill) = skill.step match {
-      case None => JsObject(Seq("id" -> JsNumber(skill.id),
-        "name" -> JsString(skill.name),
-        "formula" -> JsString(skill.formula),
-        "skill_type" -> JsString(skill.skillType),
-        "comm" -> JsString(skill.comm),
-        "step" -> JsNumber(0)))
+      case None => JsObject(Seq())
       case _ => JsObject(Seq("id" -> JsNumber(skill.id),
         "name" -> JsString(skill.name),
         "formula" -> JsString(skill.formula),

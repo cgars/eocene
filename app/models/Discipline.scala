@@ -1,23 +1,14 @@
-/**
- * *****************************************************************************
- * Copyright (c) 2014 Christian Garbers.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Simplified BSD License
- * which accompanies this distribution
- *
- * Contributors:
- *     Christian Garbers - initial API and implementation
- * ****************************************************************************
+/*
+ * Copyright (c) 2016 Christian Garbers.
+ *  All rights reserved. This program and the accompanying materials
+ *  are made available under the terms of the Simplified BSD License
+ *  which accompanies this distribution
+ *  Contributors:
+ *       Christian Garbers - initial API and implementation
  */
 package models
 
-import play.api.libs.json.Format
 import play.api.libs.json._
-import eoceneServices.eoceneSqlStrings
-import anorm._
-import play.api.db.DB
-import play.api.Play.current
-import play.api._
 /**
  * Discipline
  */
@@ -42,10 +33,7 @@ case class Discipline(val id: Int, val name: String, val abilities: String,
 object Discipline {
   implicit val DisciplineWrites = new Writes[Discipline] {
     def writes(discipline: Discipline) = discipline.circle match {
-      case None => JsObject(Seq("id" -> JsNumber(discipline.id),
-        "name" -> JsString(discipline.name),
-        "Abilities" -> JsString(discipline.abilities),
-        "circle" -> JsNumber(0)))
+      case None => JsObject(Seq())
       case _ => JsObject(Seq("id" -> JsNumber(discipline.id),
         "name" -> JsString(discipline.name),
         "Abilities" -> JsString(discipline.abilities),
