@@ -1,13 +1,10 @@
-/**
- * *****************************************************************************
- * Copyright (c) 2014 Christian Garbers.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Simplified BSD License
- * which accompanies this distribution
- *
- * Contributors:
- *     Christian Garbers - initial API and implementation
- * ****************************************************************************
+/*
+ * Copyright (c) 2016 Christian Garbers.
+ *  All rights reserved. This program and the accompanying materials
+ *  are made available under the terms of the Simplified BSD License
+ *  which accompanies this distribution
+ *  Contributors:
+ *       Christian Garbers - initial API and implementation
  */
 package eoceneServices
 
@@ -99,7 +96,7 @@ class Validator(char: models.Character) {
   def eligableForCircle(circle: Int, discipline: models.Discipline): Boolean = {
     val talentsOdiscipline = char.talents.
       filter(talent => talent.step.isDefined).
-      filter(talent => talent.disciplineId.get == discipline.id)
+      filter(talent => talent.disciplineId.getOrElse(0) == discipline.id)
     val nrTalents = talentsOdiscipline.size >= circleRequiremnents(circle)._1
     val minRank = talentsOdiscipline.count(talent => talent.step.getOrElse(0) >= circle) >= circleRequiremnents(circle)._2
     val singleTalent = talentsOdiscipline.
