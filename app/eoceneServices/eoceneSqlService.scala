@@ -40,11 +40,7 @@ class eoceneSqlService extends eoceneDao{
   def getRaceById(id: Int): Option[Race] = {
     DB.withConnection("chars") { implicit c =>
       val querry = SQL(eoceneSqlStrings.GET_RACE_BY_ID).onParams(id)()
-      querry.size match {
-        case 0 => None
-        case _ =>
-          this.getRaceWithRow(querry.head)
-      }
+      this.getRaceWithRow(querry.headOption)
     }
   }
 
@@ -65,11 +61,11 @@ class eoceneSqlService extends eoceneDao{
   /**
     * Get a represenation of the talents_discipline table with all talents not
     * higher than a certain circle
-   *
+    *
     * @param id character id
     * @param circle
     * @return Discipline
-   */
+    */
   def getTalentsByDisciplinesId(id: Int, circle: Int): List[List[AnyVal]] = {
     DB.withConnection("chars") { implicit c =>
       val querry = SQL(eoceneSqlStrings.GET_TALENT_ID_BY_DISCIPLINE_ID.format(id, circle))()
@@ -122,9 +118,9 @@ class eoceneSqlService extends eoceneDao{
 
   /**
     * Get a Armor
-   * @param id
+    * @param id
     * @return Armor
-   */
+    */
   def getArmorById(id: Int) = {
     DB.withConnection("chars") { implicit c =>
       val querry = eoceneSqlStrings.GET_ARMOR.onParams(id)().
@@ -177,7 +173,7 @@ class eoceneSqlService extends eoceneDao{
     * @param idRace
     * @param c a sql connection. comes from the controller
     * @return Succes indicator
-   */
+    */
   def changeCharRace(id: Int, idRace: Int): Boolean = {
     DB.withConnection("chars") { implicit c =>
       getRaceIdByCharId(id) match {
@@ -208,13 +204,13 @@ class eoceneSqlService extends eoceneDao{
 
   /**
     * Update an attrribute using Purchase points
-   *
-   * @param id the id of the character
+    *
+    * @param id the id of the character
     * @param attribute the name of the atrribute (eg. "dex_mod")
     * @param direction either "up" or "down"
     * @param direction either "up" or "down"
     * @param c A sql connection. comes from the controller
-   * @return Succes indicator
+    * @return Succes indicator
    */
   def updateCharAttributeWithPP(id: Int, attribute: String, direction: String): Boolean = {
     val currentValue = getCharAttribute(id, attribute)
@@ -239,45 +235,6 @@ class eoceneSqlService extends eoceneDao{
           updateCharAttribute(id, "pp", pp.getOrElse(0) +
             eoceneServices.utilities.getPPCost(value - 1) -
             eoceneServices.utilities.getPPCost(value))
-      }
-    }
-  }
-
-  /**
-    * Update an attrribute using Legend points
-    *
-    * @param id the id of the character
-    * @param attribute the name of the atrribute (eg. "dex_mod")
-    * @param direction either "up" or "down"
-    * @param c a sql connection. comes from the controller
-    * @return Succes indicator
-    */
-  def updateCharAttributeWithLP(id: Int, attribute: String, direction: String): Boolean = {
-    DB.withTransaction("chars") { implicit c =>
-      val current_value = getCharAttribute(id, attribute)
-      val lp = getCharAttribute(id, "lp_sp")
-      if (direction.equals("up")) {
-        current_value match {
-          case None => return false
-          case Some(5) => return false
-          case Some(value) =>
-            updateCharAttribute(id, attribute, value + 1)
-            updateCharAttribute(id, "lp_sp", lp.get +
-              eoceneServices.utilities.getAttributeIncreaseLPCost(value + 1))
-
-        }
-      } else {
-        current_value match {
-          case None => return false
-          case _ => current_value.getOrElse(0) match {
-            case 0 => return false
-            case _ =>
-              updateCharAttribute(id, attribute, current_value.getOrElse(0) - 1)
-              updateCharAttribute(id, "lp_sp", lp.getOrElse(0) -
-                eoceneServices.utilities.
-                  getAttributeIncreaseLPCost(current_value.getOrElse(0)))
-          }
-        }
       }
     }
   }
@@ -311,13 +268,52 @@ class eoceneSqlService extends eoceneDao{
   }
 
   /**
+    * Update an attrribute using Legend points
+    *
+    * @param id the id of the character
+    * @param attribute the name of the atrribute (eg. "dex_mod")
+    * @param direction either "up" or "down"
+    * @param c a sql connection. comes from the controller
+    * @return Succes indicator
+    */
+  def updateCharAttributeWithLP(id: Int, attribute: String, direction: String): Boolean = {
+    DB.withTransaction("chars") { implicit c =>
+      val currentValue = getCharAttribute(id, attribute)
+      val lp = getCharAttribute(id, "lp_sp")
+      if (direction.equals("up")) {
+        currentValue match {
+          case None => return false
+          case Some(5) => return false
+          case Some(value) =>
+            updateCharAttribute(id, attribute, value + 1)
+            updateCharAttribute(id, "lp_sp", lp.get +
+              eoceneServices.utilities.getAttributeIncreaseLPCost(value + 1))
+
+        }
+      } else {
+        currentValue match {
+          case None => return false
+          case _ => currentValue.getOrElse(0) match {
+            case 0 => return false
+            case _ =>
+              updateCharAttribute(id, attribute, currentValue.getOrElse(0) - 1)
+              updateCharAttribute(id, "lp_sp", lp.getOrElse(0) -
+                eoceneServices.utilities.
+                  getAttributeIncreaseLPCost(currentValue.getOrElse(0)))
+          }
+        }
+      }
+    }
+  }
+
+  /**
     * Improve the discipline of a charcter. in case the character does not yet
     * have the discipline, add it.
-   *
-   * @param id the id of the character
+    *
+    * @param id the id of the character
     * @param idDiscipline
     * @return success
-   */
+    */
   def improveCharDiscipline(id: Int, idDiscipline: Int) = {
     val disciplines = getCharDisciplineRowsByCharId(id)
     val targetDiscipline = disciplines.filter(a => a(1) == idDiscipline)
@@ -326,39 +322,9 @@ class eoceneSqlService extends eoceneDao{
         val circle = targetDiscipline(0)(2)
         SQL(eoceneSqlStrings.UPDATE_CHAR_DISCIPLINE).onParams(circle + 1, id,
           idDiscipline).executeUpdate() > 0
-	    } else {
+      } else {
         SQL(eoceneSqlStrings.INSERT_CHAR_DISCIPLINE).onParams(id, idDiscipline, 1)
           .executeUpdate() > 0
-      }
-    }
-  }
-
-  /**
-    * Corrrupt the discipline of a charcter. In case the character we ar in
-    * circle 1 -> remove the discipline
-    *
-    * @param id the id of the character
-    * @param idDiscipline
-    * @return success
-    */
-  def corruptCharDiscipline(id: Int, idDiscipline: Int) = {
-    {
-      val disciplines = getCharDisciplineRowsByCharId(id)
-      val target_discipline = disciplines.filter(a => a(1) == idDiscipline)
-      target_discipline.headOption match {
-        case None => false
-        case _ =>
-          val circle = target_discipline(0)(2)
-          DB.withTransaction("chars") { implicit c =>
-            if (circle > 1) {
-              SQL(eoceneSqlStrings.UPDATE_CHAR_DISCIPLINE).onParams(circle - 1,
-                id, idDiscipline).executeUpdate() > 0
-            } else {
-              SQL(eoceneSqlStrings.REMOVE_CHAR_DISCIPLINE)
-                .onParams(id, idDiscipline)
-                .executeUpdate() > 0
-            }
-          }
       }
     }
   }
@@ -381,6 +347,36 @@ class eoceneSqlService extends eoceneDao{
   }
 
   /**
+    * Corrrupt the discipline of a charcter. In case the character we ar in
+    * circle 1 -> remove the discipline
+    *
+    * @param id the id of the character
+    * @param idDiscipline
+    * @return success
+    */
+  def corruptCharDiscipline(id: Int, idDiscipline: Int) = {
+    {
+      val disciplines = getCharDisciplineRowsByCharId(id)
+      val targetDiscipline = disciplines.filter(a => a(1) == idDiscipline)
+      targetDiscipline.headOption match {
+        case None => false
+        case _ =>
+          val circle = targetDiscipline(0)(2)
+          DB.withTransaction("chars") { implicit c =>
+            if (circle > 1) {
+              SQL(eoceneSqlStrings.UPDATE_CHAR_DISCIPLINE).onParams(circle - 1,
+                id, idDiscipline).executeUpdate() > 0
+            } else {
+              SQL(eoceneSqlStrings.REMOVE_CHAR_DISCIPLINE)
+                .onParams(id, idDiscipline)
+                .executeUpdate() > 0
+            }
+          }
+      }
+    }
+  }
+
+  /**
     * Improve a talent (or learn it)
     *
     * @param id the id of the character
@@ -389,50 +385,21 @@ class eoceneSqlService extends eoceneDao{
     */
   def improveCharTalent(id: Int, idTalent: Int): Boolean = {
     val talents = getCharTalentRowsIdByCharId(id)
-    val target_talent = talents.filter(a => a(1) == idTalent)
+    val targetTalent = talents.filter(a => a(1) == idTalent)
     val circle = getTalentCircleByTalenAndDisciId(idTalent, id)
     DB.withTransaction("chars") { implicit c =>
-      if (target_talent.length > 0) {
-        val step = target_talent(0)(2)
+      if (targetTalent.length > 0) {
+        val step = targetTalent(0)(2)
         if (step == 15) return false
-        val lp_cost = eoceneServices.utilities.getTalentCost(step + 1, circle)
+        val lpCost = eoceneServices.utilities.getTalentCost(step + 1, circle)
         SQL(eoceneSqlStrings.UPDATE_CHAR_TALENT).onParams(step + 1, id,
           idTalent).executeUpdate() > 0
-        SQL(eoceneSqlStrings.ADD_TO_LP).onParams(lp_cost, id).executeUpdate() > 0
+        SQL(eoceneSqlStrings.ADD_TO_LP).onParams(lpCost, id).executeUpdate() > 0
       } else {
-        val lp_cost = eoceneServices.utilities.getTalentCost(1, circle)
+        val lpCost = eoceneServices.utilities.getTalentCost(1, circle)
         SQL(eoceneSqlStrings.INSERT_CHAR_TALENT).onParams(id, idTalent, 1)
           .executeUpdate() > 0
-        SQL(eoceneSqlStrings.ADD_TO_LP).onParams(lp_cost, id)
-          .executeUpdate() > 0
-      }
-    }
-  }
-
-  /**
-    * Remove one circle (or forget)
-    *
-    * @param id the id of the character
-    * @param idTalent
-    * @return success
-    */
-  def corruptCharTalent(id: Int, idTalent: Int): Boolean = {
-    val talents = getCharTalentRowsIdByCharId(id)
-    val target_talent = talents.filter(a => a(1) == idTalent)
-    if (target_talent.size == 0) return false
-    val circle = getTalentCircleByTalenAndDisciId(idTalent, id)
-    val step = target_talent(0)(2)
-    val lp_cost = eoceneServices.utilities.getTalentCost(step, circle)
-    DB.withTransaction("chars") { implicit c =>
-      if (step > 1) {
-        SQL(eoceneSqlStrings.UPDATE_CHAR_TALENT).onParams(step - 1, id,
-          idTalent).executeUpdate() > 0
-        SQL(eoceneSqlStrings.ADD_TO_LP).onParams(-lp_cost, id)
-          .executeUpdate() > 0
-      } else {
-        SQL(eoceneSqlStrings.REMOVE_CHAR_TALENT).onParams(id, idTalent)
-          .executeUpdate() > 0
-        SQL(eoceneSqlStrings.ADD_TO_LP).onParams(-lp_cost, id)
+        SQL(eoceneSqlStrings.ADD_TO_LP).onParams(lpCost, id)
           .executeUpdate() > 0
       }
     }
@@ -472,6 +439,35 @@ class eoceneSqlService extends eoceneDao{
   }
 
   /**
+    * Remove one circle (or forget)
+    *
+    * @param id the id of the character
+    * @param idTalent
+    * @return success
+    */
+  def corruptCharTalent(id: Int, idTalent: Int): Boolean = {
+    val talents = getCharTalentRowsIdByCharId(id)
+    val targetTalent = talents.filter(a => a(1) == idTalent)
+    if (targetTalent.size == 0) return false
+    val circle = getTalentCircleByTalenAndDisciId(idTalent, id)
+    val step = targetTalent(0)(2)
+    val lpCost = eoceneServices.utilities.getTalentCost(step, circle)
+    DB.withTransaction("chars") { implicit c =>
+      if (step > 1) {
+        SQL(eoceneSqlStrings.UPDATE_CHAR_TALENT).onParams(step - 1, id,
+          idTalent).executeUpdate() > 0
+        SQL(eoceneSqlStrings.ADD_TO_LP).onParams(-lpCost, id)
+          .executeUpdate() > 0
+      } else {
+        SQL(eoceneSqlStrings.REMOVE_CHAR_TALENT).onParams(id, idTalent)
+          .executeUpdate() > 0
+        SQL(eoceneSqlStrings.ADD_TO_LP).onParams(-lpCost, id)
+          .executeUpdate() > 0
+      }
+    }
+  }
+
+  /**
     * Improve a skill (or learn it)
     *
     * @param id the id of the character
@@ -480,10 +476,10 @@ class eoceneSqlService extends eoceneDao{
     */
   def improveCharSkill(id: Int, idSkill: Int): Boolean = {
     val skills = getCharSkillRowsByCharId(id)
-    val target_skill = skills.filter(a => a(1) == idSkill)
+    val targetSkill = skills.filter(a => a(1) == idSkill)
     DB.withTransaction("chars") { implicit c =>
-      if (target_skill.length > 0) {
-        val step = target_skill(0)(2)
+      if (targetSkill.length > 0) {
+        val step = targetSkill(0)(2)
         if (step == 15) return false
         SQL(eoceneSqlStrings.UPDATE_CHAR_SKILL).onParams(step + 1, id,
           idSkill).executeUpdate() > 0
@@ -516,9 +512,9 @@ class eoceneSqlService extends eoceneDao{
     */
   def corruptCharSkill(id: Int, idSkill: Int): Boolean = {
     val skills = getCharSkillRowsByCharId(id)
-    val target_skill = skills.filter(a => a(1) == idSkill)
-    if (target_skill.size == 0) return false
-    val step = target_skill(0)(2)
+    val targetSkill = skills.filter(a => a(1) == idSkill)
+    if (targetSkill.size == 0) return false
+    val step = targetSkill(0)(2)
     DB.withTransaction("chars") { implicit c =>
       if (step > 1) {
         SQL(eoceneSqlStrings.UPDATE_CHAR_SKILL).onParams(step - 1, id,
@@ -551,11 +547,11 @@ class eoceneSqlService extends eoceneDao{
 
   /**
     * Learn a spell
-   *
+    *
     * @param id id of the character
     * @param id_spell
     * @return success
-   */
+    */
   def learnCharSpell(id: Int, idSpell: Int) = {
     DB.withConnection("chars") { implicit c =>
       SQL(eoceneSqlStrings.INSERT_CHAR_SPELL).onParams(id,
@@ -579,11 +575,11 @@ class eoceneSqlService extends eoceneDao{
 
   /**
     * Change the anme of the character
-   *
+    *
     * @param id id of the character
     * @param name teh new name
     * @return success
-   */
+    */
   def changeCharName(id: Int, name: String) = {
     DB.withConnection("chars") { implicit c =>
       SQL(eoceneSqlStrings.UPATE_CHAR_NAME).onParams(name, id)
@@ -609,7 +605,7 @@ class eoceneSqlService extends eoceneDao{
     *
     * @param id id of the character
     * @param idArmor
-   * @return success
+    * @return success
     */
   def removeArmor(id: Int, idArmor: Int) = {
     DB.withConnection("chars") { implicit c =>
@@ -619,26 +615,26 @@ class eoceneSqlService extends eoceneDao{
 
   /**
     * Attach a threat to an armor
-   *
-   * @param id id of the character
+    *
+    * @param id id of the character
     * @param idArmor
-   * @return success
-   */
+    * @return success
+    */
   def attachThreadArmor(id: Int, idArmor: Int) = {
-    DB.withConnection("chars"){implicit c=>
+    DB.withConnection("chars") { implicit c =>
       eoceneSqlStrings.UPATE_ARMOR.onParams(1, id, idArmor).executeUpdate() > 0
     }
   }
 
   /**
     * Remove a threat from an armor
-   *
-   * @param id id of the character
+    *
+    * @param id id of the character
     * @param idArmor
    * @return success
-   */
+    */
   def removeThreadArmor(id: Int, idArmor: Int) = {
-    DB.withConnection("chars"){implicit c=>
+    DB.withConnection("chars") { implicit c =>
       eoceneSqlStrings.UPATE_ARMOR.onParams(-1, id, idArmor).executeUpdate() > 0
     }
   }
@@ -662,7 +658,7 @@ class eoceneSqlService extends eoceneDao{
    *
     * @param idSpell id of the spell
     * @param idChar id of the character
-   * @return success
+    * @return success
    */
   def SpellFromMatrix(idSpell: Int, idChar: Int) = {
     DB.withConnection("chars") { implicit c =>
@@ -712,11 +708,11 @@ class eoceneSqlService extends eoceneDao{
 
   /**
     * Buy Karma with LP
-   *
+    *
     * @param idChar
     * @param nrPoints the number of karma points to buy
     * @return Redirect
-   */
+    */
   def buyKarma(idChar: Int, nrPoints: Int) = {
     DB.withTransaction("chars") { implicit c =>
       val char = getCharById(idChar)
@@ -744,6 +740,21 @@ class eoceneSqlService extends eoceneDao{
   }
 
   /**
+    * Adding legend points
+    *
+    * @param idChar
+    * @param nrPoints the number of lp to add
+    * @return Redirect
+    */
+  def addLP(idChar: Int, nrPoints: Int) = {
+    DB.withConnection("chars") { implicit c =>
+      val char = getCharById(idChar)
+      SQL(eoceneSqlStrings.UPDATE_CHAR_ATTRIBUTE.format("lp_av"))
+        .onParams(char.get.lpAv + nrPoints, idChar).executeUpdate > 0
+    }
+  }
+
+  /**
     * Get the id of a character with a certain name
     *
     * @param id
@@ -764,7 +775,7 @@ class eoceneSqlService extends eoceneDao{
           val armorMap = eoceneSqlStrings.GET_ARMOR.onParams(id)().
             groupBy(row => row[Int]("Armors.id"))
           val row = charQuerry.head
-          val race = getRaceWithRow(raceQuerry.head).get
+          val race = getRaceWithRow(raceQuerry.headOption).get
           val disciplines = disciplinesQuerry.map(rows =>
             getDisciplineByRow(rows._2)).toList
           val talents = utilities.popDurability(talentQuerry.map(
@@ -786,19 +797,52 @@ class eoceneSqlService extends eoceneDao{
   }
 
   /**
+    * Get a Discipline
+    *
+    * @param rows the rows from a db call each row might correspond to a modifier
+    * @return Discipline
+    */
+  def getDisciplineByRow(disciplineRows: Stream[anorm.Row]) = {
+    val modifiers = disciplineRows(0)[Option[Int]]("disciplines_modifiers.circle") match {
+      case None => List()
+      case _ => disciplineRows.map(row => Modifier.getModifierByRow(row))
+        .toList
+    }
+    val row = disciplineRows.head
+    Discipline(row[Int]("id"), row[String]("name"), row[String]("abilities"),
+      row[Option[Int]]("chars_disciplines.circle"), modifiers)
+  }
+
+  /**
+    * Get a Skill build from row
+    *
+    * @param rows the rows from a db call
+    * @return Discipline
+    */
+  def getSkillByRow(row: anorm.Row) = {
+    Skill(row[Int]("id"), row[String]("name"), row[String]("formula"),
+      row[String]("type"), row[String]("comm"), row[Option[Int]]("step"))
+  }
+
+  /**
     * Get a Race By id
     *
     * @param row
     * @return Some(Race)
     */
-  def getRaceWithRow(row: anorm.Row): Option[Race] = {
-    Some(Race(row[Int]("id"), row[String]("name"), row[Int]("dex_mod"),
-      row[Int]("str_mod"), row[Int]("cha_mod"), row[Int]("tou_mod"),
-      row[Int]("wil_mod"), row[Int]("per_mod"), row[Int]("k_step"),
-      row[Int]("kar_start"), row[Int]("kar_max"), row[Int]("kar_cost"),
-      row[Int]("movement"), row[String]("abilities"), row[Int]("social_def"),
-      row[Int]("spell_def"), row[Int]("rec_test"), row[Int]("phys_arm"),
-      row[Int]("wound_tresh"), row[Int]("phys_def")))
+  def getRaceWithRow(row: Option[anorm.Row]): Option[Race] = {
+    row match {
+      case None => None
+      case Some(row) => {
+        Some(Race(row[Int]("id"), row[String]("name"), row[Int]("dex_mod"),
+          row[Int]("str_mod"), row[Int]("cha_mod"), row[Int]("tou_mod"),
+          row[Int]("wil_mod"), row[Int]("per_mod"), row[Int]("k_step"),
+          row[Int]("kar_start"), row[Int]("kar_max"), row[Int]("kar_cost"),
+          row[Int]("movement"), row[String]("abilities"), row[Int]("social_def"),
+          row[Int]("spell_def"), row[Int]("rec_test"), row[Int]("phys_arm"),
+          row[Int]("wound_tresh"), row[Int]("phys_def")))
+      }
+    }
   }
 
   /**
@@ -831,17 +875,6 @@ class eoceneSqlService extends eoceneDao{
       row[String]("description"), row[Option[Int]]("id_char"),
       row[Option[Int]]("id_discipline"),
       row[Option[Int]]("spell_matrix"))
-  }
-
-  /**
-    * Get a Skill build from row
-    *
-    * @param rows the rows from a db call
-    * @return Discipline
-    */
-  def getSkillByRow(row: anorm.Row) = {
-    Skill(row[Int]("id"), row[String]("name"), row[String]("formula"),
-      row[String]("type"), row[String]("comm"), row[Option[Int]]("step"))
   }
 
   /**
@@ -936,41 +969,9 @@ class eoceneSqlService extends eoceneDao{
           .foldLeft(0)((a1, a2) => a1 + a2)))
   }
 
-  /**
-    * Get a Discipline
-    *
-    * @param rows the rows from a db call each row might correspond to a modifier
-    * @return Discipline
-    */
-  def getDisciplineByRow(discipline_rows: Stream[anorm.Row]) = {
-    val modifiers = discipline_rows(0)[Option[Int]]("disciplines_modifiers.circle") match {
-      case None => List()
-      case _ => discipline_rows.map(row => Modifier.getModifierByRow(row))
-        .toList
-    }
-    val row = discipline_rows.head
-    Discipline(row[Int]("id"), row[String]("name"), row[String]("abilities"),
-      row[Option[Int]]("chars_disciplines.circle"), modifiers)
-  }
-
-  /**
-   * Adding legend points
-   *
-    * @param idChar
-    * @param nrPoints the number of lp to add
-   * @return Redirect
-   */
-  def addLP(idChar: Int, nrPoints: Int) = {
-    DB.withConnection("chars"){implicit c=>
-      val char = getCharById(idChar)
-	    SQL(eoceneSqlStrings.UPDATE_CHAR_ATTRIBUTE.format("lp_av"))
-        .onParams(char.get.lpAv + nrPoints, idChar).executeUpdate > 0
-    }
-  }
-
-  def storeAction(call: String, idChar: Int, id_user: String) = {
+  def storeAction(call: String, idChar: Int, idUser: String) = {
     DB.withConnection("chars"){implicit c =>
-      eoceneSqlStrings.INSERT_HISTORY.onParams(call, idChar, id_user).executeUpdate() > 0
+      eoceneSqlStrings.INSERT_HISTORY.onParams(call, idChar, idUser).executeUpdate() > 0
     }
   }
 

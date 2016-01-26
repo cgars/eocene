@@ -1,13 +1,10 @@
-/**
- * *****************************************************************************
- * Copyright (c) 2014 Christian Garbers.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Simplified BSD License
- * which accompanies this distribution
- *
- * Contributors:
- *     Christian Garbers - initial API and implementation
- * ****************************************************************************
+/*
+ * Copyright (c) 2016 Christian Garbers.
+ *  All rights reserved. This program and the accompanying materials
+ *  are made available under the terms of the Simplified BSD License
+ *  which accompanies this distribution
+ *  Contributors:
+ *       Christian Garbers - initial API and implementation
  */
 package controllers
 
@@ -158,12 +155,12 @@ class Subviews(override implicit val env: RuntimeEnvironment[EoceneUser],
    *
    * @return the dice roller view
    */
-  def Dice(targetClass: String, target_id: String, dice: String, char_id: Int) =
-    SecuredAction(UserAllowedWithCharacterId(char_id)) {
-        val char = dao.getCharById(char_id)
+  def Dice(targetClass: String, targetId: String, dice: String, charId: Int) =
+    SecuredAction(UserAllowedWithCharacterId(charId)) {
+      val char = dao.getCharById(charId)
         char match {
           case None => BadRequest("")
-          case _ => Ok(views.html.dice(char.get, targetClass, target_id, dice))
+          case _ => Ok(views.html.dice(char.get, targetClass, targetId, dice))
             .withHeaders(CACHE_CONTROL -> "no-cache",
               ETAG -> char.get.hashCode.toString)
       }
@@ -183,13 +180,13 @@ class Subviews(override implicit val env: RuntimeEnvironment[EoceneUser],
             try {
               val spell = c.spells.filter(spell => spell.id == idSpell)
                 .head
-              val spells_discipline_name = c.disciplines.
+              val spellsDisciplineName = c.disciplines.
                 filter(discipline => discipline.id == spell.idDiscipline.get)
                 .head.
                 name
               val threadWeaving = c.talents.
                 filter(talent => talent.name contains "Thread").
-                filter(talent => talent.name contains spells_discipline_name.
+                filter(talent => talent.name contains spellsDisciplineName.
                   substring(1, 5)).
                 head
               val spellcasting = c.talents.

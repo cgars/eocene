@@ -42,12 +42,9 @@ case class Talent(val id: Int, val name: String, val action: Boolean,
       case _ => //First we do the formula attribute conversion
         val rank = char.derived(formulaSplit(0).toLowerCase() + "_step").asInstanceOf[Int] + step.getOrElse(0)
         //return the derived rank or add the second part of formula
-        formulaSplit.size match {
-          case 1 => rank
-          case _ => rank + formulaSplit(1).toInt
+        rank + formulaSplit.lift(1).getOrElse("0").toInt
         }
     }
-  }
 }
 
 object Talent {
