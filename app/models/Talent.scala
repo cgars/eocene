@@ -35,13 +35,12 @@ case class Talent(val id: Int, val name: String, val action: Boolean,
    * @param char The Character who has this talent
    * @return The rank of this talent or 0
    */
-  def getRank(char: Character) = {
+  def getRank(char: Character): Int = {
     val formulaSplit = formula.split("\\+") // Split the formula (for cases like Dex+3)
     step match {
       case None => 0 //in case we have no step rank is not defined
       case _ => //First we do the formula attribute conversion
-        val rank = formulaSplit(0).toLowerCase() + "_step".asInstanceOf[Int] + step.getOrElse(0)
-        }
+        val rank = char.derived(formulaSplit(0).toLowerCase() + "_step").asInstanceOf[Int] + step.getOrElse(0)
         //return the derived rank or add the second part of formula
         formulaSplit.size match {
           case 1 => rank
@@ -49,7 +48,6 @@ case class Talent(val id: Int, val name: String, val action: Boolean,
         }
     }
   }
-
 }
 
 object Talent {
