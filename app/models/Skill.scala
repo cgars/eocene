@@ -59,7 +59,7 @@ object Skill {
         "formula" -> JsString(skill.formula),
         "skill_type" -> JsString(skill.skillType),
         "comm" -> JsString(skill.comm),
-        "step" -> JsNumber(skill.step.get)))
+        "step" -> JsNumber(skill.step.getOrElse(0))))
 
     }
   }
