@@ -239,34 +239,6 @@ class eoceneSqlService extends eoceneDao{
     }
   }
 
-  def getCharAttribute(id: Int, attribute: String): Option[Int] = {
-    DB.withConnection("chars") { implicit c =>
-      val querry = SQL(eoceneSqlStrings.GET_CHAR_ATTRIBUTE).onParams(id)()
-      querry.headOption match {
-        case None => None
-        case Some(row) => row[Option[Int]](attribute)
-      }
-    }
-  }
-
-  /**
-    * Update an attrribute
-    *
-    * @param id the id of the character
-    * @param attribute the name of the atrribute (eg. "dex_mod")
-    * @param direction either "up" or "down"
-    * @param c A sql connection. comes from the controller
-    * @return Success indicator
-    */
-  def updateCharAttribute(id: Int, attribute: String, newValue: Int): Boolean = {
-    DB.withConnection("chars") { implicit c =>
-      val result = SQL(eoceneSqlStrings.UPDATE_CHAR_ATTRIBUTE.format(attribute)).
-        onParams(newValue, id).executeUpdate()
-      Logger.info("attr:%s,new:%s, result:%s".format(attribute, newValue, result))
-      return result > 0
-    }
-  }
-
   /**
     * Update an attrribute using Legend points
     *
@@ -306,6 +278,34 @@ class eoceneSqlService extends eoceneDao{
     }
   }
 
+  def getCharAttribute(id: Int, attribute: String): Option[Int] = {
+    DB.withConnection("chars") { implicit c =>
+      val querry = SQL(eoceneSqlStrings.GET_CHAR_ATTRIBUTE).onParams(id)()
+      querry.headOption match {
+        case None => None
+        case Some(row) => row[Option[Int]](attribute)
+      }
+    }
+  }
+
+  /**
+    * Update an attrribute
+    *
+    * @param id the id of the character
+    * @param attribute the name of the atrribute (eg. "dex_mod")
+    * @param direction either "up" or "down"
+    * @param c A sql connection. comes from the controller
+    * @return Success indicator
+    */
+  def updateCharAttribute(id: Int, attribute: String, newValue: Int): Boolean = {
+    DB.withConnection("chars") { implicit c =>
+      val result = SQL(eoceneSqlStrings.UPDATE_CHAR_ATTRIBUTE.format(attribute)).
+        onParams(newValue, id).executeUpdate()
+      Logger.info("attr:%s,new:%s, result:%s".format(attribute, newValue, result))
+      return result > 0
+    }
+  }
+
   /**
     * Improve the discipline of a charcter. in case the character does not yet
     * have the discipline, add it.
@@ -326,23 +326,6 @@ class eoceneSqlService extends eoceneDao{
         SQL(eoceneSqlStrings.INSERT_CHAR_DISCIPLINE).onParams(id, idDiscipline, 1)
           .executeUpdate() > 0
       }
-    }
-  }
-
-  /**
-    * Get  A List representing the chars_disciplines table entries for this
-    * character
-    *
-    * @param id the id of the character
-    * @return A nestetd List of integers corresponding to id_char,id_discipline
-    *         and circle
-    */
-  def getCharDisciplineRowsByCharId(id: Int): List[List[Int]] = {
-    DB.withConnection("chars") { implicit c => {
-      val querry = SQL(eoceneSqlStrings.GET_CHAR_DISCIPLINES).onParams(id)()
-      return querry.map(a => List(a[Int]("id_char"), a[Int]("id_discipline"),
-        a[Int]("circle"))).toList
-    }
     }
   }
 
@@ -377,6 +360,23 @@ class eoceneSqlService extends eoceneDao{
   }
 
   /**
+    * Get  A List representing the chars_disciplines table entries for this
+    * character
+    *
+    * @param id the id of the character
+    * @return A nestetd List of integers corresponding to id_char,id_discipline
+    *         and circle
+    */
+  def getCharDisciplineRowsByCharId(id: Int): List[List[Int]] = {
+    DB.withConnection("chars") { implicit c => {
+      val querry = SQL(eoceneSqlStrings.GET_CHAR_DISCIPLINES).onParams(id)()
+      return querry.map(a => List(a[Int]("id_char"), a[Int]("id_discipline"),
+        a[Int]("circle"))).toList
+    }
+    }
+  }
+
+  /**
     * Improve a talent (or learn it)
     *
     * @param id the id of the character
@@ -402,39 +402,6 @@ class eoceneSqlService extends eoceneDao{
         SQL(eoceneSqlStrings.ADD_TO_LP).onParams(lpCost, id)
           .executeUpdate() > 0
       }
-    }
-  }
-
-  /**
-    * Get data for talents of a charcter
-    *
-    * @param id the id of the character
-    * @param id_discipline
-    * @return a nested list of integers with id_char, id_talent and step
-    *         respectively
-    */
-  def getCharTalentRowsIdByCharId(id: Int): List[List[Int]] = {
-    DB.withConnection("chars") { implicit c => {
-      val querry = SQL(eoceneSqlStrings.GET_CHAR_TALENTS).onParams(id)()
-      return querry.map(a => List(a[Int]("id_char"), a[Int]("id_talent"),
-        a[Int]("step"))).toList
-    }
-    }
-  }
-
-  /**
-    * Get data for talents of a character while ensuring that the circle is the
-    * lowest
-    *
-    * @param id the id of the character
-    * @param id_discipline
-    * @return success
-    */
-  def getTalentCircleByTalenAndDisciId(idTalent: Int, idchar: Int) = {
-    DB.withConnection("chars") { implicit c =>
-      val querry = SQL(eoceneSqlStrings.GET_TALENT_CIRCLE).onParams(
-        idchar, idTalent)()
-      querry(0)[Int]("circle")
     }
   }
 
@@ -468,6 +435,39 @@ class eoceneSqlService extends eoceneDao{
   }
 
   /**
+    * Get data for talents of a charcter
+    *
+    * @param id the id of the character
+    * @param id_discipline
+    * @return a nested list of integers with id_char, id_talent and step
+    *         respectively
+    */
+  def getCharTalentRowsIdByCharId(id: Int): List[List[Int]] = {
+    DB.withConnection("chars") { implicit c => {
+      val querry = SQL(eoceneSqlStrings.GET_CHAR_TALENTS).onParams(id)()
+      querry.map(a => List(a[Int]("id_char"), a[Int]("id_talent"),
+        a[Int]("step"))).toList
+    }
+    }
+  }
+
+  /**
+    * Get data for talents of a character while ensuring that the circle is the
+    * lowest
+    *
+    * @param id the id of the character
+    * @param id_discipline
+    * @return success
+    */
+  def getTalentCircleByTalenAndDisciId(idTalent: Int, idchar: Int) = {
+    DB.withConnection("chars") { implicit c =>
+      val querry = SQL(eoceneSqlStrings.GET_TALENT_CIRCLE).onParams(
+        idchar, idTalent)()
+      querry(0)[Int]("circle")
+    }
+  }
+
+  /**
     * Improve a skill (or learn it)
     *
     * @param id the id of the character
@@ -491,15 +491,6 @@ class eoceneSqlService extends eoceneDao{
         SQL(eoceneSqlStrings.ADD_TO_LP).onParams(
           utilities.getSkillLPCcost(1), id).executeUpdate() > 0
       }
-    }
-  }
-
-  def getCharSkillRowsByCharId(id: Int): List[List[Int]] = {
-    DB.withConnection("chars") { implicit c => {
-      val querry = SQL(eoceneSqlStrings.GET_CHAR_SKILLS).onParams(id)()
-      return querry.map(a => List(a[Int]("id_char"), a[Int]("id_skill"),
-        a[Int]("step"))).toList
-    }
     }
   }
 
@@ -530,6 +521,15 @@ class eoceneSqlService extends eoceneDao{
     }
   }
 
+  def getCharSkillRowsByCharId(id: Int): List[List[Int]] = {
+    DB.withConnection("chars") { implicit c => {
+      val querry = SQL(eoceneSqlStrings.GET_CHAR_SKILLS).onParams(id)()
+      querry.map(a => List(a[Int]("id_char"), a[Int]("id_skill"),
+        a[Int]("step"))).toList
+    }
+    }
+  }
+
   /**
     * Return all Spells of a character
     *
@@ -539,7 +539,7 @@ class eoceneSqlService extends eoceneDao{
   def getCharSpellListByCharId(id: Int): List[List[Int]] = {
     DB.withConnection("chars") { implicit c => {
       val querry = SQL(eoceneSqlStrings.GET_CHAR_SPELLS).onParams(id)()
-      return querry.map(a => List(a[Int]("id_char"), a[Int]("id_spell"),
+      querry.map(a => List(a[Int]("id_char"), a[Int]("id_spell"),
         a[Int]("step"))).toList
     }
     }
@@ -721,36 +721,6 @@ class eoceneSqlService extends eoceneDao{
         SQL(eoceneSqlStrings.UPDATE_CHAR_ATTRIBUTE.format("lp_sp"))
           .onParams(char.get.lpSp + nrPoints * char.get.race.karCost, idChar)
           .executeUpdate > 0
-    }
-  }
-
-  /**
-    * Spent Karma points
-    *
-    * @param idChar
-    * @param nrPoints the number of karma points spent
-    * @return Redirect
-    */
-  def spentKarma(idChar: Int, nrPoints: Int) = {
-    DB.withConnection("chars") { implicit c =>
-      val char = getCharById(idChar)
-      SQL(eoceneSqlStrings.UPDATE_CHAR_ATTRIBUTE.format("kar_curr"))
-        .onParams(char.get.karCurr - nrPoints, idChar).executeUpdate > 0
-    }
-  }
-
-  /**
-    * Adding legend points
-    *
-    * @param idChar
-    * @param nrPoints the number of lp to add
-    * @return Redirect
-    */
-  def addLP(idChar: Int, nrPoints: Int) = {
-    DB.withConnection("chars") { implicit c =>
-      val char = getCharById(idChar)
-      SQL(eoceneSqlStrings.UPDATE_CHAR_ATTRIBUTE.format("lp_av"))
-        .onParams(char.get.lpAv + nrPoints, idChar).executeUpdate > 0
     }
   }
 
@@ -969,6 +939,36 @@ class eoceneSqlService extends eoceneDao{
           .foldLeft(0)((a1, a2) => a1 + a2)))
   }
 
+  /**
+    * Spent Karma points
+    *
+    * @param idChar
+    * @param nrPoints the number of karma points spent
+    * @return Redirect
+    */
+  def spentKarma(idChar: Int, nrPoints: Int) = {
+    DB.withConnection("chars") { implicit c =>
+      val char = getCharById(idChar)
+      SQL(eoceneSqlStrings.UPDATE_CHAR_ATTRIBUTE.format("kar_curr"))
+        .onParams(char.get.karCurr - nrPoints, idChar).executeUpdate > 0
+    }
+  }
+
+  /**
+    * Adding legend points
+    *
+    * @param idChar
+    * @param nrPoints the number of lp to add
+    * @return Redirect
+    */
+  def addLP(idChar: Int, nrPoints: Int) = {
+    DB.withConnection("chars") { implicit c =>
+      val char = getCharById(idChar)
+      SQL(eoceneSqlStrings.UPDATE_CHAR_ATTRIBUTE.format("lp_av"))
+        .onParams(char.get.lpAv + nrPoints, idChar).executeUpdate > 0
+    }
+  }
+
   def storeAction(call: String, idChar: Int, idUser: String) = {
     DB.withConnection("chars"){implicit c =>
       eoceneSqlStrings.INSERT_HISTORY.onParams(call, idChar, idUser).executeUpdate() > 0
@@ -977,9 +977,8 @@ class eoceneSqlService extends eoceneDao{
 
   def getCharsForUser(userid:String): List[(String, Int)] = {
       DB.withConnection("chars") { implicit c =>
-      	val result = eoceneSqlStrings.GET_CHARS_FOR_USER.onParams(
+        eoceneSqlStrings.GET_CHARS_FOR_USER.onParams(
         userid)().map(row => (row[String]("name"), row[Int]("id"))).toList
-        return result
       }
      }
 

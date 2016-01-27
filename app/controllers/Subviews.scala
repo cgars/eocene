@@ -12,6 +12,7 @@ import eoceneServices.{EoceneUser, utilities}
 import play.api._
 import securesocial.core._
 
+import scala.util.Try
 import scala.util.control.NonFatal
 
 /**
@@ -191,28 +192,18 @@ class Subviews(override implicit val env: RuntimeEnvironment[EoceneUser],
                 head
               val spellcasting = c.talents.
                 filter(talent => talent.name contains "Spellcasting").head
-              val effectStep: Option[Int] =
-                if (spell.effect.contains("Willforce")) {
-                  try {
-                    val bonus: Int = spell.effect.split("\\+")(1).trim
-                      .toInt
-                    val willforce: Int = c.talents.
-                      filter(talent => talent.name.contains("Wilforce"))
-                      .map(talent => talent.step.getOrElse(0)).headOption.
-                      getOrElse(0)
-                    val willpower: Int = c.derived("wil_step")
-                      .asInstanceOf[Int]
-                    Some(bonus + willforce + willpower)
+              val effectStep: Option[Int] = {
+                val bonus: Int = Try(spell.effect.split("\\+").lift(1).getOrElse("0").trim
+                  .toInt).toOption.getOrElse(0)
+                val willforce: Int = c.talents.
+                  filter(talent => talent.name.contains("Wilforce"))
+                  .map(talent => talent.step.getOrElse(0)).headOption.
+                  getOrElse(0)
+                val willpower: Int = c.derived("wil_step")
+                  .asInstanceOf[Int]
+                Some(bonus + willforce + willpower)
+              }
 
-                  } catch {
-                    case NonFatal(e) => {
-                      Logger.error(
-                        """Error when getting the Effect for a 
-			    	    			Spell view.Error was:%s""".format(e))
-                      None
-                    }
-                  }
-                } else None
               val effectDice = utilities.getDiceForStep(effectStep.
                 getOrElse(0))
 
