@@ -1,13 +1,10 @@
-/**
- * *****************************************************************************
- * Copyright (c) 2014 Christian Garbers.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Simplified BSD License
- * which accompanies this distribution
- *
- * Contributors:
- *     Christian Garbers - initial API and implementation
- * ****************************************************************************
+/*
+ * Copyright (c) 2016 Christian Garbers.
+ *  All rights reserved. This program and the accompanying materials
+ *  are made available under the terms of the Simplified BSD License
+ *  which accompanies this distribution
+ *  Contributors:
+ *       Christian Garbers - initial API and implementation
  */
 package controllers
 
@@ -15,6 +12,7 @@ import eoceneServices.{EoceneUser, utilities}
 import play.api._
 import securesocial.core._
 
+import scala.util.Try
 import scala.util.control.NonFatal
 
 /**
@@ -158,12 +156,12 @@ class Subviews(override implicit val env: RuntimeEnvironment[EoceneUser],
    *
    * @return the dice roller view
    */
-  def Dice(targetClass: String, target_id: String, dice: String, char_id: Int) =
-    SecuredAction(UserAllowedWithCharacterId(char_id)) {
-        val char = dao.getCharById(char_id)
+  def Dice(targetClass: String, targetId: String, dice: String, charId: Int) =
+    SecuredAction(UserAllowedWithCharacterId(charId)) {
+      val char = dao.getCharById(charId)
         char match {
           case None => BadRequest("")
-          case _ => Ok(views.html.dice(char.get, targetClass, target_id, dice))
+          case _ => Ok(views.html.dice(char.get, targetClass, targetId, dice))
             .withHeaders(CACHE_CONTROL -> "no-cache",
               ETAG -> char.get.hashCode.toString)
       }
@@ -183,39 +181,29 @@ class Subviews(override implicit val env: RuntimeEnvironment[EoceneUser],
             try {
               val spell = c.spells.filter(spell => spell.id == idSpell)
                 .head
-              val spells_discipline_name = c.disciplines.
+              val spellsDisciplineName = c.disciplines.
                 filter(discipline => discipline.id == spell.idDiscipline.get)
                 .head.
                 name
               val threadWeaving = c.talents.
                 filter(talent => talent.name contains "Thread").
-                filter(talent => talent.name contains spells_discipline_name.
+                filter(talent => talent.name contains spellsDisciplineName.
                   substring(1, 5)).
                 head
               val spellcasting = c.talents.
                 filter(talent => talent.name contains "Spellcasting").head
-              val effectStep: Option[Int] =
-                if (spell.effect.contains("Willforce")) {
-                  try {
-                    val bonus: Int = spell.effect.split("\\+")(1).trim
-                      .toInt
-                    val willforce: Int = c.talents.
-                      filter(talent => talent.name.contains("Wilforce"))
-                      .map(talent => talent.step.getOrElse(0)).headOption.
-                      getOrElse(0)
-                    val willpower: Int = c.derived("wil_step")
-                      .asInstanceOf[Int]
-                    Some(bonus + willforce + willpower)
+              val effectStep: Option[Int] = {
+                val bonus: Int = Try(spell.effect.split("\\+").lift(1).getOrElse("0").trim
+                  .toInt).toOption.getOrElse(0)
+                val willforce: Int = c.talents.
+                  filter(talent => talent.name.contains("Wilforce"))
+                  .map(talent => talent.step.getOrElse(0)).headOption.
+                  getOrElse(0)
+                val willpower: Int = c.derived("wil_step")
+                  .asInstanceOf[Int]
+                Some(bonus + willforce + willpower)
+              }
 
-                  } catch {
-                    case NonFatal(e) => {
-                      Logger.error(
-                        """Error when getting the Effect for a 
-			    	    			Spell view.Error was:%s""".format(e))
-                      None
-                    }
-                  }
-                } else None
               val effectDice = utilities.getDiceForStep(effectStep.
                 getOrElse(0))
 

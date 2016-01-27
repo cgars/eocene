@@ -80,7 +80,7 @@
 <td class="attribute_pp_down" id="dex_mod">down</td>
 <td class="attribute_pp_up" id="dex_mod">up</td>
 	<td class="attribute_level">@char.dexLevel</td>
-<td class="attribute_race_mod">@char.race.dex_mod</td>
+	<td class="attribute_race_mod">@char.race.dexMod</td>
 <td class="derived_atrr_step">@char.derived("dex_step")</td>
 <td id="dex_step" class="derived_atrr_dice">@{char.getDice(char.derived("dex_step").asInstanceOf[Int])}</td>
 <td class="attribute_down" id="dex_level">down</td>
@@ -93,7 +93,7 @@
 <td class="attribute_pp_down" id="str_mod">down</td>
 <td class="attribute_pp_up" id="str_mod">up</td>
 	<td class="attribute_level">@char.strLevel</td>
-<td class="attribute_race_mod">@char.race.str_mod</td>
+	<td class="attribute_race_mod">@char.race.strMod</td>
 <td class="derived_atrr_step">@char.derived("str_step")</td>
 <td id="str_step" class="derived_atrr_dice">@{char.getDice(char.derived("str_step").asInstanceOf[Int])}</td>
 <td class="attribute_down" id="str_level">down</td>
@@ -106,7 +106,7 @@
 <td class="attribute_pp_down" id="tou_mod">down</td>
 <td class="attribute_pp_up" id="tou_mod">up</td>
 	<td class="attribute_level">@char.touLevel</td>
-<td class="attribute_race_mod">@char.race.tou_mod</td>
+	<td class="attribute_race_mod">@char.race.touMod</td>
 <td class="derived_atrr_step">@char.derived("tou_step")</td>
 <td id="tou_step" class="derived_atrr_dice">@{char.getDice(char.derived("tou_step").asInstanceOf[Int])}</td>
 <td class="attribute_down" id="tou_level">down</td>
@@ -119,7 +119,7 @@
 <td class="attribute_pp_down" id="per_mod">down</td>
 <td class="attribute_pp_up" id="per_mod">up</td>
 	<td class="attribute_level">@char.perLevel</td>
-<td class="attribute_race_mod">@char.race.per_mod</td>
+	<td class="attribute_race_mod">@char.race.perMod</td>
 <td class="derived_atrr_step">@char.derived("per_step")</td>
 <td id="per_step" class="derived_atrr_dice">@{char.getDice(char.derived("per_step").asInstanceOf[Int])}</td>
 <td class="attribute_down" id="per_level">down</td>
@@ -132,7 +132,7 @@
 <td class="attribute_pp_down" id="wil_mod">down</td>
 <td class="attribute_pp_up" id="wil_mod">up</td>
 	<td class="attribute_level">@char.willLevel</td>
-<td class="attribute_race_mod">@char.race.wil_mod</td>
+	<td class="attribute_race_mod">@char.race.wilMod</td>
 <td class="derived_atrr_step">@char.derived("wil_step")</td>
 <td id="wil_step" class="derived_atrr_dice">@{char.getDice(char.derived("wil_step").asInstanceOf[Int])}</td>
 <td class="attribute_down" id="wil_level">down</td>
@@ -145,7 +145,7 @@
 <td class="attribute_pp_down" id="cha_mod">down</td>
 <td class="attribute_pp_up" id="cha_mod">up</td>
 	<td class="attribute_level">@char.chaLevel</td>
-<td class="attribute_race_mod">@char.race.cha_mod</td>
+	<td class="attribute_race_mod">@char.race.chaMod</td>
 <td class="derived_atrr_step">@char.derived("cha_step")</td>
 <td id="cha_step" class="derived_atrr_dice">@{char.getDice(char.derived("cha_step").asInstanceOf[Int])}</td>
 <td class="attribute_down" id="cha_level">down</td>
@@ -235,7 +235,7 @@
 	<td class="defenseValue">@{
 		char.karCurr
 	}/@{
-		char.race.kar_max + char.getModifierValueByName("karmaMax").getOrElse(0)
+		char.race.karMax + char.getModifierValueByName("karmaMax").getOrElse(0)
 	}</td>
 </tr>
 <tr class="Buy Karma">
