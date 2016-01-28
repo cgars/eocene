@@ -40,7 +40,7 @@ case class Talent(val id: Int, val name: String, val action: Boolean,
     step match {
       case None => 0 //in case we have no step rank is not defined
       case _ => //First we do the formula attribute conversion
-        val rank = char.derived.lift(formulaSplit(0).toLowerCase() + "_step").getOrElse(0)
+        val rank = char.derived.lift(formulaSplit(0).toLowerCase() + "_step").getOrElse(-100)
           .asInstanceOf[Int] + step.getOrElse(0)
         //return the derived rank or add the second part of formula
         rank + formulaSplit.lift(1).getOrElse("0").toInt

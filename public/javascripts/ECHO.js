@@ -1,3 +1,12 @@
+/*
+ * Copyright (c) 2016 Christian Garbers.
+ *  All rights reserved. This program and the accompanying materials
+ *  are made available under the terms of the Simplified BSD License
+ *  which accompanies this distribution
+ *  Contributors:
+ *       Christian Garbers - initial API and implementation
+ */
+
 $(document).ready(function(){
 	$ = jQuery.noConflict();
 	$.ajaxSetup({ cache: false });
@@ -49,15 +58,18 @@ $(document).ready(function(){
 	$("#root").on('focusout',"#AddLP_textfield", addLP);
 });
 
-function addLP(event){	
+function addLP(event) {
+	fade();
 	$.post("/API/characters/"+$("#char_id").text()+"/lp/add/"+$("#AddLP_textfield").val()+"/",reload_char);
 	}
-	
-function buyKarma(event){	
+
+function buyKarma(event) {
+	fade();
 	$.post("/API/characters/"+$("#char_id").text()+"/karma/buy/"+$("#BuyKarma_textfield").val()+"/",reload_char);
 	}
-	
-function spentKarma(event){	
+
+function spentKarma(event) {
+	fade();
 	$.post("/API/characters/"+$("#char_id").text()+"/karma/spent/"+$("#SpentKarma_textfield").val()+"/",reload_char);
 	}
 
@@ -152,10 +164,12 @@ function sandbox(event){
 	}
 
 function threadUp(event){
+	fade();
 	$.get("/API/characters/"+$("#char_id").text()+"/armors/"+event.target.id+"/thread/attach/",reload_char);
 	}
 	
 function threadDown(event){
+	fade();
 	$.get("/API/characters/"+$("#char_id").text()+"/armors/"+event.target.id+"/thread/remove/",reload_char);
 	}
 
@@ -175,11 +189,13 @@ function unlearnSpell(event){
 	$.post("/API/characters/"+$("#char_id").text()+"/spells/"+event.target.id+"/unlearn/",reload_char);
 	}
 
-function skillDown(event){	
+function skillDown(event) {
+	fade();
 	$.post("/API/characters/"+$("#char_id").text()+"/skills/"+event.target.id+"/corrupt/",reload_char);
 	}
-	
-function skillUp(event){	
+
+function skillUp(event) {
+	fade();
 	$.post("/API/characters/"+$("#char_id").text()+"/skills/"+event.target.id+"/improve/",reload_char);
 	}
 
@@ -214,12 +230,14 @@ function fetchArmorsBlock(){
 	window.scrollTo(0, 0);
 	$("#float_elem").fadeIn("normal");
 	}
-	
-function disciplineUp(event){	
+
+function disciplineUp(event) {
+	fade();
 	$.post("/API/characters/"+$("#char_id").text()+"/disciplines/"+event.target.id+"/improve/",reload_char);
 	}
-	
-function disciplineDown(event){	
+
+function disciplineDown(event) {
+	fade();
 	$.post("/API/characters/"+$("#char_id").text()+"/disciplines/"+event.target.id+"/corrupt/",reload_char);
 	}
 
@@ -243,38 +261,52 @@ function changeCharName(){
 	}
 	
 function talentUp(event){
+	fade();
 	$.post("/API/characters/"+$("#char_id").text()+"/talents/"+event.target.id+"/improve/",reload_char);
 	}
-	
-function talentDown(event){	
+
+function talentDown(event) {
+	fade();
 	$.post("/API/characters/"+$("#char_id").text()+"/talents/"+event.target.id+"/corrupt/",reload_char);
 	}
-	
-function attributeUp(event){	
+
+function attributeUp(event) {
+	fade();
 	$.post("/API/characters/"+$("#char_id").text()+"/attributes/"+event.target.id+"/improve/",reload_char);
 	}
-	
-function attributeDown(event){	
+
+function attributeDown(event) {
+	fade();
 	$.post("/API/characters/"+$("#char_id").text()+"/attributes/"+event.target.id+"/corrupt/",reload_char);
 	}
 
 function attributePPUp(event){
+	fade();
 	$.post("/API/characters/"+$("#char_id").text()+"/attributes/"+event.target.id+"/improve/pp/",reload_char);
 	}
 	
 function attributePPDown(event){
+	fade();
 	$.post("/API/characters/"+$("#char_id").text()+"/attributes/"+event.target.id+"/corrupt/pp/",reload_char);
 	}
 
 function reload_talents(event){	
 	$("#talents").load("/HTML/char/"+$("#char_id").text()+"1/talents/");
 	}
-	
-function reload_char(event){	
-	$("#char_root").fadeIn("normal");
-	$("#float_elem").fadeOut("normal");
-	$("#roller").fadeOut("normal");
-	$("#char_root").load("/HTML/char/"+$("#char_id").text()+"/"+$.now()+"/");
+
+function fade() {
+	$("#char_root").fadeTo("fast", .5);
+}
+
+function blendIn() {
+	$("#char_root").fadeTo("fast'", 1.);
+}
+
+funtion;
+function reload_char(event) {
+	$("#float_elem").fadeOut("fast");
+	$("#roller").fadeOut("fast");
+	$("#char_root").load("/HTML/char/" + $("#char_id").text() + "/" + $.now() + "/", blendIn);
 	$("#float_elem").empty();
 	}
 	
