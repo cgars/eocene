@@ -302,7 +302,6 @@ function blendIn() {
 	$("#char_root").fadeTo("fast'", 1.);
 }
 
-funtion;
 function reload_char(event) {
 	$("#float_elem").fadeOut("fast");
 	$("#roller").fadeOut("fast");
