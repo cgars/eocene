@@ -6,10 +6,13 @@
  *  Contributors:
  *       Christian Garbers - initial API and implementation
  */
+
 package controllers
 
 
-import eoceneServices.{EoceneUser, eoceneUserService, utilities}
+import javax.inject.Inject
+
+import eoceneServices.{EoceneUser, eoceneEnvironment, eoceneUserService, utilities}
 import play.api.libs.json.{JsNumber, JsString, Json}
 import play.api.mvc.RequestHeader
 import play.mvc.Call
@@ -20,9 +23,9 @@ import scala.util.control.NonFatal
 /**
  * Main controller for modifications on characters
  */
-class Charackters(override implicit val env: RuntimeEnvironment[EoceneUser],
-    implicit val dao:eoceneServices.eoceneDao)
-  extends securesocial.core.SecureSocial[EoceneUser] {
+class Charackters @Inject()(override implicit val env: eoceneEnvironment,
+                            implicit val dao:eoceneServices.eoceneDao)
+  extends securesocial.core.SecureSocial {
   /**
    * Get a character with id
    *
@@ -112,6 +115,15 @@ class Charackters(override implicit val env: RuntimeEnvironment[EoceneUser],
       replyAndStore(dao.updateCharAttributeWithPP(id, attribute, "up"),
         routes.Charackters.improveAttributePP(id, attribute),
         id, request.user.main.userId)
+    }
+
+  def replyAndStore(result: Boolean, action: Call, idChar: Int, idUser: String) =
+    result match {
+      case false => BadRequest("")
+      case _ =>
+        dao.storeAction(action.toString,
+          idChar, idUser)
+        Ok("")
     }
 
   /**
@@ -296,7 +308,7 @@ class Charackters(override implicit val env: RuntimeEnvironment[EoceneUser],
         routes.Charackters.removeArmor(id, idArmor),
         id, request.user.main.userId)
     }
-  
+
   /**
     * Attach a thread to an armor item
    *
@@ -499,15 +511,6 @@ class Charackters(override implicit val env: RuntimeEnvironment[EoceneUser],
       replyAndStore(dao.buyKarma(idChar, nrPoints),
         routes.Charackters.buyKarma(idChar, nrPoints),
         idChar, request.user.main.userId)
-    }
-
-  def replyAndStore(result: Boolean, action: Call, idChar: Int, idUser: String) =
-    result match {
-      case false => BadRequest("")
-      case _ =>
-        dao.storeAction(action.toString,
-          idChar, idUser)
-        Ok("")
     }
 
   /**

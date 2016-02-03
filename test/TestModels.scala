@@ -1,10 +1,17 @@
-import org.scalatestplus.play._
-import org.scalatest.mock._
+/*
+ * Copyright (c) 2016 Christian Garbers.
+ *  All rights reserved. This program and the accompanying materials
+ *  are made available under the terms of the Simplified BSD License
+ *  which accompanies this distribution
+ *  Contributors:
+ *       Christian Garbers - initial API and implementation
+ */
+
+import models.{Race, _}
 import org.mockito.Mockito._
-import models.Race
-import anorm._
+import org.scalatest.mock._
+import org.scalatestplus.play._
 import play.libs.Json
-import models._
 
 class RaceSpecs extends PlaySpec with MockitoSugar{
 	  "Race" must {

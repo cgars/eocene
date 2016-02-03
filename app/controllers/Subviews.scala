@@ -6,11 +6,13 @@
  *  Contributors:
  *       Christian Garbers - initial API and implementation
  */
+
 package controllers
 
-import eoceneServices.{EoceneUser, utilities}
+import javax.inject.Inject
+
+import eoceneServices.{eoceneEnvironment, utilities}
 import play.api._
-import securesocial.core._
 
 import scala.util.Try
 import scala.util.control.NonFatal
@@ -19,9 +21,9 @@ import scala.util.control.NonFatal
  * Return is responsible for handlign out propper
  * HTML
  */
-class Subviews(override implicit val env: RuntimeEnvironment[EoceneUser],
-    dao:eoceneServices.eoceneSqlService)
-  extends securesocial.core.SecureSocial[EoceneUser] {
+class Subviews @Inject()(override implicit val env: eoceneEnvironment,
+                         dao:eoceneServices.eoceneSqlService)
+  extends securesocial.core.SecureSocial {
   	
   /**
    * Fetch a character ad prepare the Talent view
