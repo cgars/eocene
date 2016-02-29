@@ -6,6 +6,7 @@
  *  Contributors:
  *       Christian Garbers - initial API and implementation
  */
+
 package eoceneServices
 
 class Validator(char: models.Character) {
@@ -29,7 +30,7 @@ class Validator(char: models.Character) {
     if (char.disciplines.isEmpty) {
       message.concat("No Discipline selected")
     }
-    List(char.disciplines.map(discipline => checkDiscilineCircleRequirements(discipline)).
+    List(char.disciplines.map(discipline => checkDisciplineCircleRequirements(discipline)).
       foldLeft(true)((a1, a2) => a1 && a2),
       checkAtrributeImprovements,
       checkWindlingStrength,
@@ -86,11 +87,13 @@ class Validator(char: models.Character) {
     else true
   }
 
-  def checkDiscilineCircleRequirements(discipline: models.Discipline): Boolean = {
+  def checkDisciplineCircleRequirements(discipline: models.Discipline): Boolean = {
     if (discipline.circle.getOrElse(0) == 1) true
-    (2).to(discipline.circle.getOrElse(0)).
-      map(circle => eligableForCircle(circle, discipline)).
-      reduce((a1, a2) => a1 && a2)
+    else {
+      (2).to(discipline.circle.getOrElse(0)).
+        map(circle => eligableForCircle(circle, discipline)).
+        reduce((a1, a2) => a1 && a2)
+    }
   }
 
   def eligableForCircle(circle: Int, discipline: models.Discipline): Boolean = {
