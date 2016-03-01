@@ -317,12 +317,12 @@ function fade() {
 
 function blendIn() {
 	$.unblockUI();
-	//$("#char_root").fadeTo("fast'", 1.);
+	$("#char_root").fadeTo("fast'", 1.);
 }
 
 function reload_char(event) {
-	//$("#float_elem").fadeOut("fast");
-	//$("#roller").fadeOut("fast");
+	$("#float_elem").fadeOut("fast");
+	$("#roller").fadeOut("fast");
 	$("#char_root").load("/HTML/char/" + $("#char_id").text() + "/" + $.now() + "/", blendIn);
 	$("#float_elem").empty();
 	}
