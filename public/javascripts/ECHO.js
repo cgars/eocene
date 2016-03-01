@@ -60,21 +60,25 @@ $(document).ready(function(){
 
 function addLP(event) {
 	fade();
-	$.post("/API/characters/"+$("#char_id").text()+"/lp/add/"+$("#AddLP_textfield").val()+"/",reload_char);
+	$.post("/API/characters/" + $("#char_id").text() + "/lp/add/" + $("#AddLP_textfield").val() + "/", reload_char)
+		.fail(failedQuery);
 	}
 
 function buyKarma(event) {
 	fade();
-	$.post("/API/characters/"+$("#char_id").text()+"/karma/buy/"+$("#BuyKarma_textfield").val()+"/",reload_char);
+	$.post("/API/characters/" + $("#char_id").text() + "/karma/buy/" + $("#BuyKarma_textfield").val() + "/", reload_char)
+		.fail(failedQuery);
 	}
 
 function spentKarma(event) {
 	fade();
-	$.post("/API/characters/"+$("#char_id").text()+"/karma/spent/"+$("#SpentKarma_textfield").val()+"/",reload_char);
+	$.post("/API/characters/" + $("#char_id").text() + "/karma/spent/" + $("#SpentKarma_textfield").val() + "/", reload_char)
+		.fail(failedQuery);
 	}
 
 function shareChar(event){
-	$.post("/API/characters/share/"+event.target.id+"/"+$("#share_textfield").val()+"/",reload_chars);
+	$.post("/API/characters/share/" + event.target.id + "/" + $("#share_textfield").val() + "/", reload_chars)
+		.fail(failedQuery);
 	}
 
 function getSharePage(event){
@@ -165,12 +169,14 @@ function sandbox(event){
 
 function threadUp(event){
 	fade();
-	$.get("/API/characters/"+$("#char_id").text()+"/armors/"+event.target.id+"/thread/attach/",reload_char);
+	$.get("/API/characters/" + $("#char_id").text() + "/armors/" + event.target.id + "/thread/attach/", reload_char)
+		.fail(failedQuery);
 	}
 	
 function threadDown(event){
 	fade();
-	$.get("/API/characters/"+$("#char_id").text()+"/armors/"+event.target.id+"/thread/remove/",reload_char);
+	$.get("/API/characters/" + $("#char_id").text() + "/armors/" + event.target.id + "/thread/remove/", reload_char)
+		.fail(failedQuery);
 	}
 
 function getArmor(event){
@@ -191,12 +197,14 @@ function unlearnSpell(event){
 
 function skillDown(event) {
 	fade();
-	$.post("/API/characters/"+$("#char_id").text()+"/skills/"+event.target.id+"/corrupt/",reload_char);
+	$.post("/API/characters/" + $("#char_id").text() + "/skills/" + event.target.id + "/corrupt/", reload_char)
+		.fail(failedQuery);
 	}
 
 function skillUp(event) {
 	fade();
-	$.post("/API/characters/"+$("#char_id").text()+"/skills/"+event.target.id+"/improve/",reload_char);
+	$.post("/API/characters/" + $("#char_id").text() + "/skills/" + event.target.id + "/improve/", reload_char)
+		.fail(failedQuery);
 	}
 
 function fetchSkillsBlock(){
@@ -233,12 +241,14 @@ function fetchArmorsBlock(){
 
 function disciplineUp(event) {
 	fade();
-	$.post("/API/characters/"+$("#char_id").text()+"/disciplines/"+event.target.id+"/improve/",reload_char);
+	$.post("/API/characters/" + $("#char_id").text() + "/disciplines/" + event.target.id + "/improve/", reload_char)
+		.fail(failedQuery);
 	}
 
 function disciplineDown(event) {
 	fade();
-	$.post("/API/characters/"+$("#char_id").text()+"/disciplines/"+event.target.id+"/corrupt/",reload_char);
+	$.post("/API/characters/" + $("#char_id").text() + "/disciplines/" + event.target.id + "/corrupt/", reload_char)
+		.fail(failedQuery);
 	}
 
 function fetchRaceBlock(){
@@ -246,7 +256,8 @@ function fetchRaceBlock(){
 	}
 
 function changeRace(event){
-	$.post("/API/characters/"+$("#char_id").text()+"/race/"+event.target.id+"/",reload_char);
+	$.post("/API/characters/" + $("#char_id").text() + "/race/" + event.target.id + "/", reload_char)
+		.fail(failedQuery);
 	}
 	
 
@@ -262,7 +273,8 @@ function changeCharName(){
 	
 function talentUp(event){
 	fade();
-	$.post("/API/characters/"+$("#char_id").text()+"/talents/"+event.target.id+"/improve/",reload_char);
+	$.post("/API/characters/" + $("#char_id").text() + "/talents/" + event.target.id + "/improve/", reload_char)
+		.fail(failedQuery);
 	}
 
 function talentDown(event) {
@@ -272,22 +284,26 @@ function talentDown(event) {
 
 function attributeUp(event) {
 	fade();
-	$.post("/API/characters/"+$("#char_id").text()+"/attributes/"+event.target.id+"/improve/",reload_char);
+	$.post("/API/characters/" + $("#char_id").text() + "/attributes/" + event.target.id + "/improve/", reload_char)
+		.fail(failedQuery);
 	}
 
 function attributeDown(event) {
 	fade();
-	$.post("/API/characters/"+$("#char_id").text()+"/attributes/"+event.target.id+"/corrupt/",reload_char);
+	$.post("/API/characters/" + $("#char_id").text() + "/attributes/" + event.target.id + "/corrupt/", reload_char)
+		.fail(failedQuery)
 	}
 
 function attributePPUp(event){
 	fade();
-	$.post("/API/characters/"+$("#char_id").text()+"/attributes/"+event.target.id+"/improve/pp/",reload_char);
+	$.post("/API/characters/" + $("#char_id").text() + "/attributes/" + event.target.id + "/improve/pp/", reload_char)
+		.fail(failedQuery);
 	}
 	
 function attributePPDown(event){
 	fade();
-	$.post("/API/characters/"+$("#char_id").text()+"/attributes/"+event.target.id+"/corrupt/pp/",reload_char);
+	$.post("/API/characters/" + $("#char_id").text() + "/attributes/" + event.target.id + "/corrupt/pp/", reload_char)
+		.fail(failedQuery);
 	}
 
 function reload_talents(event){	
@@ -295,16 +311,18 @@ function reload_talents(event){
 	}
 
 function fade() {
-	$("#char_root").fadeTo("fast", .5);
+	$.blockUI();
+	//$("#char_root").fadeTo("fast", .5);
 }
 
 function blendIn() {
-	$("#char_root").fadeTo("fast'", 1.);
+	$.unblockUI();
+	//$("#char_root").fadeTo("fast'", 1.);
 }
 
 function reload_char(event) {
-	$("#float_elem").fadeOut("fast");
-	$("#roller").fadeOut("fast");
+	//$("#float_elem").fadeOut("fast");
+	//$("#roller").fadeOut("fast");
 	$("#char_root").load("/HTML/char/" + $("#char_id").text() + "/" + $.now() + "/", blendIn);
 	$("#float_elem").empty();
 	}
@@ -313,4 +331,15 @@ function reload_chars(event){
 	$("#chars_root").fadeIn("normal");
 	$("#float_elem").fadeOut("normal");
 	$("#chars_root").load("/HTML/chars/");
-	}
+}
+function failedQuery(qXHR, textStatus, errorThrown) {
+	$.blockUI({
+		message: "<h1>This did not work. The querry failed with " + errorThrown + qXHR.responseText + "</h1>",
+		css: {color: '#FF0000'}
+	});
+	setTimeout(function () {
+			reload_char(qXHR);
+		},
+		2000);
+
+}
