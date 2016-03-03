@@ -10,8 +10,8 @@
 <td>Attribute</td>
 <td>Rank</td>
 <td>Dice</td>
-<td>Improve</td>
 <td></td>
+	<td></td>
 </tr>
 @char.talents.map{ability=> 
 	<tr id=@{"ab_id"+ability.id}>
@@ -24,8 +24,16 @@
 	<td class="table_field" id="@{"ab_id"+ability.id+"formula"}">@ability.formula</td>
 	<td class="table_field" id="@{"ab_id"+ability.id+"rank"}">@{ability.step}@{if(ability.getRank(char)>0)"/"+ability.getRank(char) else ""}</td>
 	<td class="talent_field" id="@{if(ability.getRank(char)>0)"ab_id"+ability.id+"_dice" else "ab_id"+ability.id}">@{if(ability.getRank(char)>0)ability.getDice(char) else ""}</td>
-	<td class="talent_down" id="@{""+ability.id}">down</td>
-	<td class="talent_up" id="@{""+ability.id}">up</td>
+		<td class="talent_down" id="@{
+			"" + ability.id
+		}"><span id="@{
+			"" + ability.id
+		}" title="down" class="glyphicon glyphicon-minus-sign" aria-hidden="true"></span></td>
+		<td class="talent_up" id="@{
+			"" + ability.id
+		}"><span id="@{
+			"" + ability.id
+		}" title="up" class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span></td>
 	</tr>	    
 }
 </table>

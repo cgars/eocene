@@ -9,11 +9,12 @@
 	<tr>
 	<td class="table_field">@skill.name</td>
 		<td class="table_field">@skill.skillType</td>
-	<td class="skill_chosen" id="@{""+skill.id}">Learn</td>
+		<td class="skill_chosen" id="@{
+			"" + skill.id
+		}">
+			<span id="@{
+				"" + skill.id
+			}" title="choose" class="glyphicon glyphicon-check" aria-hidden="true"></span></td>
 	</tr>	    
 }
-	<tr>
-	<td class="table_field"></td>
-	<td  id="reload_char">Back</td>
-	</tr>
 </table>

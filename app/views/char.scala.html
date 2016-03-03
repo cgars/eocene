@@ -14,7 +14,10 @@
 </div>
 
 <div class="Block" id="RaceBlock">
-<div class="BlockHeading" id="race_name">Race: @char.race.name</div>
+	<div class="BlockHeading" id="race_name">
+		<span title="edit" class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+		Race: @char.race.name
+	</div>
 <div id="race"></div>
 <table id="RaceAbTable" border="0">
 <tr><td>Ability</td></tr>
@@ -27,21 +30,22 @@
 </div>
 
 <div class="Block" id="DisciplineBlock">
-<div class="BlockHeading" id="discipline_heading">Disciplines</div>
+	<div class="BlockHeading" id="discipline_heading"><span title="edit" class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+		Disciplines</div>
 <div id="test"></div>
 <table id="DisciplineTable" border="0">
 <tr class = "discipline_row">
 <td class="discipline_name_head">Discipline</td>
 <td class="discipline_circle">Circle</td>
-<td class="discipline_down">Improve</td>
-<td class="discipline_up">Corrupt</td>
+	<td class="discipline_down"></td>
+	<td class="discipline_up"></td>
 </tr>
 @char.disciplines.map{discipline=> 
 <tr class = "discipline_row">
 <td class="discipline_name" id="@{discipline.id+"_id4abi"}">@discipline.name</td>
 <td class="discipline_circle">@discipline.circle</td>
-<td class="discipline_down" id="@discipline.id">down</td>
-<td class="discipline_up" id="@discipline.id">up</td>
+	<td class="discipline_down" id="@discipline.id"><span id="@discipline.id" title="down" class="glyphicon glyphicon-minus-sign" aria-hidden="true"></span></td>
+	<td class="discipline_up" id="@discipline.id"><span id="@discipline.id" title="up" class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span></td>
 
 <div class ="discipline_abilities_inv" id="@{discipline.id+"_abilities"}">
 <div class="BlockHeading">@discipline.name</div>
@@ -60,96 +64,96 @@
 <div class="Block" id="AtrributeBlock">
 <div class="BlockHeading" id="atrr_heading">Attributes</div>
 
-<table border="0">
+	<table border="0">
 <tr class = "attribute_row">
 <td class="attribute_name_head">Attribute</td>
 <td class="attribute_value_head">Value</td>
-<td class="attribute_down_head">up</td>
-<td class="attribute_up_head">down</td>
+	<td class="attribute_down_head"></td>
+	<td class="attribute_up_head"></td>
 <td class="attribute_level_head">Improved</td>
 <td class="attribute_race_mod_head">Racial Modifier</td>
 <td class="derived_atrr_step_head">Step</td>
 <td class="derived_atrr_dice_head">Dice</td>
-<td class="attribute_down" id="dex_level">down</td>
-<td class="attribute_up" id="dex_level">up</td>
+	<td class="attribute_down" id="dex_level"></td>
+	<td class="attribute_up" id="dex_level"></td>
 </tr>
 
 <tr class = "attribute_row">
 <td class="attribute_name">dex</td>
 <td class="attribute_value">@char.derived("dex")</td>
-<td class="attribute_pp_down" id="dex_mod">down</td>
-<td class="attribute_pp_up" id="dex_mod">up</td>
+	<td id="dex_mod" class="attribute_pp_down"><span id="dex_mod" title="down" class="glyphicon glyphicon-minus-sign" aria-hidden="true"></span></td>
+	<td id="dex_mod" class="attribute_pp_up"><span id="dex_mod" title="up" class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span></td>
 	<td class="attribute_level">@char.dexLevel</td>
 	<td class="attribute_race_mod">@char.race.dexMod</td>
 <td class="derived_atrr_step">@char.derived("dex_step")</td>
 <td id="dex_step" class="derived_atrr_dice">@{char.getDice(char.derived("dex_step").asInstanceOf[Int])}</td>
-<td class="attribute_down" id="dex_level">down</td>
-<td class="attribute_up" id="dex_level">up</td>
+	<td class="attribute_down" id="dex_level"><span id="dex_level" title="down" class="glyphicon glyphicon-minus-sign" aria-hidden="true"></span></td>
+	<td class="attribute_up" id="dex_level"><span id="dex_level" title="up" class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span></td>
 </tr>
 
 <tr class = "attribute_row">
 <td class="attribute_name">str</td>
 <td class="attribute_value">@char.derived("str")</td>
-<td class="attribute_pp_down" id="str_mod">down</td>
-<td class="attribute_pp_up" id="str_mod">up</td>
+	<td id="str_mod" class="attribute_pp_down"><span id="str_mod" title="down" class="glyphicon glyphicon-minus-sign" aria-hidden="true"></span></td>
+	<td id="str_mod" class="attribute_pp_up"><span id="str_mod" title="up" class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span></td>
 	<td class="attribute_level">@char.strLevel</td>
 	<td class="attribute_race_mod">@char.race.strMod</td>
 <td class="derived_atrr_step">@char.derived("str_step")</td>
 <td id="str_step" class="derived_atrr_dice">@{char.getDice(char.derived("str_step").asInstanceOf[Int])}</td>
-<td class="attribute_down" id="str_level">down</td>
-<td class="attribute_up" id="str_level">up</td>
+	<td id="str_level" class="attribute_down"><span id="str_level" title="down" class="glyphicon glyphicon-minus-sign" aria-hidden="true"></span></td>
+	<td id="str_level" class="attribute_up"><span id="str_level" title="up" class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span></td>
 </tr>
 
 <tr>
 <td class="attribute_name">tou</td>
 <td class="attribute_value">@char.derived("tou")</td>
-<td class="attribute_pp_down" id="tou_mod">down</td>
-<td class="attribute_pp_up" id="tou_mod">up</td>
+	<td id="tou_mod" class="attribute_pp_down"><span id="tou_mod" title="down" class="glyphicon glyphicon-minus-sign" aria-hidden="true"></span></td>
+	<td id="tou_mod" class="attribute_pp_up"><span id="tou_mod" title="up" class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span></td>
 	<td class="attribute_level">@char.touLevel</td>
 	<td class="attribute_race_mod">@char.race.touMod</td>
 <td class="derived_atrr_step">@char.derived("tou_step")</td>
 <td id="tou_step" class="derived_atrr_dice">@{char.getDice(char.derived("tou_step").asInstanceOf[Int])}</td>
-<td class="attribute_down" id="tou_level">down</td>
-<td class="attribute_up" id="tou_level">up</td>
+	<td id="tou_level" class="attribute_down"><span id="tou_level" title="down" class="glyphicon glyphicon-minus-sign" aria-hidden="true"></span></td>
+	<td id="tou_level" class="attribute_up"><span id="tou_level" title="up" class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span></td>
 </tr>
 
 <tr class = "attribute_row">
 <td class="attribute_name">per</td>
 <td class="attribute_value">@char.derived("per")</td>
-<td class="attribute_pp_down" id="per_mod">down</td>
-<td class="attribute_pp_up" id="per_mod">up</td>
+	<td id="per_mod" class="attribute_pp_down"><span id="per_mod" title="down" class="glyphicon glyphicon-minus-sign" aria-hidden="true"></span></td>
+	<td id="per_mod" class="attribute_pp_up"><span id="per_mod" title="up" class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span></td>
 	<td class="attribute_level">@char.perLevel</td>
 	<td class="attribute_race_mod">@char.race.perMod</td>
 <td class="derived_atrr_step">@char.derived("per_step")</td>
 <td id="per_step" class="derived_atrr_dice">@{char.getDice(char.derived("per_step").asInstanceOf[Int])}</td>
-<td class="attribute_down" id="per_level">down</td>
-<td class="attribute_up" id="per_level">up</td>
+	<td id="per_level" class="attribute_down"><span id="per_level" title="down" class="glyphicon glyphicon-minus-sign" aria-hidden="true"></span></td>
+	<td id="per_level" class="attribute_up"><span id="per_level" title="up" class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span></td>
 </tr>
 
 <tr class = "attribute_row">
 <td class="attribute_name">wil</td>
 <td class="attribute_value">@char.derived("wil")</td>
-<td class="attribute_pp_down" id="wil_mod">down</td>
-<td class="attribute_pp_up" id="wil_mod">up</td>
+	<td id="wil_mod" class="attribute_pp_down"><span id="wil_mod" title="down" class="glyphicon glyphicon-minus-sign" aria-hidden="true"></span></td>
+	<td id="wil_mod" class="attribute_pp_up"><span id="wil_mod" title="up" class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span></td>
 	<td class="attribute_level">@char.willLevel</td>
 	<td class="attribute_race_mod">@char.race.wilMod</td>
 <td class="derived_atrr_step">@char.derived("wil_step")</td>
 <td id="wil_step" class="derived_atrr_dice">@{char.getDice(char.derived("wil_step").asInstanceOf[Int])}</td>
-<td class="attribute_down" id="wil_level">down</td>
-<td class="attribute_up" id="wil_level">up</td>
+	<td id="wil_level" class="attribute_down"><span id="wil_level" title="down" class="glyphicon glyphicon-minus-sign" aria-hidden="true"></span></td>
+	<td id="wil_level" class="attribute_up"><span id="wil_level" title="up" class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span></td>
 </tr>
 
 <tr class = "attribute_row">
 <td class="attribute_name">cha</td>
 <td class="attribute_value">@char.derived("cha")</td>
-<td class="attribute_pp_down" id="cha_mod">down</td>
-<td class="attribute_pp_up" id="cha_mod">up</td>
+	<td id="cha_mod" class="attribute_pp_down"><span id="cha_mod" title="down" class="glyphicon glyphicon-minus-sign" aria-hidden="true"></span></td>
+	<td id="cha_mod" class="attribute_pp_up"><span id="cha_mod" title="up" class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span></td>
 	<td class="attribute_level">@char.chaLevel</td>
 	<td class="attribute_race_mod">@char.race.chaMod</td>
 <td class="derived_atrr_step">@char.derived("cha_step")</td>
 <td id="cha_step" class="derived_atrr_dice">@{char.getDice(char.derived("cha_step").asInstanceOf[Int])}</td>
-<td class="attribute_down" id="cha_level">down</td>
-<td class="attribute_up" id="cha_level">up</td>
+	<td id="cha_level" class="attribute_down"><span id="cha_level" title="down" class="glyphicon glyphicon-minus-sign" aria-hidden="true"></span></td>
+	<td id="cha_level" class="attribute_up"><span id="cha_level" title="up" class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span></td>
 </tr>
 
 <tr class = "attribute_row">
@@ -260,109 +264,205 @@
 
 
 <div class="Block" id="SkillsBlock">
-<div class="BlockHeading" id="skills_heading">Skills</div>
-<table id="TalentTable" border="0">
-<tr>
-<td>Skill</td>
-<td>Level</td>
-<td>type</td>
-<td>Formula</td>
-<td>Comm</td>
-<td>Rank</td>
-<td>Dice</td>
-<td>Improve</td>
-<td>Corrupt</td>
-</tr>
-@char.skills.map{skill=> 
-	<tr id=@{"ab_id"+skill.id}>
-	<td class="table_field" id="@{"ab_id"+skill.id+"name"}">@skill.name</td>
-	<td class="table_field" id="@{"ab_id"+skill.id+"circle"}">@skill.step</td>
-		<td class="table_field" id="@{
-			"ab_id" + skill.id + "action"
-		}">@skill.skillType</td>
-	<td class="table_field" id="@{"ab_id"+skill.id+"karma"}">@skill.formula</td>
-	<td class="table_field" id="@{"ab_id"+skill.id+"strain"}">@skill.comm</td>
-	<td class="table_field" id="@{"ab_id"+skill.id+"rank"}">@{skill.step}@{if(skill.getRank(char)>0)"/"+skill.getRank(char) else ""}</td>
-	<td class="table_field" id="@{"ab_id"+skill.id+"dice"}">@{if(skill.getRank(char)>0)skill.getDice(char) else ""}</td>
-	<td class="skill_down" id="@{""+skill.id}">down</td>
-	<td class="skill_up" id="@{""+skill.id}">up</td>
-	</tr>  
-}
-</table>
+	<div class="BlockHeading" id="skills_heading">
+		<span title="edit" class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+		Skills</div>
+	<table id="TalentTable" border="0">
+		<tr>
+			<td>Skill</td>
+			<td>Level</td>
+			<td>type</td>
+			<td>Formula</td>
+			<td>Comm</td>
+			<td>Rank</td>
+			<td>Dice</td>
+			<td></td>
+			<td></td>
+		</tr>
+		@char.skills.map { skill =>
+			<tr id=@{
+				"ab_id" + skill.id
+			}>
+				<td class="table_field" id="@{
+					"ab_id" + skill.id + "name"
+				}">@skill.name</td>
+				<td class="table_field" id="@{
+					"ab_id" + skill.id + "circle"
+				}">@skill.step</td>
+				<td class="table_field" id="@{
+					"ab_id" + skill.id + "action"
+				}">@skill.skillType</td>
+				<td class="table_field" id="@{
+					"ab_id" + skill.id + "karma"
+				}">@skill.formula</td>
+				<td class="table_field" id="@{
+					"ab_id" + skill.id + "strain"
+				}">@skill.comm</td>
+				<td class="table_field" id="@{
+					"ab_id" + skill.id + "rank"
+				}">@{
+					skill.step
+				}@{
+					if(skill.getRank(char) > 0) "/" + skill.getRank(char) else ""
+				}</td>
+				<td class="table_field" id="@{
+					"ab_id" + skill.id + "dice"
+				}">@{
+					if(skill.getRank(char) > 0) skill.getDice(char) else ""
+				}</td>
+				<td class="skill_down" id="@{
+					"" + skill.id
+				}"><span id="@{
+					"" + skill.id
+				}" title="down" class="glyphicon glyphicon-minus-sign" aria-hidden="true"></span></td>
+				<td class="skill_up" id="@{
+					"" + skill.id
+				}"><span id="@{
+					"" + skill.id
+				}" title="up" class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span></td>
+			</tr>
+		}
+	</table>
 </div>
 
 
 <div class="Block" id="SpellsBlock">
-<div class="BlockHeading" id="spells_heading">Spells</div>
-<table id="SpellTable" border="0">
-<tr>
-<td>Spell</td>
-<td>Cast</td>
-<td>Matrix</td>
-<td>Circle</td>
-<td>threads</td>
-<td>Range</td>
-<td>Duration</td>
-<td>Effect</td>
-<td>Description</td>
-<td>Weaving Difficulty</td>
-<td>Reatuning</td>
-<td>Difficulty</td>
-<td>Unlearn</td>
-</tr>
-@char.spells.map{spell=> 
-	<tr id=@{"ab_id"+spell.id}>
-	<td class="table_field" id="@{"ab_id"+spell.id+"name"}">@spell.name</td>
-	<td class="cast_spell" id="@{""+spell.id}">Cast</td>
-		@if(spell.spellMatrix == None) {
-		<td class="nomatrix" id="@{""+spell.id}"></td>
-	}else{
-		<td class="inmatrix" id="@{""+spell.id}"></td>
-		}	
-	<td class="table_field" id="@{"ab_id"+spell.id+"circle"}">@spell.circle</td>	
-	<td class="table_field" id="@{"ab_id"+spell.id+"action"}">@spell.threads</td>
-	<td class="table_field" id="@{"ab_id"+spell.id+"strain"}">@spell.range</td>
-	<td class="table_field" id="@{"ab_id"+spell.id+"strain"}">@spell.duration</td>
-	<td class="table_field" id="@{"ab_id"+spell.id+"strain"}">@spell.effect</td>
-	<td class="table_field" id="@{"ab_id"+spell.id+"strain"}">@spell.discription</td>
-		<td class="table_field" id="@{
-			"ab_id" + spell.id + "karma"
-		}">@spell.weavingDiff</td>
-	<td class="table_field" id="@{"ab_id"+spell.id+"strain"}">@spell.reatunging</td>
-	<td class="table_field" id="@{"ab_id"+spell.id+"strain"}">@spell.difficulty</td>
-	<td class="unlearn_spell" id="@{""+spell.id}">Unlearn</td>
-	</tr>  
-}
-</table>
+	<div class="BlockHeading" id="spells_heading">
+		<span title="edit" class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+		Spells
+	</div>
+	<table id="SpellTable" border="0">
+		<tr>
+			<td>Spell</td>
+			<td>Cast</td>
+			<td>Matrix</td>
+			<td>Circle</td>
+			<td>threads</td>
+			<td>Range</td>
+			<td>Duration</td>
+			<td>Effect</td>
+			<td>Description</td>
+			<td>Weaving Difficulty</td>
+			<td>Reatuning</td>
+			<td>Difficulty</td>
+			<td></td>
+		</tr>
+		@char.spells.map { spell =>
+			<tr id=@{
+				"ab_id" + spell.id
+			}>
+				<td class="table_field" id="@{
+					"ab_id" + spell.id + "name"
+				}">@spell.name</td>
+				<td class="cast_spell" id="@{
+					"" + spell.id
+				}">Cast</td>
+				@if(spell.spellMatrix == None) {
+					<td class="nomatrix" id="@{
+						"" + spell.id
+					}"></td>
+				} else {
+					<td class="inmatrix" id="@{
+						"" + spell.id
+					}"></td>
+				}
+				<td class="table_field" id="@{
+					"ab_id" + spell.id + "circle"
+				}">@spell.circle</td>
+				<td class="table_field" id="@{
+					"ab_id" + spell.id + "action"
+				}">@spell.threads</td>
+				<td class="table_field" id="@{
+					"ab_id" + spell.id + "strain"
+				}">@spell.range</td>
+				<td class="table_field" id="@{
+					"ab_id" + spell.id + "strain"
+				}">@spell.duration</td>
+				<td class="table_field" id="@{
+					"ab_id" + spell.id + "strain"
+				}">@spell.effect</td>
+				<td class="table_field" id="@{
+					"ab_id" + spell.id + "strain"
+				}">@spell.discription</td>
+				<td class="table_field" id="@{
+					"ab_id" + spell.id + "karma"
+				}">@spell.weavingDiff</td>
+				<td class="table_field" id="@{
+					"ab_id" + spell.id + "strain"
+				}">@spell.reatunging</td>
+				<td class="table_field" id="@{
+					"ab_id" + spell.id + "strain"
+				}">@spell.difficulty</td>
+				<td class="unlearn_spell" id="@{
+					"" + spell.id
+				}">
+					<span id="@{
+						"" + spell.id
+					}" title="forget" class="glyphicon glyphicon-trash" aria-hidden="true"></span></td>
+			</tr>
+		}
+	</table>
 </div>
 
 <div class="Block" id="ArmorsBlock">
-<div class="BlockHeading" id="armors_heading">Armor</div>
-<table id="ArmorTable" border="0">
-<tr>
-<td>Armor</td>
-<td>Cost</td>
-<td>Init</td>
-<td>phys</td>
-<td>mystic</td>
-<td>#threads</td>
-<td>+Thread</td>
-<td>-Thread</td>
-<td>Remove</td>
-</tr>
-@char.armors.map{armor=> 
-	<tr id=@{"ab_id"+armor.id}>
-	<td class="table_field" id="@{"ab_id"+armor.id+"name"}">@armor.name</td>
-	<td class="table_field" id="@{"ab_id"+armor.id+"cost"}">@armor.cost</td>
-	<td class="table_field" id="@{"ab_id"+armor.id+"init"}">@armor.init</td>
-	<td class="table_field" id="@{"ab_id"+armor.id+"phys"}">@armor.phys</td>
-	<td class="table_field" id="@{"ab_id"+armor.id+"mystic"}">@armor.mystic</td>
-	<td class="table_field" id="@{"ab_id"+armor.id+"threads"}">@armor.threads</td>
-	<td class="thread_down" id="@{""+armor.id}">Thread-</td>
-	<td class="thread_up" id="@{""+armor.id}">Thread+</td>
-	<td class="remove_armor" id="@{""+armor.id}">Remove</td>
-	</tr>  
-}
-</table>
+	<div class="BlockHeading" id="armors_heading">
+		<span title="edit" class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+		Armor
+	</div>
+	<table id="ArmorTable" border="0">
+		<tr>
+			<td>Armor</td>
+			<td>Cost</td>
+			<td>Init</td>
+			<td>phys</td>
+			<td>mystic</td>
+			<td>#threads</td>
+			<td>+Thread</td>
+			<td>-Thread</td>
+			<td>Remove</td>
+		</tr>
+		@char.armors.map { armor =>
+			<tr id=@{
+				"ab_id" + armor.id
+			}>
+				<td class="table_field" id="@{
+					"ab_id" + armor.id + "name"
+				}">@armor.name</td>
+				<td class="table_field" id="@{
+					"ab_id" + armor.id + "cost"
+				}">@armor.cost</td>
+				<td class="table_field" id="@{
+					"ab_id" + armor.id + "init"
+				}">@armor.init</td>
+				<td class="table_field" id="@{
+					"ab_id" + armor.id + "phys"
+				}">@armor.phys</td>
+				<td class="table_field" id="@{
+					"ab_id" + armor.id + "mystic"
+				}">@armor.mystic</td>
+				<td class="table_field" id="@{
+					"ab_id" + armor.id + "threads"
+				}">@armor.threads</td>
+				<td class="thread_down" id="@{
+					"" + armor.id
+				}">
+					<span id="@{
+						"" + armor.id
+					}" title="edit" class="glyphicon glyphicon-minus-sign" aria-hidden="true"></td>
+				<td class="thread_up" id="@{
+					"" + armor.id
+				}">
+					<span id="@{
+						"" + armor.id
+					}" title="edit" class="glyphicon glyphicon-plus-sign" aria-hidden="true"></td>
+				<td class="remove_armor" id="@{
+					"" + armor.id
+				}">
+					<span id="@{
+						"" + armor.id
+					}" title="edit" class="glyphicon glyphicon-trash" aria-hidden="true"></td>
+			</tr>
+		}
+	</table>
 </div>
 

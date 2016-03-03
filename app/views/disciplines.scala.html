@@ -8,7 +8,13 @@
 @disciplines.map{discipline=> 
 	<tr id=@{"ab_id"+discipline.id}>
 	<td class="table_field" id="@{"ab_id"+discipline.id+"name"}">@discipline.name</td>
-	<td class="discipline_chosen" id="@{""+discipline.id}">Initiate</td>
+		<td class="discipline_chosen" id="@{
+			"" + discipline.id
+		}">
+			<span id="@{
+				"" + discipline.id
+			}" title="choose" class="glyphicon glyphicon-check" aria-hidden="true"></span>
+		</td>
 	</tr>	    
 }
 	<tr >

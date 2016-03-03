@@ -60,28 +60,34 @@ $(document).ready(function(){
 
 function addLP(event) {
 	fade();
-	$.post("/API/characters/"+$("#char_id").text()+"/lp/add/"+$("#AddLP_textfield").val()+"/",reload_char);
+	$.post("/API/characters/" + $("#char_id").text() + "/lp/add/" + $("#AddLP_textfield").val() + "/", reload_char)
+		.fail(failedQuery);
 	}
 
 function buyKarma(event) {
 	fade();
-	$.post("/API/characters/"+$("#char_id").text()+"/karma/buy/"+$("#BuyKarma_textfield").val()+"/",reload_char);
+	$.post("/API/characters/" + $("#char_id").text() + "/karma/buy/" + $("#BuyKarma_textfield").val() + "/", reload_char)
+		.fail(failedQuery);
 	}
 
 function spentKarma(event) {
 	fade();
-	$.post("/API/characters/"+$("#char_id").text()+"/karma/spent/"+$("#SpentKarma_textfield").val()+"/",reload_char);
+	$.post("/API/characters/" + $("#char_id").text() + "/karma/spent/" + $("#SpentKarma_textfield").val() + "/", reload_char)
+		.fail(failedQuery);
 	}
 
 function shareChar(event){
-	$.post("/API/characters/share/"+event.target.id+"/"+$("#share_textfield").val()+"/",reload_chars);
+	$.post("/API/characters/share/" + event.target.id + "/" + $("#share_textfield").val() + "/", reload_chars)
+		.fail(failedQuery);
 	}
 
 function getSharePage(event){
-	$("#roller").load("/HTML/share/"+event.target.id+"/",	
-	function(){	
-	$("#roller").css({ top: $(event.target).position().top, left: $(event.target).position().left});
-	$("#roller").fadeIn("normal");});
+    $("#mbody").load("/HTML/share/" + event.target.id + "/",
+        function () {
+            $("#roller").css({top: $(event.target).position().top, left: $(event.target).position().left});
+            $("#roller").fadeIn("normal");
+        });
+    $('#myModal').modal('show');
 	}
 function deleteChar(event){
 	$.post("/API/characters/delete/"+event.target.id+"/",reload_chars);
@@ -127,10 +133,8 @@ function weaveThread(event){
 	}
 	
 function getSpellPage(event){
-	$("#roller").load("/HTML/spell/"+event.target.id+"/"+$("#char_id").text()+"/",	
-	function(){	
-	$("#roller").css({ top: $(event.target).position().top, left: $(event.target).position().left})	;
-	$("#roller").fadeIn("normal");});
+    $("#mbody").load("/HTML/spell/" + event.target.id + "/" + $("#char_id").text() + "/");
+    $('#myModal').modal('show')
 	}
 
 function throwDice(event){
@@ -139,10 +143,8 @@ function throwDice(event){
 	}
 	
 function getDicePage(event){
-	$("#roller").load("/HTML/dice/"+event.target.className+"/"+event.target.id+"/"+event.target.textContent+"/"+$("#char_id").text()+"/",
-	function(){	
-	$("#roller").css({ top: $(event.target).position().top, left: $(event.target).position().left});
-	$("#roller").fadeIn("normal");});
+    $("#mbody").load("/HTML/dice/" + event.target.className + "/" + event.target.id + "/" + event.target.textContent + "/" + $("#char_id").text() + "/");
+    $("#myModal").modal('show');
 	}
 
 function createChar(event){
@@ -165,88 +167,102 @@ function sandbox(event){
 
 function threadUp(event){
 	fade();
-	$.get("/API/characters/"+$("#char_id").text()+"/armors/"+event.target.id+"/thread/attach/",reload_char);
+	$.get("/API/characters/" + $("#char_id").text() + "/armors/" + event.target.id + "/thread/attach/", reload_char)
+		.fail(failedQuery);
 	}
 	
 function threadDown(event){
 	fade();
-	$.get("/API/characters/"+$("#char_id").text()+"/armors/"+event.target.id+"/thread/remove/",reload_char);
+	$.get("/API/characters/" + $("#char_id").text() + "/armors/" + event.target.id + "/thread/remove/", reload_char)
+		.fail(failedQuery);
 	}
 
 function getArmor(event){
+    $('#myModal').modal('hide');
+    fade();
 	$.get("/API/characters/"+$("#char_id").text()+"/armors/"+event.target.id+"/get/",reload_char);
 	}
 	
 function removeArmor(event){
+    fade();
 	$.get("/API/characters/"+$("#char_id").text()+"/armors/"+event.target.id+"/remove/",reload_char);
 	}
 	
 function learnSpell(event){
-	$.post("/API/characters/"+$("#char_id").text()+"/spells/"+event.target.id+"/learn/",reload_char);
+    $('#myModal').modal('hide');
+    fade();
+    $.post("/API/characters/" + $("#char_id").text() + "/spells/" + event.target.id + "/learn/", reload_char)
+        .fail(failedQuery);
 	}
 
 function unlearnSpell(event){
-	$.post("/API/characters/"+$("#char_id").text()+"/spells/"+event.target.id+"/unlearn/",reload_char);
+    fade();
+    $.post("/API/characters/" + $("#char_id").text() + "/spells/" + event.target.id + "/unlearn/", reload_char)
+        .fail(failedQuery);
 	}
 
 function skillDown(event) {
 	fade();
-	$.post("/API/characters/"+$("#char_id").text()+"/skills/"+event.target.id+"/corrupt/",reload_char);
+	$.post("/API/characters/" + $("#char_id").text() + "/skills/" + event.target.id + "/corrupt/", reload_char)
+		.fail(failedQuery);
 	}
 
 function skillUp(event) {
+    $('#myModal').modal('hide');
 	fade();
-	$.post("/API/characters/"+$("#char_id").text()+"/skills/"+event.target.id+"/improve/",reload_char);
+	$.post("/API/characters/" + $("#char_id").text() + "/skills/" + event.target.id + "/improve/", reload_char)
+		.fail(failedQuery);
 	}
 
 function fetchSkillsBlock(){
-	$("#char_root").fadeOut("normal");
-	$("#float_elem").load("/HTML/skills/");
-	window.scrollTo(0, 0);
-	$("#float_elem").fadeIn("normal");
+    $("#mbody").load("/HTML/skills/");
+    $('#myModal').modal('show');
 	}
 
 function fetchSpellsBlock(){
-	$("#char_root").fadeOut("normal");
-	$("#float_elem").load("/HTML/spells/char/"+$("#char_id").text()+"/");
-	window.scrollTo(0, 0);
-	$("#float_elem").fadeIn("normal");	
+    $("#mbody").load("/HTML/spells/char/" + $("#char_id").text() + "/");
+    $('#myModal').modal('show');
 	}
 
 function learnDiscipline(event){
-	$.post("/API/characters/"+$("#char_id").text()+"/disciplines/"+event.target.id+"/improve/",reload_char);
-	}
+    $('#myModal').modal('hide');
+    fade();
+    $.post("/API/characters/" + $("#char_id").text() + "/disciplines/" + event.target.id + "/improve/", reload_char)
+        .fail(failedQuery);
+}
 	
 function fetchDisciplinesBlock(){
-	$("#char_root").fadeOut("normal");
-	$("#float_elem").load("/HTML/disciplines/");
-	window.scrollTo(0, 0);
-	$("#float_elem").fadeIn("normal");	
+    $("#mbody").load("/HTML/disciplines/");
+    $('#myModal').modal('show');
 	}
 	
 function fetchArmorsBlock(){
-	$("#char_root").fadeOut("normal");
-	$("#float_elem").load("/HTML/armors/");
-	window.scrollTo(0, 0);
-	$("#float_elem").fadeIn("normal");
-	}
+    $("#mbody").load("/HTML/armors/");
+    $('#myModal').modal('show');
+}
 
 function disciplineUp(event) {
 	fade();
-	$.post("/API/characters/"+$("#char_id").text()+"/disciplines/"+event.target.id+"/improve/",reload_char);
+	$.post("/API/characters/" + $("#char_id").text() + "/disciplines/" + event.target.id + "/improve/", reload_char)
+		.fail(failedQuery);
 	}
 
 function disciplineDown(event) {
 	fade();
-	$.post("/API/characters/"+$("#char_id").text()+"/disciplines/"+event.target.id+"/corrupt/",reload_char);
+	$.post("/API/characters/" + $("#char_id").text() + "/disciplines/" + event.target.id + "/corrupt/", reload_char)
+		.fail(failedQuery);
 	}
 
 function fetchRaceBlock(){
-	$("#race").load("/HTML/races/");
+    $("#mbody").load("/HTML/races/");
+    $('#myModal').modal('show').css({width: 'auto'});
 	}
 
 function changeRace(event){
-	$.post("/API/characters/"+$("#char_id").text()+"/race/"+event.target.id+"/",reload_char);
+    $('#myModal').modal('hide');
+    fade();
+	$.post("/API/characters/" + $("#char_id").text() + "/race/" + event.target.id + "/", reload_char)
+		.fail(failedQuery);
 	}
 	
 
@@ -262,32 +278,38 @@ function changeCharName(){
 	
 function talentUp(event){
 	fade();
-	$.post("/API/characters/"+$("#char_id").text()+"/talents/"+event.target.id+"/improve/",reload_char);
+	$.post("/API/characters/" + $("#char_id").text() + "/talents/" + event.target.id + "/improve/", reload_char)
+		.fail(failedQuery);
 	}
 
 function talentDown(event) {
 	fade();
-	$.post("/API/characters/"+$("#char_id").text()+"/talents/"+event.target.id+"/corrupt/",reload_char);
-	}
+    $.post("/API/characters/" + $("#char_id").text() + "/talents/" + event.target.id + "/corrupt/", reload_char)
+        .fail(failedQuery);
+}
 
 function attributeUp(event) {
 	fade();
-	$.post("/API/characters/"+$("#char_id").text()+"/attributes/"+event.target.id+"/improve/",reload_char);
+	$.post("/API/characters/" + $("#char_id").text() + "/attributes/" + event.target.id + "/improve/", reload_char)
+		.fail(failedQuery);
 	}
 
 function attributeDown(event) {
 	fade();
-	$.post("/API/characters/"+$("#char_id").text()+"/attributes/"+event.target.id+"/corrupt/",reload_char);
+	$.post("/API/characters/" + $("#char_id").text() + "/attributes/" + event.target.id + "/corrupt/", reload_char)
+		.fail(failedQuery)
 	}
 
 function attributePPUp(event){
 	fade();
-	$.post("/API/characters/"+$("#char_id").text()+"/attributes/"+event.target.id+"/improve/pp/",reload_char);
+	$.post("/API/characters/" + $("#char_id").text() + "/attributes/" + event.target.id + "/improve/pp/", reload_char)
+		.fail(failedQuery);
 	}
 	
 function attributePPDown(event){
 	fade();
-	$.post("/API/characters/"+$("#char_id").text()+"/attributes/"+event.target.id+"/corrupt/pp/",reload_char);
+	$.post("/API/characters/" + $("#char_id").text() + "/attributes/" + event.target.id + "/corrupt/pp/", reload_char)
+		.fail(failedQuery);
 	}
 
 function reload_talents(event){	
@@ -295,10 +317,14 @@ function reload_talents(event){
 	}
 
 function fade() {
-	$("#char_root").fadeTo("fast", .5);
+    $.blockUI({
+        message: "<h1 class=\"alert alert-info\">Processing...</h1>"
+    });
+	//$("#char_root").fadeTo("fast", .5);
 }
 
 function blendIn() {
+	$.unblockUI();
 	$("#char_root").fadeTo("fast'", 1.);
 }
 
@@ -313,4 +339,13 @@ function reload_chars(event){
 	$("#chars_root").fadeIn("normal");
 	$("#float_elem").fadeOut("normal");
 	$("#chars_root").load("/HTML/chars/");
-	}
+}
+function failedQuery(qXHR, textStatus, errorThrown) {
+	$.blockUI({
+        message: "<h1 class=\"alert alert-danger\">This did not work. The querry failed with " + errorThrown + qXHR.responseText + "</h1>"
+	});
+	setTimeout(function () {
+			reload_char(qXHR);
+		},
+		2000);
+}
