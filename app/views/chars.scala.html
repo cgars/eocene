@@ -1,7 +1,7 @@
 @(chars: List[(String,Int)])
 
-<div id="roller"></div>
-<table id="CharsTable"border="0">
+
+<table id="CharsTable" border="0">
 <tr id="chars_row">
 <td>Name</td>
 <td></td>
@@ -10,10 +10,32 @@
 @chars.map{char=>
 <tr id="chars_row">
 <td class="chars_row" id="@{char._2}">@char._1</td>
-<td class="delete_char" id="@{char._2}">delete</td>
-<td class="share_char" id="@{char._2}">share</td>
+    <td class="delete_char" id="@{
+        char._2
+    }"><span id="@{
+        char._2
+    }" title="delete" class="glyphicon glyphicon-trash" aria-hidden="true"></span></td>
+    <td class="share_char" id="@{
+        char._2
+    }"><span id="@{
+        char._2
+    }" title="share" class="glyphicon glyphicon-share" aria-hidden="true"></span></td>
 </tr>
 }
 </table>
 <div id="createChar">Create Char</div>
+
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel"></h4>
+            </div>
+            <div id="mbody" class="modal-body"> </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
 

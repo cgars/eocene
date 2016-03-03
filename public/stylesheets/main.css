@@ -1,9 +1,19 @@
+/*
+ * Copyright (c) 2016 Christian Garbers.
+ *  All rights reserved. This program and the accompanying materials
+ *  are made available under the terms of the Simplified BSD License
+ *  which accompanies this distribution
+ *  Contributors:
+ *       Christian Garbers - initial API and implementation
+ */
+
 .field{padding-right:10px;}
 .field_break{}
 .BlockHeading{font-size:20pt;
 				  display: inline-block;}
 .Block{}
 #char_id{visibility: hidden;}
+
 
 input {
 	border: 4px double #003366;
@@ -62,7 +72,6 @@ input {
 	
 .inmatrix{
 		background-color:#006944;
-		
 	}
 
 .inmatrix:hover{
@@ -97,23 +106,24 @@ Table {
 }
 
 Table table{
-    	border-collapse: collapse;
-      border-spacing: 0;
+	border-collapse: collapse;
+	border-spacing: 0;
 		width:100%;
 		height:100%;
-		margin:0px;padding:0px;
+	margin: 0px;
+	padding: 0px;
 }
 
 Table td{
-	vertical-align:middle;	
+	vertical-align: middle;
 	background-color:#cccccc;
 	border:1px solid #ffffff;
 	border-width:0px 1px 1px 0px;
 	text-align:left;
 	padding:5px;
-	/*font-size:10px;
-	font-family:Arial;
-	font-weight:normal;*/
+	font-size: 14pt;
+	font-family: Serif;
+	font-weight: normal;
 	color:#000000;
 }
 Table tr:last-child td{
@@ -126,10 +136,10 @@ Table tr:last-child td:last-child{
 	border-width:0px 0px 0px 0px;
 }
 Table tr:first-child td{
-		background:-o-linear-gradient(bottom, #003366 5%, #003f7f 100%);	
+	background: -o-linear-gradient(bottom, #003366 5%, #003f7f 100%);
 		background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #003366), color-stop(1, #003f7f) );
 		background:-moz-linear-gradient( center top, #003366 5%, #003f7f 100% );
-		filter:progid:DXImageTransform.Microsoft.gradient(startColorstr="#003366", endColorstr="#003f7f");	
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#003366", endColorstr="#003f7f");
 		background: -o-linear-gradient(top,#003366,003f7f);
 		background-color:#003366;
 		border:0px solid #ffffff;

@@ -2,13 +2,17 @@
 <table id="RaceTable" border="0">
 <tr>
 <td>Name</td>
-<td>Choose</td>
+	<td></td>
 
 </tr>
 @races.map{race=> 
 	<tr id=@{"ab_id"+race.id}>
 	<td class="table_field" id="@{"ab_id"+race.id+"name"}">@race.name</td>
-	<td class="race_chosen" id="@{""+race.id}">Choose</td>
+		<td id="@{
+			"" + race.id
+		}" class="race_chosen"><span id="@{
+			"" + race.id
+		}" title="choose" class="glyphicon glyphicon-check" aria-hidden="true"></span></td>
 	</tr>	    
 }
 </table>

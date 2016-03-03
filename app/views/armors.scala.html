@@ -1,4 +1,6 @@
 @(armors: List[Armor])
+
+
 <table id="ArmnorTable" border="0">
 <tr>
 <td>Name</td>
@@ -16,7 +18,13 @@
 	<td class="table_field">@armor.init</td>
 	<td class="table_field">@armor.phys</td>
 	<td class="table_field">@armor.mystic</td>
-	<td class="armor_chosen" id="@{""+armor.id}">Get</td>
+		<td class="armor_chosen" id="@{
+			"" + armor.id
+		}">
+			<span id="@{
+				"" + armor.id
+			}" title="choose" class="glyphicon glyphicon-check" aria-hidden="true"></span>
+		</td>
 	</tr>
 	@armor.powers.map{power =>
 		<tr>
@@ -24,8 +32,6 @@
 		</tr>	
 	}
 }
-	<tr >
-	<td class="table_field"></td>
-	<td  id="reload_char">None</td>
-	</tr>
+
 </table>
+
