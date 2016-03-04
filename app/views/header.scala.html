@@ -24,9 +24,11 @@
 <img src="@user.avatarUrl.getOrElse("")" alt="@user.firstName.getOrElse("")" width="40px" height="40px"/> Welcome @user.firstName.getOrElse(""),
  you are logged in from: @user.providerId
 </div>
-<a class="inliners" href="@securesocial.controllers.routes.LoginPage.logout()">Logout   </a>
-<a class="inliners" href="/">Home</a>
-<a class="inliners" href="/HTML/map/">Map</a>
+      <div class="btn-group" role="group" aria-label="...">
+          <a class="btn btn-danger" href="@securesocial.controllers.routes.LoginPage.logout()">Logout</a>
+          <a class="btn btn-default" href="/">Home</a>
+          <a class="btn btn-default" href="/HTML/map/">Map</a>
+      </div>
 <div id="header-end"></div>
 
 
