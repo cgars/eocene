@@ -21,8 +21,10 @@
   </head>
   <body>
  <div id="page-header">
-<img src="@user.avatarUrl.getOrElse("")" alt="@user.firstName.getOrElse("")" width="40px" height="40px"/> Welcome @user.firstName.getOrElse(""),
- you are logged in from: @user.providerId
+     <img src="@user.avatarUrl.getOrElse("")" alt="@user.firstName.getOrElse("")" width="40px" height="40px"/>
+     <div class="alert alert-success alert-dismissible" role="alert">
+         <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+         Welcome @user.firstName.getOrElse(""),  you are logged in from: @user.providerId</div>
 </div>
       <div class="btn-group" role="group" aria-label="...">
           <a class="btn btn-danger" href="@securesocial.controllers.routes.LoginPage.logout()">Logout</a>

@@ -46,6 +46,27 @@ input {
 		cursor:	pointer;
 	}
 
+#map-canvas {
+	font-size: 14pt;
+	font-family: SansSerif;
+	font-weight: bold;
+}
+
+.labels {
+	color: black;
+	background-color: white;
+	font-family: "Lucida Grande", "Arial", sans-serif;
+	font-size: 10px;
+	font-weight: bold;
+	text-align: center;
+	border: 1px solid black;
+	white-space: nowrap;
+
+}
+
+.ui-dialog {
+	background-color: white;
+}
 #createChar,[id*="reload"] {
 	 display: inline-block;	
 	}
